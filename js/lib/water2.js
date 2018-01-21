@@ -37,6 +37,8 @@ THREE.Water = function ( geometry, options ) {
 	var halfCycle = cycle * 0.5;
 	var textureMatrix = new THREE.Matrix4();
 	var clock = new THREE.Clock();
+	
+	var texture = options.texture || undefined;
 
 	// internal components
 
@@ -114,6 +116,8 @@ THREE.Water = function ( geometry, options ) {
 	this.material.uniforms.color.value = color;
 	this.material.uniforms.reflectivity.value = reflectivity;
 	this.material.uniforms.textureMatrix.value = textureMatrix;
+	
+	this.material.uniforms.texture.value = texture;
 
 	// inital values
 
@@ -230,6 +234,11 @@ THREE.Water.WaterShader = {
 		'config': {
 			type: 'v4',
 			value: new THREE.Vector4()
+		},
+		
+		'texture': {
+			type: 't',
+			value: null
 		}
 
 	},
@@ -279,6 +288,7 @@ THREE.Water.WaterShader = {
 		'uniform vec3 color;',
 		'uniform float reflectivity;',
 		'uniform vec4 config;',
+		'uniform sampler2D texture;',
 
 		'varying vec4 vCoord;',
 		'varying vec2 vUv;',
@@ -325,7 +335,9 @@ THREE.Water.WaterShader = {
 		'	vec4 refractColor = texture2D( tRefractionMap, uv );',
 
 		// multiply water color with the mix of both textures
-		'	gl_FragColor = vec4( color, 1.0 ) * mix( refractColor, reflectColor, reflectance );',
+		'	vec4 textureColor = texture2D( texture, vUv );',
+		'	if (textureColor.a < 0.1) { textureColor = vec4(color, 1.0); }',
+		'	gl_FragColor = textureColor * mix( refractColor, reflectColor, reflectance );',
 
 		'	#include <tonemapping_fragment>',
 		'	#include <encodings_fragment>',

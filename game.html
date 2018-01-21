@@ -52,12 +52,17 @@
 			function initOcean()
 			{
 				var oceanGeometry = new THREE.PlaneBufferGeometry(40, 40);
+				var oceanTexture = new THREE.TextureLoader().load("assets/ocean_texture.png");
+				//oceanTexture.flipY = false;
+				oceanTexture.rotation = Math.PI;
 				ocean = new THREE.Water(oceanGeometry, {
 					color: '#78B2FF',
 					scale: 1.5,
 					flowDirection: new THREE.Vector2(0, 0),
 					textureWidth: 1024,
-					textureHeight: 1024
+					textureHeight: 1024,
+					texture: oceanTexture,
+					reflectivity: 0.5
 				} );
 				ocean.rotation.x = Math.PI * -0.5;
 				scene.add(ocean);
@@ -68,7 +73,7 @@
 			{
 				// sunlight!
 				var sunlight = new THREE.DirectionalLight();
-				sunlight.position.set(-1, 1, 1);
+				sunlight.position.set(1, 1, -1);
 				scene.add(sunlight);
 				
 				// ambient light
@@ -103,12 +108,33 @@
 			function createBillboard(text)
 			{
 				var canvas = document.createElement("canvas");
+				//canvas.width = 200;
+				//canvas.height = 100;
 				var ctx = canvas.getContext("2d");
-				ctx.font = "Bold 30px Serif";
+				ctx.font = "Bold 12px Serif";
 				ctx.textAlign = "center";
 				ctx.strokeText(text, canvas.width/2, canvas.height/2);
 				
+				// SPRITE #2
+				var geometry = new THREE.Geometry();
 				var texture = new THREE.Texture(canvas);
+				texture.needsUpdate = true;
+				texture = new THREE.TextureLoader().load("assets/snowflake.png");
+				var vertex = new THREE.Vector3();
+				geometry.vertices.push(vertex);
+				var material = new THREE.PointsMaterial({
+					blending: THREE.AdditiveBlending,
+					map: texture,
+					depthTest: false,
+					transparent: true
+				});
+				material.color.setRGB(1, 1, 1);
+				return new THREE.Points(geometry, material);
+				
+				
+				/* // SPRITE
+				var texture = new THREE.Texture(canvas);
+				texture = new THREE.TextureLoader().load("assets/snowflake.png");
 				texture.needsUpdate = true;
 				var material = new THREE.SpriteMaterial({
 					map: texture
@@ -116,8 +142,9 @@
 				var sprite = new THREE.Sprite(material);
 				
 				return sprite;
+				*/
 				
-				/*
+				/* // PLANE
 				var material = new THREE.MeshBasicMaterial({map: texture, side:THREE.DoubleSide});
 				material.transparent = true;
 				
