@@ -10,39 +10,144 @@
 	</head>
 	<body>
 		<script src="js/lib/three.js"></script>
+		<script src="js/lib/reflector.js"></script>
+		<script src="js/lib/refractor.js"></script>
+		<script src="js/lib/water2.js"></script>
+		<script src="js/lib/orbiter.js"></script>
 		<script>
-		
-			var scene;
+			
+			// basic setup
+			var scene, ocean;
 			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
 			
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document.body.appendChild(renderer.domElement);
 			
+			// Init. the scene
 			var loader = new THREE.ObjectLoader();
-			loader.load('assets/island.json', function (loadedScene) {
+			loader.load('assets/scene.json', function (loadedScene) {
 				scene = loadedScene;
+				scene.background = new THREE.Color(0x999999);
+								
+				var islands = scene.getObjectByName("islands").children;
+				for (var i in islands) {
+					// mirror the islands (I don't know why this is necessary...)
+					islands[i].scale.x = -islands[i].scale.x;
+					islands[i].scale.y = -islands[i].scale.y;
+				}	
 				
-				var light = new THREE.DirectionalLight();
-				light.position.set(5, 5, 5);
-				scene.add(light);
-
+				initOcean();
+				initLights();
+				initCamera();
+				
+				var bb = createBillboard("Hello World!");
+				bb.position.y = 3;
+				scene.add(bb);
+				
 				animate();
 			});
 			
-						
+			// Initialize the ocean.
+			function initOcean()
+			{
+				var oceanGeometry = new THREE.PlaneBufferGeometry(40, 40);
+				ocean = new THREE.Water(oceanGeometry, {
+					color: '#78B2FF',
+					scale: 1.5,
+					flowDirection: new THREE.Vector2(0, 0),
+					textureWidth: 1024,
+					textureHeight: 1024
+				} );
+				ocean.rotation.x = Math.PI * -0.5;
+				scene.add(ocean);
+			}
+			
+			// Initialize the lights.
+			function initLights()
+			{
+				// sunlight!
+				var sunlight = new THREE.DirectionalLight();
+				sunlight.position.set(-1, 1, 1);
+				scene.add(sunlight);
+				
+				// ambient light
+				var ambient_light = new THREE.AmbientLight( 0x888888 );
+				scene.add(ambient_light);
+			}
+			
+			// Initialize the camera / camera controls
+			function initCamera()
+			{
+				// position camera
+				camera.position.x = 0;
+				camera.position.y = 9;
+				camera.position.z = -30;
+				camera.rotation.x = -2.18;
+				camera.rotation.z = Math.PI;
+				
+				// Orbit controls
+				var controls = new THREE.OrbitControls( camera, renderer.domElement );
+				controls.minDistance = 2;
+				controls.maxDistance = 15;
+				controls.zoomSpeed = 2.0;
+				controls.maxPolarAngle = Math.PI * 3/8;
+				controls.minPanX = -10;
+				controls.maxPanX = 10;
+				controls.minPanZ = -10;
+				controls.maxPanZ = 10;
+				controls.update();			
+			}
+			
+			// create a billboard
+			function createBillboard(text)
+			{
+				var canvas = document.createElement("canvas");
+				var ctx = canvas.getContext("2d");
+				ctx.font = "Bold 30px Serif";
+				ctx.textAlign = "center";
+				ctx.strokeText(text, canvas.width/2, canvas.height/2);
+				
+				var texture = new THREE.Texture(canvas);
+				texture.needsUpdate = true;
+				var material = new THREE.SpriteMaterial({
+					map: texture
+				});
+				var sprite = new THREE.Sprite(material);
+				
+				return sprite;
+				
+				/*
+				var material = new THREE.MeshBasicMaterial({map: texture, side:THREE.DoubleSide});
+				material.transparent = true;
+				
+				var mesh = new THREE.Mesh(new THREE.PlaneGeometry(10, 2), material);
+				return mesh;
+				*/
+			}
+			
+			
+			// animate the scene
 			function animate() {
 				requestAnimationFrame(animate);
-				
-				var timer = Date.now() * 0.0005;
-				camera.position.x = Math.cos(timer) * 3;
-				camera.position.y = 3;
-				camera.position.z = Math.sin(timer) * 3;
-				camera.lookAt(scene.position);
+								
+				// animate ocean
+				var t_ocean = Date.now() * 0.001;
+				var h = 0.01;
+				ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
 				
 				renderer.render(scene, camera);
 			}
 			
+			
+			// onresize
+			window.addEventListener('resize', onWindowResize, false);
+			function onWindowResize(event) {
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+			}
+						
 		</script>
 	</body>
 </html>
