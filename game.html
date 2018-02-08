@@ -6,55 +6,73 @@
 		<style>
 			@font-face{
 				font-family:"Berkshire Swash";
-				src:url("/assets/Fonts/BerkshireSwash-Regular.ttf");
+				src:url("/assets/Fonts/Berkshire_Swash/BerkshireSwash-Regular.ttf");
 			}
 			body { margin: 0; }
-			canvas { width: 100%; height: 100%; }
-			#game-container{
-				position:absolute;z-index=-1;
-			}
-			#heads-up-display{
-				z-index:1; 
-				position:absolute;
-				height:100vh;
-				width:100%;
-				/*background-color:rgba(255,0,0,0.4);*/
-			}
-			#heads-up-display > div{ position:relative; }
-			#status-indicators-group{
-				margin-left:5px;
-				display:flex;
-				flex-direction:column;
-				width: 10vw;
-			}
-			#status-indicators-group > div{ margin-top:1.5vh; }
-			.sigroups{ display:flex; flex-direction:row; }
-			.status-indicator-image{ height:5vh; }
-			.status-indicators{
-				font-size:3vh;
-				color:white;
-				position:relative;
-				margin-left:15px;
-				font-family:'Berkshire Swash', cursive;
-			}
-			#closed-chat{
-				border:5px solid yellow;
-				border-radius:25px;
-				margin-top:4.5vh;	
-				display:inline-block;	
-				margin-left:-25px;	
-				background-color:rgba(247,142,105,0.7);
-				display:flex;
-				flex-direction:row;
-				align-items:center;
-			}
-			#closed-chat > image{ 
-				display:inline-block; 
-			}
-			#open-chat-container{
-				display:none;
-				background-color:rgba(247,142,105,0.7);
-			}
+				canvas { width: 100%; height: 100%; }
+				#game-container{
+					position:absolute;z-index:1;
+				}
+				#heads-up-display{
+					z-index:2; 
+					position:absolute;
+					height:100vh;
+					width:100%;
+					/*background-color:rgba(255,0,0,0.4);*/
+				}
+					#heads-up-display > div{ position:absolute; }
+					#status-indicators-group{
+						margin-left:5px;
+						display:flex;
+						flex-direction:column;
+						width: 10vw;
+						top:0;
+					}
+						#status-indicators-group > div{ margin-top:1.5vh; }
+						.sigroups{ display:flex; flex-direction:row; }
+						.status-indicator-image{ height:5vh; }
+						.status-indicators{
+							font-size:3vh;
+							color:white;
+							position:relative;
+							margin-left:15px;
+							font-family:'Berkshire Swash', cursive;
+						}
+						#closed-chat{
+							border:4px solid;
+							border-color: rgba(247,239,153,0.9);
+							border-radius:25px;
+							margin-top:4.5vh;	
+							display:inline-block;	
+							margin-left:-25px;	
+							background-color:rgba(247,142,105,0.7);
+							display:flex;
+							flex-direction:row;
+							align-items:center;
+						}
+						#closed-chat > image{ 
+							display:inline-block; 
+						}
+						#open-chat-container{
+							display:none;
+							border:4px solid;
+							border-color: rgba(247,239,153,0.9);
+							background-color:rgba(247,142,105,0.7);
+						}
+					#right-side-button-group{ position:absolute; width:8vw; right:0; top:15vh; margin-right:5px; text-align:center;}
+						.right-button{
+							border:4px solid;
+							border-color: rgba(247,239,153,0.9);
+							background-color:rgba(247,142,105,0.7);
+							border-radius: 20px;
+							margin-top:5vh;
+							display:flex;
+							flex-direction:column;
+							align-items:center;
+						}
+						.right-button > img{
+							height:10vh;
+						}
 		</style>
 	</head>
 	<body>
@@ -96,8 +114,7 @@
 						12/30
 					</div>
 				</div>
-			</div>
-			<div id="chat-container">
+				<div id="chat-container">
 				<div id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
 					<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; display:inline-block; "/>
 					<image src="assets/icons/right-arrow.png" style="height:5vh; vertical-align: middle;display:inline-block;position:absolute;right:0;padding-right:5px;"/>
@@ -105,14 +122,19 @@
 				<div id="open-chat-container">
 				</div>
 			</div>
+			</div>
+			
 			<div id="game-progress-group">
 			</div>
 			<div id="right-side-button-group">
-				<div id="buy-sell">
+				<div id="buy-sell" class="right-button">
+					<img class="right-image" src="/assets/icons/cart.png">
 				</div>
-				<div id="trade">
+				<div id="trade" class="right-button">
+					<img class="right-image" src="/assets/icons/handshake.png">
 				</div>
-				<div id="sea-captain">
+				<div id="sea-captain" class="right-button">
+					<img class="right-image" src="/assets/icons/pirate.png">
 				</div>
 			</div>
 		</div>
