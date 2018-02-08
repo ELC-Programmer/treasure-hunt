@@ -3,6 +3,12 @@
 	font-family:"Berkshire Swash";
 	src:url("./assets/Fonts/Berkshire_Swash/BerkshireSwash-Regular.ttf");
 }
+
+@font-face{
+	font-family: "Cousine";
+	src:url(assets/Fonts/Cousine/Cousine-Regular.ttf);
+}
+
 body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 		body > div { z-index:3; position:absolute; }
 		#game-container{ z-index:1; }

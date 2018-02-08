@@ -70,7 +70,7 @@ THREE.Water = function ( geometry, options ) {
 
 	reflector.matrixAutoUpdate = false;
 	refractor.matrixAutoUpdate = false;
-
+	
 	// material
 
 	this.material = new THREE.ShaderMaterial( {
@@ -177,12 +177,13 @@ THREE.Water = function ( geometry, options ) {
 
 		scope.visible = false;
 
+		
 		reflector.matrixWorld.copy( scope.matrixWorld );
 		refractor.matrixWorld.copy( scope.matrixWorld );
 
 		reflector.onBeforeRender( renderer, scene, camera );
-		refractor.onBeforeRender( renderer, scene, camera );
-
+		refractor.onBeforeRender( renderer, scene, camera ); // DISABLE REFRACTOR SO SPRITES WORK!
+		
 		scope.visible = true;
 
 	};
