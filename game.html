@@ -14,7 +14,7 @@
 				position:absolute;z-index=-1;
 			}
 			#heads-up-display{
-				z-index:1; 
+				z-index:1;
 				position:absolute;
 				height:100vh;
 				width:100%;
@@ -40,16 +40,16 @@
 			#closed-chat{
 				border:5px solid yellow;
 				border-radius:25px;
-				margin-top:4.5vh;	
-				display:inline-block;	
-				margin-left:-25px;	
+				margin-top:4.5vh;
+				display:inline-block;
+				margin-left:-25px;
 				background-color:rgba(247,142,105,0.7);
 				display:flex;
 				flex-direction:row;
 				align-items:center;
 			}
-			#closed-chat > image{ 
-				display:inline-block; 
+			#closed-chat > image{
+				display:inline-block;
 			}
 			#open-chat-container{
 				display:none;
@@ -127,35 +127,57 @@
 			// basic setup
 			var scene, ocean;
 			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-			
+
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			document.getElementById("game-container").appendChild(renderer.domElement);
-			
+
 			// Init. the scene
 			var loader = new THREE.ObjectLoader();
 			loader.load('assets/scene.json', function (loadedScene) {
 				scene = loadedScene;
 				scene.background = new THREE.Color(0x999999);
-								
+
 				var islands = scene.getObjectByName("islands").children;
 				for (var i in islands) {
 					// mirror the islands (I don't know why this is necessary...)
 					islands[i].scale.x = -islands[i].scale.x;
 					islands[i].scale.y = -islands[i].scale.y;
-				}	
-				
+				}
+
 				initOcean();
 				initLights();
 				initCamera();
-				
+				initSkyBox();
+
 				var bb = createBillboard("Hello World!");
 				bb.position.y = 3;
 				scene.add(bb);
-				
+
 				animate();
 			});
-			
+
+			function initSkyBox()
+			{
+				//var axes = new THREE.AxisHelper(100);
+				//scene.add(axes);
+
+				var imagePrefix = "assets/ThickCloudsWater";
+				var directions = ["Back2048","Down2048","Front2048","Left2048","Right2048","Up2048"];
+				var imageSuffix = ".png";
+				var skyGeometry = new THREE.CubeGeometry(5000,5000,5000);
+
+				var materialArray = [];
+				for (var i=0; i<6; i++)
+				  materialArray.push(new THREE.MeshBasicMaterial({
+				    map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
+				    side: THREE.BackSide
+				  }));
+				var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+				var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+				scene.add(skyBox);
+			}
+
 			// Initialize the ocean and sky
 			function initOcean()
 			{
@@ -175,26 +197,26 @@
 				ocean.rotation.x = Math.PI * -0.5;
 				scene.add(ocean);
 
-				//init sky 
-			    var geometry = new THREE.SphereGeometry(3000, 60, 40);  
-				var uniforms = {  
-				  texture: { type: 't', value: THREE.ImageUtils.loadTexture("assets/sky_texture.jpg") }
+				//init sky
+			    var geometry = new THREE.SphereGeometry(3000, 60, 40);
+				var uniforms = {
+				  texture: { type: 't', value: THREE.ImageUtils.loadTexture("assets/ThickCloudsWaterFront2048.png") }
 				};
 
-				var material = new THREE.ShaderMaterial( {  
+				var material = new THREE.ShaderMaterial( {
 				  uniforms:       uniforms,
 				  vertexShader:   document.getElementById('sky-vertex').textContent,
 				  fragmentShader: document.getElementById('sky-fragment').textContent
 				});
 
-				skyBox = new THREE.Mesh(geometry, material);  
-				skyBox.scale.set(-1, 1, 1);  
-				skyBox.eulerOrder = 'XZY';  
-				skyBox.renderDepth = 1000.0;  
-				scene.add(skyBox); 
+				skyBox = new THREE.Mesh(geometry, material);
+				skyBox.scale.set(-1, 1, 1);
+				skyBox.eulerOrder = 'XZY';
+				skyBox.renderDepth = 1000.0;
+				scene.add(skyBox);
 
 			}
-			
+
 			// Initialize the lights.
 			function initLights()
 			{
@@ -202,12 +224,12 @@
 				var sunlight = new THREE.DirectionalLight();
 				sunlight.position.set(1, 1, -1);
 				scene.add(sunlight);
-				
+
 				// ambient light
 				var ambient_light = new THREE.AmbientLight( 0x888888 );
 				scene.add(ambient_light);
 			}
-			
+
 			// Initialize the camera / camera controls
 			function initCamera()
 			{
@@ -217,7 +239,7 @@
 				camera.position.z = -30;
 				camera.rotation.x = -2.18;
 				camera.rotation.z = Math.PI;
-				
+
 				// Orbit controls
 				var controls = new THREE.OrbitControls( camera, renderer.domElement );
 				controls.minDistance = 2;
@@ -228,9 +250,9 @@
 				controls.maxPanX = 10;
 				controls.minPanZ = -10;
 				controls.maxPanZ = 10;
-				controls.update();			
+				controls.update();
 			}
-			
+
 			// create a billboard
 			function createBillboard(text)
 			{
@@ -241,13 +263,13 @@
 				ctx.font = "Bold 12px Serif";
 				ctx.textAlign = "center";
 				ctx.strokeText(text, canvas.width/2, canvas.height/2);
-				
+
 				// SPRITE #2
 				var geometry = new THREE.Geometry();
 				var texture = new THREE.Texture(canvas);
 				texture.needsUpdate = true;
-				// texture = new THREE.TextureLoader().load("assets/snowflake.png"); //problem: No snowflakes in assets folder; this texture does not appear 
-				var vertex = new THREE.Vector3(); 
+				// texture = new THREE.TextureLoader().load("assets/snowflake.png"); //problem: No snowflakes in assets folder; this texture does not appear
+				var vertex = new THREE.Vector3();
 				geometry.vertices.push(vertex);
 				var material = new THREE.PointsMaterial({
 					blending: THREE.AdditiveBlending,
@@ -257,8 +279,8 @@
 				});
 				material.color.setRGB(1, 1, 1);
 				return new THREE.Points(geometry, material);
-				
-				
+
+
 				/* // SPRITE
 				var texture = new THREE.Texture(canvas);
 				texture = new THREE.TextureLoader().load("assets/snowflake.png");
@@ -267,33 +289,33 @@
 					map: texture
 				});
 				var sprite = new THREE.Sprite(material);
-				
+
 				return sprite;
 				*/
-				
+
 				/* // PLANE
 				var material = new THREE.MeshBasicMaterial({map: texture, side:THREE.DoubleSide});
 				material.transparent = true;
-				
+
 				var mesh = new THREE.Mesh(new THREE.PlaneGeometry(10, 2), material);
 				return mesh;
 				*/
 			}
-			
-			
+
+
 			// animate the scene
 			function animate() {
 				requestAnimationFrame(animate);
-								
+
 				// animate ocean
 				var t_ocean = Date.now() * 0.001;
 				var h = 0.01;
 				ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
-				
+
 				renderer.render(scene, camera);
 			}
-			
-			
+
+
 			// onresize
 			window.addEventListener('resize', onWindowResize, false);
 			function onWindowResize(event) {
@@ -301,23 +323,23 @@
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 			}
-						
+
 		</script>
-		<script type="application/x-glsl" id="sky-vertex">  
+		<script type="application/x-glsl" id="sky-vertex">
 			varying vec2 vUV;
 
-			void main() {  
+			void main() {
 			  vUV = uv;
 			  vec4 pos = vec4(position, 1.0);
 			  gl_Position = projectionMatrix * modelViewMatrix * pos;
 			}
 		</script>
 
-		<script type="application/x-glsl" id="sky-fragment">  
-			uniform sampler2D texture;  
+		<script type="application/x-glsl" id="sky-fragment">
+			uniform sampler2D texture;
 			varying vec2 vUV;
 
-			void main() {  
+			void main() {
 			  vec4 sample = texture2D(texture, vUV);
 			  gl_FragColor = vec4(sample.xyz, sample.w);
 			}
