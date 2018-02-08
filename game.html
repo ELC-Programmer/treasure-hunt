@@ -64,7 +64,7 @@
 				<img class="right-image" src="/assets/icons/pirate.png">
 			</div>
 		</div>
-		
+
 		<div id="bottom-group">
 			<div id="bottom-top-group">
 				<div class="sub-items" style="left:0;">
@@ -99,9 +99,9 @@
 		</div>
 
 		<div id="game-container"> </div>
-		
+
 		<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-		
+
 		<script src="js/lib/three.js"></script>
 		<script src="js/lib/reflector.js"></script>
 		<script src="js/lib/refractor.js"></script>
@@ -109,7 +109,7 @@
 		<script src="js/lib/orbiter.js"></script>
 		<script>
 
-		
+
 			// basic setup
 			var scene, ocean;
 			var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -119,7 +119,7 @@
 			document.getElementById("game-container").appendChild(renderer.domElement);
 
 			Init();
-			
+
 			function Init()
 			{
 				// Init. the scene
@@ -140,7 +140,7 @@
 						shipScene.rotation.y = Math.PI * 3/4;
 						scene.add(shipScene);
 					});
-					
+
 					initLabels();
 					initOcean();
 					initLights();
@@ -155,12 +155,12 @@
 			function initLabels()
 			{
 				var prefix = "Label:";
-			
+
 				scene.traverseVisible(function(obj) { // foreach object in scene
-					
+
 					if (obj.name.startsWith(prefix)) // then make a label
 					{
-						var text = obj.name.substr(prefix.length);					
+						var text = obj.name.substr(prefix.length);
 						var bb = createBillboard(text);
 						bb.position.z = Math.random() * 0.01;
 						registerSpriteScaling(bb, 1, 3, 10, 4);
@@ -168,7 +168,7 @@
 					}
 				});
 			}
-			
+
 			function initSkyBox()
 			{
 				//var axes = new THREE.AxisHelper(100);
@@ -209,8 +209,7 @@
 				ocean.rotation.x = Math.PI * -0.5;
 				scene.add(ocean);
 
-				/*
-				//init sky
+				//ocean reflections
 			    var geometry = new THREE.SphereGeometry(3000, 60, 40);
 				var uniforms = {
 				  texture: { type: 't', value: THREE.ImageUtils.loadTexture("assets/ThickCloudsWaterFront2048.png") }
@@ -227,7 +226,6 @@
 				skyBox.eulerOrder = 'XZY';
 				skyBox.renderDepth = 1000.0;
 				scene.add(skyBox);
-				*/
 
 			}
 
@@ -238,12 +236,12 @@
 				var sunlight = new THREE.DirectionalLight();
 				sunlight.position.set(1, 1, -1);
 				scene.add(sunlight);
-				
+
 				// counter light
 				var counter_light = new THREE.DirectionalLight();
 				counter_light.position.set(-1, -1, 1);
 				scene.add(counter_light);
-				
+
 				// ambient light
 				var ambient_light = new THREE.AmbientLight( 0xaaaaaa );
 				scene.add(ambient_light);
@@ -280,23 +278,23 @@
 				canvas.width = 1024;
 				canvas.height = 1024;
 				//document.body.appendChild(canvas);
-				
+
 				var ctx = canvas.getContext("2d");
 				ctx.font = "Bold 100px Cousine";
 				ctx.textAlign = "center";
-				
+
 				ctx.fillStyle = "black";
 				ctx.globalAlpha = 0.5;
 				var rectW = text.length * 63;
 				ctx.fillRect(canvas.width/2 - rectW/2, canvas.height/2 - 40, rectW, 120);
 				ctx.globalAlpha = 1;
-				
+
 				ctx.fillStyle = "white";
 				ctx.fillText(text, canvas.width/2, canvas.height/2 + 50);
-				
+
 				ctx.strokeStyle = "black";
 				ctx.strokeText(text, canvas.width/2, canvas.height/2 + 50);
-								
+
 				// Make Sprite
 				var texture = new THREE.Texture(canvas);
 				texture.needsUpdate = true;
@@ -310,15 +308,15 @@
 			}
 
 			// animate the scene
-			function animate() {			
+			function animate() {
 				requestAnimationFrame(animate);
 
 				animateOcean();
 				animateSpriteScaling();
-				
+
 				renderer.render(scene, camera);
 			}
-			
+
 			function animateOcean()
 			{
 				// animate ocean
@@ -326,7 +324,7 @@
 				var h = 0.01;
 				ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
 			}
-			
+
 			function registerSpriteScaling(sprite, d1, s1, d2, s2)
 			{
 				sprite.animatedScaling = {
@@ -336,15 +334,15 @@
 					s2: s2
 				};
 			}
-			
+
 			function animateSpriteScaling()
 			{
 				scene.traverseVisible(function(obj) { // foreach object in scene
-					
+
 					if (obj.isSprite && obj.animatedScaling !== undefined)
 					{
 						var dist = obj.getWorldPosition().sub(camera.getWorldPosition()).dot(camera.getWorldDirection());
-					
+
 						var scale = THREE.Math.mapLinear(
 							dist,
 							obj.animatedScaling.d1,
@@ -352,9 +350,9 @@
 							obj.animatedScaling.s1,
 							obj.animatedScaling.s2
 						);
-						
+
 						scale *= Math.pow(-camera.getWorldDirection().dot(camera.up), 0.3);
-						
+
 						obj.scale.x = scale;
 						obj.scale.y = scale;
 					}
