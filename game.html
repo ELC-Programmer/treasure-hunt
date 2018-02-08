@@ -12,7 +12,7 @@
 					body > div { z-index:3; position:absolute; }
 					#game-container{ z-index:1; }
 					/*#heads-up-display{
-						z-index:2; 
+						z-index:2;
 						position:absolute;
 						height:100vh;
 						width:100%;
@@ -36,9 +36,9 @@
 							border:4px solid;
 							border-color: rgba(247,239,153,0.9);
 							border-radius:25px;
-							margin-top:4.5vh;	
-							display:inline-block;	
-							margin-left:-25px;	
+							margin-top:4.5vh;
+							display:inline-block;
+							margin-left:-25px;
 							background-color:rgba(247,142,105,0.7);
 							display:flex;
 							flex-direction:row;
@@ -51,13 +51,13 @@
 							border-color: rgba(247,239,153,0.9);
 							background-color:rgba(247,142,105,0.7);
 						}
-					#right-side-button-group{ 
-						position: absolute; 
-						width:8vw; 
-						right:0; 
-						top:5vh; 
-						margin-right:5px; 
-						text-align:center; 
+					#right-side-button-group{
+						position: absolute;
+						width:8vw;
+						right:0;
+						top:5vh;
+						margin-right:5px;
+						text-align:center;
 					}
 						.right-button{
 							border:4px solid;
@@ -118,7 +118,7 @@
 			</div>
 		</div>
 		</div>
-		
+
 		<div id="game-progress-group">
 
 		</div>
@@ -179,10 +179,10 @@
 				//var axes = new THREE.AxisHelper(100);
 				//scene.add(axes);
 
-				var imagePrefix = "assets/ThickCloudsWater";
-				var directions = ["Back2048","Down2048","Front2048","Left2048","Right2048","Up2048"];
+				var imagePrefix = "assets/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
+				var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 				var imageSuffix = ".png";
-				var skyGeometry = new THREE.CubeGeometry(5000,5000,5000);
+				var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
 
 				var materialArray = [];
 				for (var i=0; i<6; i++)
