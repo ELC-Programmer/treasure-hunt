@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset=utf-8>
+<!-- saved from url=(0031)http://localhost:8080/game.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
 		<title>Treasure Hunt!</title>
 		<style>
 			@font-face{
@@ -61,37 +61,37 @@
 		<div id="heads-up-display">
 			<div id="status-indicators-group">
 				<div id="cash" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/dollar-symbol.png" />
+					<img class="status-indicator-image" src="./Treasure Hunt!_files/dollar-symbol.png">
 					<div class="status-indicators" id="cash-text">
 						12
 					</div>
 				</div>
 				<div id="food" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/knife-fork.png" />
+					<img class="status-indicator-image" src="./Treasure Hunt!_files/knife-fork.png">
 					<div class="status-indicators" id="food-text">
 						12
 					</div>
 				</div>
 				<div id="water" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/water-droplet.png" />
+					<img class="status-indicator-image" src="./Treasure Hunt!_files/water-droplet.png">
 					<div class="status-indicators" id="water-text">
 						12
 					</div>
 				</div>
 				<div id="gas" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/gas-station.png" />
+					<img class="status-indicator-image" src="./Treasure Hunt!_files/gas-station.png">
 					<div class="status-indicators" id="gas-text">
 						12
 					</div>
 				</div>
 				<div id="treasure" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/diamond.png" />
+					<img class="status-indicator-image" src="./Treasure Hunt!_files/diamond.png">
 					<div class="status-indicators" id="treasure-text">
 						12
 					</div>
 				</div>
 				<div id="capacity" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/box.png" />
+					<img class="status-indicator-image" src="./Treasure Hunt!_files/box.png">
 					<div class="status-indicators" id="capacity-text">
 						12/30
 					</div>
@@ -99,30 +99,24 @@
 			</div>
 			<div id="chat-container">
 				<div id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
-					<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; display:inline-block; "/>
-					<image src="assets/icons/right-arrow.png" style="height:5vh; vertical-align: middle;display:inline-block;position:absolute;right:0;padding-right:5px;"/>
+					<img src="./Treasure Hunt!_files/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; display:inline-block; ">
+					<img src="./Treasure Hunt!_files/right-arrow.png" style="height:5vh; vertical-align: middle;display:inline-block;position:absolute;right:0;padding-right:5px;">
 				</div>
 				<div id="open-chat-container">
 				</div>
 			</div>
 			<div id="game-progress-group">
 			</div>
-			<div id="right-side-button-group">
-				<div id="buy-sell">
-				</div>
-				<div id="trade">
-				</div>
-				<div id="sea-captain">
-				</div>
+			<div id="right-side-button">
 			</div>
 		</div>
-		<div id="game-container"> </div>
+		<div id="game-container"> <canvas width="1440" height="756" style="width: 1440px; height: 756px;"></canvas></div>
 
-		<script src="js/lib/three.js"></script>
-		<script src="js/lib/reflector.js"></script>
-		<script src="js/lib/refractor.js"></script>
-		<script src="js/lib/water2.js"></script>
-		<script src="js/lib/orbiter.js"></script>
+		<script src="./Treasure Hunt!_files/three.js"></script>
+		<script src="./Treasure Hunt!_files/reflector.js"></script>
+		<script src="./Treasure Hunt!_files/refractor.js"></script>
+		<script src="./Treasure Hunt!_files/water2.js"></script>
+		<script src="./Treasure Hunt!_files/orbiter.js"></script>
 		<script>
 			// basic setup
 			var scene, ocean;
@@ -322,5 +316,5 @@
 			  gl_FragColor = vec4(sample.xyz, sample.w);
 			}
 		</script>
-	</body>
-</html>
+	
+</body></html>
