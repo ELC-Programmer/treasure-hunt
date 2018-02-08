@@ -8,28 +8,22 @@
 				font-family:"Berkshire Swash";
 				src:url("/assets/Fonts/Berkshire_Swash/BerkshireSwash-Regular.ttf");
 			}
-			body { margin: 0; }
-				canvas { width: 100%; height: 100%; }
-				#game-container{
-					position:absolute;z-index:1;
-				}
-				#heads-up-display{
-					z-index:2; 
-					position:absolute;
-					height:100vh;
-					width:100%;
-					/*background-color:rgba(255,0,0,0.4);*/
-				}
-					#heads-up-display > div{ position:absolute; }
+			body { margin: 0; position:relative; height:100vh; overflow:hidden;}
+					body > div { z-index:3; position:absolute; }
+					#game-container{ z-index:1; }
+					/*#heads-up-display{
+						z-index:2; 
+						position:absolute;
+						height:100vh;
+						width:100%;
+					}*/
+					/*#heads-up-display > div{ position:absolute; }*/
 					#status-indicators-group{
-						margin-left:5px;
-						display:flex;
-						flex-direction:column;
-						width: 10vw;
-						top:0;
+						top:5vh;
+						position:absolute;
 					}
 						#status-indicators-group > div{ margin-top:1.5vh; }
-						.sigroups{ display:flex; flex-direction:row; }
+						.sigroups{ display:flex; flex-direction:row; margin-left:5px;}
 						.status-indicator-image{ height:5vh; }
 						.status-indicators{
 							font-size:3vh;
@@ -57,60 +51,64 @@
 							border-color: rgba(247,239,153,0.9);
 							background-color:rgba(247,142,105,0.7);
 						}
-					#right-side-button-group{ position:absolute; width:8vw; right:0; top:15vh; margin-right:5px; text-align:center; }
+					#right-side-button-group{ 
+						position: absolute; 
+						width:8vw; 
+						right:0; 
+						top:5vh; 
+						margin-right:5px; 
+						text-align:center; 
+					}
 						.right-button{
 							border:4px solid;
 							border-color: rgba(247,239,153,0.9);
 							background-color:rgba(247,142,105,0.7);
 							border-radius: 20px;
 							margin-top:5vh;
-							display:flex;
-							flex-direction:column;
-							align-items:center;
 						}
 						.right-button > img{ height:10vh; }
 		</style>
 	</head>
 	<body>
-		<div id="heads-up-display">
-			<div id="status-indicators-group">
-				<div id="cash" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/dollar-symbol.png" />
-					<div class="status-indicators" id="cash-text">
-						12
-					</div>
+		<div>
+		<div id="status-indicators-group">
+			<div id="cash" class="sigroups">
+				<image class="status-indicator-image" src="assets/icons/dollar-symbol.png" />
+				<div class="status-indicators" id="cash-text">
+					12
 				</div>
-				<div id="food" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/knife-fork.png" />
-					<div class="status-indicators" id="food-text">
-						12
-					</div>
+			</div>
+			<div id="food" class="sigroups">
+				<image class="status-indicator-image" src="assets/icons/knife-fork.png" />
+				<div class="status-indicators" id="food-text">
+					12
 				</div>
-				<div id="water" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/water-droplet.png" />
-					<div class="status-indicators" id="water-text">
-						12
-					</div>
+			</div>
+			<div id="water" class="sigroups">
+				<image class="status-indicator-image" src="assets/icons/water-droplet.png" />
+				<div class="status-indicators" id="water-text">
+					12
 				</div>
-				<div id="gas" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/gas-station.png" />
-					<div class="status-indicators" id="gas-text">
-						12
-					</div>
+			</div>
+			<div id="gas" class="sigroups">
+				<image class="status-indicator-image" src="assets/icons/gas-station.png" />
+				<div class="status-indicators" id="gas-text">
+					12
 				</div>
-				<div id="treasure" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/diamond.png" />
-					<div class="status-indicators" id="treasure-text">
-						12
-					</div>
+			</div>
+			<div id="treasure" class="sigroups">
+				<image class="status-indicator-image" src="assets/icons/diamond.png" />
+				<div class="status-indicators" id="treasure-text">
+					12
 				</div>
-				<div id="capacity" class="sigroups">
-					<image class="status-indicator-image" src="assets/icons/box.png" />
-					<div class="status-indicators" id="capacity-text">
-						12/30
-					</div>
+			</div>
+			<div id="capacity" class="sigroups">
+				<image class="status-indicator-image" src="assets/icons/box.png" />
+				<div class="status-indicators" id="capacity-text">
+					12/30
 				</div>
-				<div id="chat-container">
+			</div>
+			<div id="chat-container">
 				<div id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
 					<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; display:inline-block; "/>
 					<image src="assets/icons/right-arrow.png" style="height:5vh; vertical-align: middle;display:inline-block;position:absolute;right:0;padding-right:5px;"/>
@@ -118,20 +116,21 @@
 				<div id="open-chat-container">
 				</div>
 			</div>
+		</div>
+		</div>
+		
+		<div id="game-progress-group">
+
+		</div>
+		<div id="right-side-button-group">
+			<div id="buy-sell" class="right-button">
+				<img class="right-image" src="/assets/icons/cart.png">
 			</div>
-			
-			<div id="game-progress-group">
+			<div id="trade" class="right-button">
+				<img class="right-image" src="/assets/icons/handshake.png">
 			</div>
-			<div id="right-side-button-group">
-				<div id="buy-sell" class="right-button">
-					<img class="right-image" src="/assets/icons/cart.png">
-				</div>
-				<div id="trade" class="right-button">
-					<img class="right-image" src="/assets/icons/handshake.png">
-				</div>
-				<div id="sea-captain" class="right-button">
-					<img class="right-image" src="/assets/icons/pirate.png">
-				</div>
+			<div id="sea-captain" class="right-button">
+				<img class="right-image" src="/assets/icons/pirate.png">
 			</div>
 		</div>
 		<div id="game-container"> </div>
