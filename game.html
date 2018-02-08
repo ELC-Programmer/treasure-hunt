@@ -6,7 +6,6 @@
 		<link rel="stylesheet" type="text/css" href="game.css">
 	</head>
 	<body>
-		<div>
 		<div id="status-indicators-group">
 			<div id="cash" class="sigroups">
 				<image class="status-indicator-image" src="assets/icons/dollar-symbol.png" />
@@ -50,9 +49,9 @@
 					<image src="assets/icons/right-arrow.png" style="height:5vh; vertical-align: middle;display:inline-block;position:absolute;right:0;padding-right:5px;"/>
 				</div>
 				<div id="open-chat-container">
+					
 				</div>
 			</div>
-		</div>
 		</div>
 
 		<div id="right-side-button-group">
@@ -146,10 +145,10 @@
 				//var axes = new THREE.AxisHelper(100);
 				//scene.add(axes);
 
-				var imagePrefix = "assets/ThickCloudsWater";
-				var directions = ["Back2048","Down2048","Front2048","Left2048","Right2048","Up2048"];
+				var imagePrefix = "assets/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
+				var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 				var imageSuffix = ".png";
-				var skyGeometry = new THREE.CubeGeometry(5000,5000,5000);
+				var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
 
 				var materialArray = [];
 				for (var i=0; i<6; i++)
