@@ -168,14 +168,15 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			spherical.makeSafe();
 
-
 			spherical.radius *= scale;
 
 			// restrict radius to be between desired limits
 			spherical.radius = Math.max( scope.minDistance, Math.min( scope.maxDistance, spherical.radius ) );
 
 			// move target to panned location
+			var panLength = panOffset.length(); // ABM
 			panOffset.y = 0; // ADDED BY ME
+			panOffset.normalize().multiplyScalar(panLength);
 			scope.target.add( panOffset );
 			scope.target.x = Math.max(scope.minPanX, scope.target.x);
 			scope.target.x = Math.min(scope.maxPanX, scope.target.x);
