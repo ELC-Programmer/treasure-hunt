@@ -159,7 +159,7 @@ THMap.prototype = {
 		//ocean reflections (TODO)
 		var geometry = new THREE.SphereGeometry(3000, 60, 40);
 		var uniforms = {
-		  texture: { type: 't', value: THREE.ImageUtils.loadTexture("assets/ThickCloudsWaterFront2048.png") }
+		  texture: { type: 't', value: THREE.ImageUtils.loadTexture("assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWaterFront2048.png") }
 		};
 
 		var vertexShader = [

@@ -1,5 +1,5 @@
 body { margin: 0; position:relative; height:100vh; overflow:hidden;}
-	#hud-container{ width:100vw; height:100vh; }
+	#hud-container{ width:100vw; height:100vh; display:inline;}
 	#hud-container > div { z-index:3; position:absolute; }
 	#game-container{ z-index:1; }
 		#status-indicators-group{
@@ -26,9 +26,10 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				display:flex;
 				flex-direction:row;
 				align-items:center;
+				min-height:1px
 				/*display:none; /*Use "display:none;" when "open chat" is clicked*/
 			}
-				#closed-chat > image{ display:inline-block; }
+				#closed-chat > image{ align-self:flex-start; }
 			#open-chat-container{
 				border:4px solid;
 				border-color: rgba(247,239,153,0.9);
