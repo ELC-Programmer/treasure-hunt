@@ -30,8 +30,8 @@ THMap.prototype = {
 		
 		// Load 3D objects
 		this._LoadObjects({
-			"scene": "./assets/scene.json",
-			"ships": "./assets/pirate_ship.json"			
+			"scene": "./assets/Objects/scene.json",
+			"ships": "./assets/Objects/pirate_ship.json"			
 		}, function(loadedObjects) {
 			
 			//save the main scene
@@ -118,7 +118,7 @@ THMap.prototype = {
 	 */
 	_InitSkyBox: function()
 	{
-		var imagePrefix = "assets/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
+		var imagePrefix = "assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
 		var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
@@ -141,7 +141,7 @@ THMap.prototype = {
 	_InitOcean: function()
 	{
 		var oceanGeometry = new THREE.PlaneBufferGeometry(40, 40);
-		var oceanTexture = new THREE.TextureLoader().load("assets/ocean_texture.png");
+		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture.png");
 		//oceanTexture.flipY = false;
 		oceanTexture.rotation = Math.PI;
 		this.ocean = new THREE.Water(oceanGeometry, {
