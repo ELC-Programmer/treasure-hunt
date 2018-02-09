@@ -1,7 +1,7 @@
-
 body { margin: 0; position:relative; height:100vh; overflow:hidden;}
-		body > div { z-index:3; position:absolute; }
-		#game-container{ z-index:1; }
+	#hud-container{ width:100vw; height:100vh; }
+	#hud-container > div { z-index:3; position:absolute; }
+	#game-container{ z-index:1; }
 		#status-indicators-group{
 			top:2vh;
 			position:absolute;
