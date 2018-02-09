@@ -4,104 +4,10 @@
 		<meta charset=utf-8>
 		<title>Treasure Hunt!</title>
 		<link rel="stylesheet" type="text/css" href="game.css">
-	</head>
-	<body>
-		<div id="status-indicators-group">
-			<div id="cash" class="sigroups">
-				<image class="status-indicator-image" src="assets/icons/dollar-symbol.png" />
-				<div class="status-indicators" id="cash-text">
-					12
-				</div>
-			</div>
-			<div id="food" class="sigroups">
-				<image class="status-indicator-image" src="assets/icons/knife-fork.png" />
-				<div class="status-indicators" id="food-text">
-					12
-				</div>
-			</div>
-			<div id="water" class="sigroups">
-				<image class="status-indicator-image" src="assets/icons/water-droplet.png" />
-				<div class="status-indicators" id="water-text">
-					12
-				</div>
-			</div>
-			<div id="gas" class="sigroups">
-				<image class="status-indicator-image" src="assets/icons/gas-station.png" />
-				<div class="status-indicators" id="gas-text">
-					12
-				</div>
-			</div>
-			<div id="treasure" class="sigroups">
-				<image class="status-indicator-image" src="assets/icons/diamond.png" />
-				<div class="status-indicators" id="treasure-text">
-					12
-				</div>
-			</div>
-			<div id="capacity" class="sigroups">
-				<image class="status-indicator-image" src="assets/icons/box.png" />
-				<div class="status-indicators" id="capacity-text">
-					12/30
-				</div>
-			</div>
-			<div id="chat-container">
-				<div id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
-					<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; display:inline-block; "/>
-					<image src="assets/icons/right-arrow.png" style="height:5vh; vertical-align: middle;display:inline-block;position:absolute;right:0;padding-right:5px;"/>
-				</div>
-				<div id="open-chat-container">
-				</div>
-			</div>
-		</div>
-
-		<div id="right-side-button-group">
-			<div id="buy-sell" class="right-button">
-				<img class="right-image" src="assets/icons/cart.png">
-			</div>
-			<div id="trade" class="right-button">
-				<img class="right-image" src="assets/icons/handshake.png">
-			</div>
-			<div id="sea-captain" class="right-button">
-				<img class="right-image" src="assets/icons/pirate.png">
-			</div>
-		</div>
-
-		<div id="bottom-group">
-			<div id="bottom-top-group">
-				<div class="sub-items" style="left:0;">
-					<div class="bottom-box-container">
-						<div id="alerts">
-							<p id="alerts-text" class="bottom-text">Alerts</p>
-						</div>
-					</div>
-					<div id="day">
-						<p id="day-text" class="bottom-text">Day 7</p>
-					</div>
-				</div>
-				<div id="status-container">
-					<div id="status-circle" class="bottom-text"><p id="status-text">Ready</p></div>
-				</div>
-				<div class="sub-items" style="right:0;">
-					<div id="weather">
-						<p id="weather-text" class="bottom-text">Sunny</p>
-					</div>
-					<div class="bottom-box-container">
-						<div id="location">
-							<p id="location-text" class="bottom-text">Cardinal Island</p>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="loading-progress">
-				<div id="loading-bar-back"> </div>
-				<div id="loading-bar"> </div>
-			</div>
-
-		</div>
-
-		<div id="game-container"> </div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
-
+		<script src="js/lib/jquery-3.3.1.min.js"></script>
+		
 		<script src="js/lib/three.js"></script>
 		<script src="js/lib/reflector.js"></script>
 		<script src="js/lib/refractor.js"></script>
@@ -109,6 +15,7 @@
 		<script src="js/lib/orbiter.js"></script>
 		
 		<script src="js/THMap.js"></script>
+		<script src="js/HUD.js"></script>
 		
 		<script>
 		
@@ -121,9 +28,17 @@
 
 					// Init 3D Map:
 					var Map3D = new THMap();
-					Map3D.Start(window, document.getElementById("game-container"));	
+					Map3D.Start(window, document.getElementById("game-container"));
+					
+					// Init 2D HUD:
+					var HUD2D = new HUD();
+					HUD2D.Load(window, document.getElementById("hud-container"));
 				}
 			});
 		</script>
+	</head>
+	<body>
+		<div id="hud-container"> </div>
+		<div id="game-container"> </div>
 	</body>
 </html>
