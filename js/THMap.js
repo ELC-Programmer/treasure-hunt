@@ -12,16 +12,17 @@ THMap.prototype = {
 	 */
 	Start: function(window, containerElement) {
 		
+		var that = this; // Save 'this' for inner function contexts
+		
 		this.window = window; // Save the window variable
 		
 		// Init the renderer/canvas
 		this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
-		containerElement.appendChild(renderer.domElement);
+		containerElement.appendChild(this.renderer.domElement);
 
 		// OnResize
-		var that = this;
-		window.addEventListener('resize', function(event) with {
+		window.addEventListener('resize', function(event) {
 			that.renderer.setSize(that.window.innerWidth, that.window.innerHeight);
 			that.camera.aspect = that.window.innerWidth / that.window.innerHeight;
 			that.camera.updateProjectionMatrix();
@@ -29,16 +30,16 @@ THMap.prototype = {
 		
 		// Load 3D objects
 		this._LoadObjects({
-			"scene": "assets/scene.json",
-			"ships": "assets/pirate_ship.json"			
+			"scene": "./assets/scene.json",
+			"ships": "./assets/pirate_ship.json"			
 		}, function(loadedObjects) {
 			
 			//save the main scene
-			this.scene = loadedObjects["scene"];
-			this.scene.background = new THREE.Color(0x999999); //grey bg
+			that.scene = loadedObjects["scene"];
+			that.scene.background = new THREE.Color(0x999999); //grey bg
 			
 			// mirror the islands (I don't know why this is necessary...)
-			var islands = this.scene.getObjectByName("islands").children;
+			var islands = that.scene.getObjectByName("islands").children;
 			for (var i in islands) {
 				islands[i].scale.x = -islands[i].scale.x;
 				islands[i].scale.y = -islands[i].scale.y;
@@ -47,19 +48,19 @@ THMap.prototype = {
 			// Add the ships!
 			var ships = loadedObjects["ships"];
 			ships.rotation.y = Math.PI * 3/4;
-			this.scene.add(ships);
+			that.scene.add(ships);
 			
 			// Call other initialization Functions
-			this._InitLabels();
-			this._InitOcean();
-			this._InitLights();
-			this._InitCamera();
-			this._InitSkyBox();
+			that._InitLabels();
+			that._InitOcean();
+			that._InitLights();
+			that._InitCamera();
+			that._InitSkyBox();
 
 			// Begin rendering loop
-			this._Render();
+			that._Render();
 		});
-	}
+	},
 	
 	/**
 	 * Load 3D objects asynchronously (models/scenes)
@@ -71,8 +72,9 @@ THMap.prototype = {
 		var out = {};
 		
 		var loader = new THREE.ObjectLoader();
-		for (key in filenames)
+		for (let key in filenames)
 		{
+			var filename = filenames[key];
 			loader.load(filename, function(loadedScene) {
 				out[key] = loadedScene;
 				finishLoading();
@@ -86,13 +88,15 @@ THMap.prototype = {
 				callback(out);
 			}
 		}
-	}
+	},
 	
 	/**
 	 * Initialize labels based on hierarchy elements named "Label:<label contents>".
 	 */
 	_InitLabels: function()
 	{
+		var that = this;
+		
 		var prefix = "Label:";
 
 		this.scene.traverseVisible(function(obj) { // foreach object in scene
@@ -101,13 +105,13 @@ THMap.prototype = {
 			{
 				var text = obj.name.substr(prefix.length);
 			
-				var bb = this._CreateBillboard(text);
+				var bb = that._CreateBillboard(text);
 				bb.position.z = Math.random() * 0.01;
-				registerSpriteScaling(bb, 1, 3, 10, 4);
+				that._RegisterSpriteScaling(bb, 1, 3, 10, 4);
 				obj.add(bb);
 			}
 		});
-	}
+	},
 	
 	/**
 	 * Initialize the skybox.
@@ -129,7 +133,7 @@ THMap.prototype = {
 		var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
 		
 		this.scene.add(skyBox);
-	}
+	},
 	
 	/**
 	 * Initialize the ocean.
@@ -158,10 +162,30 @@ THMap.prototype = {
 		  texture: { type: 't', value: THREE.ImageUtils.loadTexture("assets/ThickCloudsWaterFront2048.png") }
 		};
 
+		var vertexShader = [
+			'varying vec2 vUV;',
+
+			'void main() {',
+			'  vUV = uv;',
+			'  vec4 pos = vec4(position, 1.0);',
+			'  gl_Position = projectionMatrix * modelViewMatrix * pos;',
+			'}'
+		].join("\n");
+		
+		var fragmentShader = [
+			'uniform sampler2D texture;',
+			'varying vec2 vUV;',
+
+			'void main() {',
+			'  vec4 sample = texture2D(texture, vUV);',
+			'  gl_FragColor = vec4(sample.xyz, sample.w);',
+			'}'
+		].join("\n");
+		
 		var material = new THREE.ShaderMaterial( {
 		  uniforms:       uniforms,
-		  vertexShader:   document.getElementById('sky-vertex').textContent,
-		  fragmentShader: document.getElementById('sky-fragment').textContent
+		  vertexShader:   vertexShader,
+		  fragmentShader: fragmentShader
 		});
 
 		skyBox = new THREE.Mesh(geometry, material);
@@ -169,7 +193,7 @@ THMap.prototype = {
 		skyBox.eulerOrder = 'XZY';
 		skyBox.renderDepth = 1000.0;
 		this.scene.add(skyBox);
-	}
+	},
 	
 	/**
 	 * Initialize the lights.
@@ -189,7 +213,7 @@ THMap.prototype = {
 		// ambient light
 		var ambient_light = new THREE.AmbientLight( 0xaaaaaa );
 		this.scene.add(ambient_light);
-	}
+	},
 	
 	/**
 	 * Initialize the camera.
@@ -197,17 +221,17 @@ THMap.prototype = {
 	_InitCamera: function()
 	{
 		// Init the camera
-		this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+		this.camera = new THREE.PerspectiveCamera(75, this.window.innerWidth / this.window.innerHeight, 0.1, 1000);
 	
 		// position camera
-		camera.position.x = 0;
-		camera.position.y = 9;
-		camera.position.z = -30;
-		camera.rotation.x = -2.18;
-		camera.rotation.z = Math.PI;
+		this.camera.position.x = 0;
+		this.camera.position.y = 9;
+		this.camera.position.z = -30;
+		this.camera.rotation.x = -2.18;
+		this.camera.rotation.z = Math.PI;
 
 		// Orbit controls
-		var controls = new THREE.OrbitControls( camera, renderer.domElement );
+		var controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
 		controls.minDistance = 2;
 		controls.maxDistance = 15;
 		controls.zoomSpeed = 2.0;
@@ -217,7 +241,7 @@ THMap.prototype = {
 		controls.minPanZ = -10;
 		controls.maxPanZ = 10;
 		controls.update();
-	}
+	},
 	
 	
 	/**
@@ -228,7 +252,7 @@ THMap.prototype = {
 	_CreateBillboard: function(text)
 	{
 		// Make Canvas
-		var canvas = document.createElement("canvas");
+		var canvas = this.window.document.createElement("canvas");
 		canvas.width = 1024;
 		canvas.height = 1024;
 
@@ -258,7 +282,7 @@ THMap.prototype = {
 		sprite.scale.set(5, 5, 1);
 
 		return sprite;
-	}
+	},
 	
 	/**
 	 * Register an interpolation of a sprite's scaling as a function of its distance to the camera.
@@ -276,19 +300,24 @@ THMap.prototype = {
 			d2: d2,
 			s2: s2
 		};
-	}
+	},
 	
 	/**
 	 * Enter the rendering/animation loop.
 	 */
 	_Render: function() {
-		requestAnimationFrame(this._Render);
+		
+		var that = this;
+		function animate() {
+			requestAnimationFrame(animate);
 
-		animateOcean();
-		animateSpriteScaling();
+			that._AnimateOcean();
+			that._AnimateSpriteScaling();
 
-		renderer.render(scene, camera);
-	}
+			that.renderer.render(that.scene, that.camera);
+		}
+		animate();
+	},
 	
 	/**
 	 * Animate the ocean.
@@ -298,17 +327,20 @@ THMap.prototype = {
 		var t_ocean = Date.now() * 0.001;
 		var h = 0.01;
 		this.ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
-	}
+	},
 	
 	/**
 	 * Animate sprite scaling (see _RegisterSpriteScaling).
 	 */
 	_AnimateSpriteScaling: function() {
+		
+		var that = this;
+		
 		this.scene.traverseVisible(function(obj) { // foreach object in scene
 
 			if (obj.isSprite && obj.animatedScaling !== undefined)
 			{
-				var dist = obj.getWorldPosition().sub(this.camera.getWorldPosition()).dot(this.camera.getWorldDirection());
+				var dist = obj.getWorldPosition().sub(that.camera.getWorldPosition()).dot(that.camera.getWorldDirection());
 
 				var scale = THREE.Math.mapLinear(
 					dist,
@@ -318,7 +350,7 @@ THMap.prototype = {
 					obj.animatedScaling.s2
 				);
 
-				scale *= Math.pow(-this.camera.getWorldDirection().dot(camera.up), 0.3);
+				scale *= Math.pow(-that.camera.getWorldDirection().dot(that.camera.up), 0.3);
 
 				obj.scale.x = scale;
 				obj.scale.y = scale;
@@ -326,4 +358,4 @@ THMap.prototype = {
 		});
 	}
 
-}
+};
