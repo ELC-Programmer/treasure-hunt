@@ -1,4 +1,9 @@
 @font-face{
+	font-family:"Berkshire Swash";
+	src:url("assets/Fonts/Berkshire_Swash/BerkshireSwash-Regular.ttf");
+}
+
+@font-face{
 	font-family: "Cousine";
-	src: url("/assets/Fonts/Cousine/Cousine-Regular.ttf");
+	src:url("assets/Fonts/Cousine/Cousine-Regular.ttf");
 }

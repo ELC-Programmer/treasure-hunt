@@ -4,6 +4,7 @@
 		<meta charset=utf-8>
 		<title>Treasure Hunt!</title>
 		<link rel="stylesheet" type="text/css" href="game.css">
+		<link rel="stylesheet" type="text/css" href="fonts.css">
 	</head>
 	<body>
 		<div id="status-indicators-group">
@@ -46,9 +47,64 @@
 			<div id="chat-container">
 				<div id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
 					<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; display:inline-block; "/>
-					<image src="assets/icons/right-arrow.png" style="height:5vh; vertical-align: middle;display:inline-block;position:absolute;right:0;padding-right:5px;"/>
+					<image onclick="openChat()" src="assets/icons/right-arrow.png" style="height:5vh; vertical-align: middle;display:inline-block;position:absolute;right:0;padding-right:5px;cursor:pointer;"/>
 				</div>
 				<div id="open-chat-container">
+					<img id="chat-exit" onclick="closeChat()" src="assets/icons/exit-icon.png" />
+					<div id="chat-title"><p>Chat</p></div>
+					<hr />
+					<div id="chat-content-container">
+						<div id="chat-select">
+							<div class="team-select" id="broadcast-button">
+								<p>Broadcast</p>
+							</div>
+							<div class="team-select">
+								<p>JFF B</p>
+							</div>
+							<div class="team-select">
+								<p>JFF C</p>
+							</div>
+							<div class="team-select">
+								<p>JFF D</p>
+							</div>
+							<div class="team-select">
+								<p>JFF E</p>
+							</div>
+							<div class="team-select">
+								<p>JFF F</p>
+							</div>
+							<div class="team-select">
+								<p>JFF G</p>
+							</div>
+							<div class="team-select">
+								<p>JFF H</p>
+							</div>
+							<div class="team-select">
+								<p>JFF I</p>
+							</div><div class="team-select">
+								<p>JFF J</p>
+							</div><div class="team-select">
+								<p>JFF K</p>
+							</div><div class="team-select">
+								<p>JFF L</p>
+							</div><div class="team-select">
+								<p>JFF M</p>
+							</div>
+						</div>
+						<div id="message-content-container">
+							<div id="messages">
+								<div class="message-local">
+									
+								</div>
+								<div class="message-remote">
+
+								</div>	
+							</div>
+							<div id="input-box-button">
+								
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -99,6 +155,18 @@
 		</div>
 
 		<div id="game-container"> </div>
+
+		<script> 
+			// respond to user interaction through this script
+			function closeChat(){
+				document.getElementById("open-chat-container").style.display = "none";
+				document.getElementById("closed-chat").style.display = "flex";
+			}
+			function openChat(){
+				document.getElementById("open-chat-container").style.display = "inline-block";
+				document.getElementById("closed-chat").style.display = "none";				
+			}
+		</script>
 		
 		<script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"></script>
 		
