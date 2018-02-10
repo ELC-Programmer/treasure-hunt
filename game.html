@@ -14,18 +14,21 @@
 		<script src="js/lib/three/refractor.js"></script>
 		<script src="js/lib/three/water2.js"></script>
 		<script src="js/lib/three/orbiter.js"></script>
+		<script src="js/lib/three/sky.js"></script>
 		
 		<script src="js/THMap.js"></script>
 		<script src="js/HUD.js"></script>
 		
+		<script src="sky.js"></script>
+		
 		<script>
 		// Init 3D Map:
 			window.onload = function (){
-				var Map3D = new THMap();
-				Map3D.Start(window, document.getElementById("game-container"));
+				window.Map3D = new THMap();
+				Map3D.Start(window, document.getElementById("game-container"))
 				
 				// Init 2D HUD:
-				var HUD2D = new HUD();
+				window.HUD2D = new HUD();
 				HUD2D.Load(window, document.getElementById("hud-container"));
 			}
 			// Load Fonts before continuing!

@@ -12,12 +12,12 @@ THMap.prototype = {
 	 */
 	Start: function(window, containerElement) {
 		
-		var that = this; // Save 'this' for inner function contexts
-		
 		this.window = window; // Save the window variable
+		var that = this; // Save 'this' for inner function contexts
 		
 		// Init the renderer/canvas
 		this.renderer = new THREE.WebGLRenderer();
+		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		containerElement.appendChild(this.renderer.domElement);
 
@@ -48,15 +48,15 @@ THMap.prototype = {
 			// Add the ships!
 			var ships = loadedObjects["ships"];
 			ships.rotation.y = Math.PI * 3/4;
-			that.scene.add(ships);
+			that.scene.add(ships);			
 			
 			// Call other initialization Functions
 			that._InitLabels();
 			that._InitOcean();
 			that._InitLights();
 			that._InitCamera();
-			that._InitSkyBox();
-
+			that._InitSky();
+			
 			// Begin rendering loop
 			that._Render();
 		});
@@ -116,8 +116,43 @@ THMap.prototype = {
 	/**
 	 * Initialize the skybox.
 	 */
-	_InitSkyBox: function()
-	{
+	_InitSky: function()
+	{	
+		// Init Sky Effect
+		this.sky = new THREE.Sky();
+		this.sky.scale.setScalar(450000);
+		this.scene.add(this.sky);
+		
+		// Init Sun
+		this.sun = new THREE.Mesh(
+			new THREE.SphereBufferGeometry(20000, 16, 8),
+			new THREE.MeshBasicMaterial(0xffffff)
+		);
+		this.sun.position.y = -700000;
+		//this.scene.add(sun);
+		
+		// Set sky parameters
+		var uniforms = this.sky.material.uniforms;
+		uniforms.turbidity.value = 10;
+		uniforms.rayleigh.value = 2;
+		uniforms.mieCoefficient.value = 0.005;
+		uniforms.mieDirectionalG.value = 0.95;
+		uniforms.luminance.value = 1;
+
+		// Set sky and sun distance
+		var distance = 400000;
+		var theta = -0.02 * Math.PI;
+		var phi = -0.5 * Math.PI;
+		this.sun.position.x = distance * Math.cos(phi);
+		this.sun.position.y = distance * Math.sin(phi) * Math.sin(theta);
+		this.sun.position.z = distance * Math.sin(phi) * Math.cos(theta);
+		uniforms.sunPosition.value.copy(this.sun.position);
+		
+		// Init fog
+		this.scene.fog = new THREE.Fog( 0xffffff, 10, 1000 );
+		
+		/*
+		// SKYBOX
 		var imagePrefix = "assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
@@ -133,6 +168,7 @@ THMap.prototype = {
 		var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
 		
 		this.scene.add(skyBox);
+		*/
 	},
 	
 	/**
@@ -140,10 +176,16 @@ THMap.prototype = {
 	 */
 	_InitOcean: function()
 	{
+		var that = this;
+		
+		// extend ocean floor to horizon:
+		var floor = this.scene.getObjectByName("floor");
+		floor.scale.x = 1000;
+		floor.scale.y = 1000;
+		
+		// water object
 		var oceanGeometry = new THREE.PlaneBufferGeometry(40, 40);
 		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture.png");
-		//oceanTexture.flipY = false;
-		oceanTexture.rotation = Math.PI;
 		this.ocean = new THREE.Water(oceanGeometry, {
 			color: '#78B2FF',
 			scale: 1.5,
@@ -154,9 +196,62 @@ THMap.prototype = {
 			reflectivity: 0.6
 		} );
 		this.ocean.rotation.x = Math.PI * -0.5;
+		this.ocean.rotation.z = Math.PI;
 		this.scene.add(this.ocean);
-
-		//ocean reflections (TODO)
+	
+		// big water object
+		var bigOceanGeometry = new THREE.Geometry();
+		bigOceanGeometry.vertices.push(new THREE.Vector3(-1000, 0, -1000));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(-1000, 0, 1000));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(-20, 0, 1000));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(20, 0, 1000));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(1000, 0, 1000));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(1000, 0, -1000));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(20, 0, -1000));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(-20, 0, -1000));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(-20, 0, -20));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(-20, 0, 20));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(20, 0, 20));
+		bigOceanGeometry.vertices.push(new THREE.Vector3(20, 0, -20));
+		
+		var normal = new THREE.Vector3(0, 1, 0);
+		bigOceanGeometry.faces.push(new THREE.Face3(0, 1, 2, normal));
+		bigOceanGeometry.faces.push(new THREE.Face3(0, 2, 7, normal));
+		// bigOceanGeometry.faces.push(new THREE.Face3(9, 2, 3, normal));
+		// bigOceanGeometry.faces.push(new THREE.Face3(9, 3, 10, normal));
+		// bigOceanGeometry.faces.push(new THREE.Face3(7, 8, 11, normal));
+		// bigOceanGeometry.faces.push(new THREE.Face3(7, 11, 6, normal));
+		// bigOceanGeometry.faces.push(new THREE.Face3(6, 3, 4, normal));
+		// bigOceanGeometry.faces.push(new THREE.Face3(6, 4, 5, normal));
+		
+		//addBigOcean(bigOceanGeometry, 0, 0);
+		addBigOcean(new THREE.PlaneBufferGeometry(2000, 2000), 0, 0);
+		//addBigOcean(new THREE.PlaneBufferGeometry(980, 2000), -510, 0);
+		//addBigOcean(new THREE.PlaneBufferGeometry(40, 980), 0, 510);
+		//addBigOcean(new THREE.PlaneBufferGeometry(980, 2000));
+		
+		function addBigOcean(geometry, x, z)
+		{
+			var bigOcean = new THREE.Water(geometry, {
+				color: '#005bd7',
+				scale: 100,
+				flowDirection: new THREE.Vector2(0, 0),
+				textureWidth: 1024,
+				textureHeight: 1024,
+				reflectivity: 0.6
+			} );
+			
+			bigOcean.rotation.x = -Math.PI/2;
+			bigOcean.position.x = x;
+			bigOcean.position.z = z;
+			bigOcean.position.y = -0.01;
+			
+			that.scene.add(bigOcean);
+			
+			return bigOcean;
+		}
+		
+		//ocean reflections
 		var geometry = new THREE.SphereGeometry(3000, 60, 40);
 		var uniforms = {
 		  texture: { type: 't', value: THREE.ImageUtils.loadTexture("assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWaterFront2048.png") }
@@ -201,18 +296,20 @@ THMap.prototype = {
 	_InitLights: function()
 	{
 		// sunlight!
-		var sunlight = new THREE.DirectionalLight();
-		sunlight.position.set(1, 1, -1);
-		this.scene.add(sunlight);
+		this.sunlight = new THREE.PointLight();
+		this.sunlight.position.set(1, 1, -1);
+		this.scene.add(this.sunlight);
 
 		// counter light
-		var counter_light = new THREE.DirectionalLight();
-		counter_light.position.set(-1, -1, 1);
-		this.scene.add(counter_light);
-
+		this.counter_light = new THREE.DirectionalLight();
+		this.counter_light.position.set(-1, -1, 1);
+		this.scene.add(this.counter_light);
+		
 		// ambient light
-		var ambient_light = new THREE.AmbientLight( 0xaaaaaa );
-		this.scene.add(ambient_light);
+		this.moonlight = new THREE.PointLight(0x8888ff);
+		this.moonlight.position.set(0, 10, 0);
+		this.scene.add(this.moonlight);
+		
 	},
 	
 	/**
@@ -221,7 +318,7 @@ THMap.prototype = {
 	_InitCamera: function()
 	{
 		// Init the camera
-		this.camera = new THREE.PerspectiveCamera(75, this.window.innerWidth / this.window.innerHeight, 0.1, 1000);
+		this.camera = new THREE.PerspectiveCamera(75, this.window.innerWidth / this.window.innerHeight, 0.1, 2000000);
 	
 		// position camera
 		this.camera.position.x = 0;
@@ -269,8 +366,8 @@ THMap.prototype = {
 		ctx.fillStyle = "white";
 		ctx.fillText(text, canvas.width/2, canvas.height/2 + 50);
 
-		ctx.strokeStyle = "black";
-		ctx.strokeText(text, canvas.width/2, canvas.height/2 + 50);
+		//ctx.strokeStyle = "black";
+		//ctx.strokeText(text, canvas.width/2, canvas.height/2 + 50);
 
 		// Make Sprite
 		var texture = new THREE.Texture(canvas);
@@ -311,13 +408,92 @@ THMap.prototype = {
 		function animate() {
 			requestAnimationFrame(animate);
 
+			that._AnimateSky();
 			that._AnimateOcean();
 			that._AnimateSpriteScaling();
-
+		
 			that.renderer.render(that.scene, that.camera);
 		}
 		animate();
 	},
+	
+	/**
+	 * Pass a day.
+	 */
+	PassDay: function() {
+		
+		this.dayCycleClockStartTime = Date.now();
+		
+	},
+	
+	/**
+	 * The time at which the day/night cycle should pause for gameplay.
+	 */
+	dayCycleStopTime: 9*Math.PI/8 * 1000,
+	
+	/**
+	 * The current time in the day/night cycle.
+	 */
+	dayCycleTime: -1,
+	
+	/**
+	 * Animate the day/night cycle
+	 */
+	 _AnimateSky: function() {
+		
+		if (this.dayCycleTime < 0) this.dayCycleTime = this.dayCycleStopTime;
+		
+		var cycleLength = 2*Math.PI*1000;
+		if (Date.now() - this.dayCycleClockStartTime < cycleLength)
+		{
+			this.dayCycleTime = this.dayCycleStopTime + Date.now() - this.dayCycleClockStartTime;
+		}
+		
+		var t = this.dayCycleTime;
+		
+		t *= 0.001; // slow down
+		
+		t = t + Math.sin(t - Math.PI/2); // make the night fast
+		t = t - 0.3*Math.sin(2*t); // Make the sunrises and sunsets long and beautiful!
+		
+		// Set sky and sun distance
+		var distance = 400000;
+		var theta = t;
+		//theta = -Math.PI/5
+		
+		var phi = -0.4 * Math.PI;
+		this.sun.position.x = distance * Math.cos(theta) * Math.cos(phi);
+		this.sun.position.y = distance * Math.sin(theta) * Math.sin(phi);
+		this.sun.position.z = distance * Math.cos(theta); // height
+		this.sky.material.uniforms.sunPosition.value.copy(this.sun.position);
+		
+		// Update the lighting
+		this.sunlight.position.x = this.sun.position.x;
+		this.sunlight.position.y = this.sun.position.y;
+		this.sunlight.position.z = this.sun.position.z;
+		
+		this.counter_light.position.x = -this.sunlight.position.x;
+		this.counter_light.position.y = this.sunlight.position.y;
+		this.counter_light.position.z = -this.sunlight.position.z;
+		
+		this.sunlight.intensity = Math.sin(-theta);
+		this.counter_light.intensity = 0.3*this.sunlight.intensity;
+		
+		this.moonlight.intensity = Math.pow(Math.max(0.3, Math.sin(theta)), 0.05);
+		
+		// Update sprite lighting
+		// this.scene.traverseVisible(function(obj) { // foreach object in scene
+			// if (obj.isSprite)
+			// {
+				// obj.material.opacity = Math.pow(Math.max(0.01, Math.sin(-theta)), 0.05);
+			// }
+		// });
+		
+		// Update the fog color
+		var time = (theta + Math.PI/2) % (2*Math.PI); // 0 is midnight, PI is noon, 2PI is midnight		
+		var color = Math.pow(0.5*Math.cos(time) + 0.5, 3);
+		this.scene.fog.color = new THREE.Color(color, color, color);
+	 },
 	
 	/**
 	 * Animate the ocean.

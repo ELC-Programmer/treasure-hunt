@@ -76,12 +76,14 @@ THREE.Water = function ( geometry, options ) {
 	this.material = new THREE.ShaderMaterial( {
 		uniforms: THREE.UniformsUtils.merge( [
 			THREE.UniformsLib[ 'fog' ],
-			shader.uniforms
+			THREE.UniformsLib[ 'lights' ],
+			shader.uniforms,
 		] ),
 		vertexShader: shader.vertexShader,
 		fragmentShader: shader.fragmentShader,
 		transparent: true,
-		fog: true
+		fog: true,
+		lights: true
 	} );
 
 	if ( flowMap !== undefined ) {
@@ -247,13 +249,15 @@ THREE.Water.WaterShader = {
 	vertexShader: [
 
 		'#include <fog_pars_vertex>',
+		
+		'varying vec3 vPos;',
 
 		'uniform mat4 textureMatrix;',
 
 		'varying vec4 vCoord;',
 		'varying vec2 vUv;',
 		'varying vec3 vToEye;',
-
+				
 		'void main() {',
 
 		'	vUv = uv;',
@@ -264,7 +268,7 @@ THREE.Water.WaterShader = {
 
 		'	vec4 mvPosition =  viewMatrix * worldPosition;', // used in fog_vertex
 		'	gl_Position = projectionMatrix * mvPosition;',
-
+		
 		'	#include <fog_vertex>',
 
 		'}'
@@ -273,8 +277,11 @@ THREE.Water.WaterShader = {
 
 	fragmentShader: [
 
+		'#include <common>',
 		'#include <fog_pars_fragment>',
 
+		'varying vec3 vPos;',
+		
 		'uniform sampler2D tReflectionMap;',
 		'uniform sampler2D tRefractionMap;',
 		'uniform sampler2D tNormalMap0;',
@@ -294,7 +301,10 @@ THREE.Water.WaterShader = {
 		'varying vec4 vCoord;',
 		'varying vec2 vUv;',
 		'varying vec3 vToEye;',
-
+		
+		'struct PointLight { vec3 position; };',
+		'uniform PointLight pointLights[NUM_POINT_LIGHTS];',
+		
 		'void main() {',
 
 		'	float flowMapOffset0 = config.x;',
@@ -338,12 +348,19 @@ THREE.Water.WaterShader = {
 		// multiply water color with the mix of both textures
 		'	vec4 textureColor = texture2D( texture, vUv );',
 		'	if (textureColor.a < 0.1) { textureColor = vec4(color, 1.0); }',
-		'	gl_FragColor = textureColor * mix( refractColor, reflectColor, reflectance );',
+		'	vec4 unlitColor = textureColor * mix( refractColor, reflectColor, reflectance );',
 
+		// Apply lighting!
+		'	vec3 lightDir = normalize(vPos - pointLights[0].position);',
+		'	vec3 simpleNormal = vec3(0.0, 1.0, 0.0);',
+		'	float angle = max(-dot(-lightDir, simpleNormal), 0.3);',
+		'	unlitColor *= angle;',
+		'	gl_FragColor = unlitColor;',
+		
 		'	#include <tonemapping_fragment>',
 		'	#include <encodings_fragment>',
 		'	#include <fog_fragment>',
-
+		
 		'}'
 
 	].join( '\n' )
