@@ -42,7 +42,7 @@
 		</div>
 		<div id="open-chat-container">
 			<img id="chat-back" onclick="backChat()" src="./assets/icons/left-arrow.png" />
-			<img id="chat-exit" onclick="closeChat()" src="./assets/icons/exit-icon.png" />
+			<img id="chat-exit" onclick="closeChat()" src="./assets/icons/close-button.png" />
 			<div id="chat-title"><p>Chat</p></div>
 			<hr />
 			<div id="chat-content-container">
@@ -129,13 +129,13 @@
 </div>
 
 <div id="right-side-button-group">
-	<div id="buy-sell" class="right-button">
+	<div id="buy-sell" onclick="openBuySell()" class="right-button">
 		<img class="right-image" src="./assets/icons/cart.png">
 	</div>
-	<div id="trade" class="right-button">
+	<div id="trade" onclick="openTradeWindow()" class="right-button">
 		<img class="right-image" src="./assets/icons/handshake.png">
 	</div>
-	<div id="sea-captain" class="right-button">
+	<div id="sea-captain" onclick="openCaptainWindow()" class="right-button">
 		<img class="right-image" src="./assets/icons/pirate.png">
 	</div>
 </div>
@@ -172,13 +172,13 @@
 	</div>
 </div>
 
-<div id="alerts-screen">
-	<div id="alerts-top-bar">
+<div class="full-size-window" id="alerts-screen">
+	<div class="full-size-window-top-bar">
 		<p>Alerts</p>
-		<img onclick="closeAlerts()" src="./assets/icons/exit-icon.png" />
+		<img onclick="closeAlerts()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
-	<div id="day-alert-box-container">
+	<div class="full-size-window-content" id="day-alert-box-container">
 		<div class="day-alert-box">
 			<p>Day 1</p>
 			<hr class="eighty-percent-hr" />
@@ -222,18 +222,39 @@
 		</div>
 	</div>
 </div>
-<div id="buy-sell-window">
+<div class="full-size-window" id="buy-sell-window">
+	<div class="full-size-window-top-bar">
+		<p>Buy and Sell</p>
+		<img onclick="closeBuySell()" src="./assets/icons/close-button.png" />
+	</div>
+	<hr class="eighty-percent-hr" />
+	<div class="full-size-window-content">
 
+	</div>
 </div>
-<div id="trade-window">
-
+<div class="full-size-window" id="trade-window">
+	<div class="full-size-window-top-bar">
+		<p>Trade</p>
+		<img onclick="closeTradeWindow()" src="./assets/icons/close-button.png" />
+	</div>
+	<hr class="eighty-percent-hr" />
+	<div class="full-size-window-content">
+		
+	</div>
 </div>
-<div id="captain-window">
-
+<div class="full-size-window" id="captain-window">
+	<div class="full-size-window-top-bar">
+		<p>Sea Captain</p>
+		<img onclick="closeCaptainWindow()" src="./assets/icons/close-button.png" />
+	</div>
+	<hr class="eighty-percent-hr" />
+	<div class="full-size-window-content" id="captain-window-content" >
+		
+	</div>
 </div>
 
 <div id="largeTextDisplay">
-	<img id="chat-exit" onclick="closeExpandedText()" src="./assets/icons/exit-icon.png" />
+	<img id="chat-exit" onclick="closeExpandedText()" src="./assets/icons/close-button.png" />
 	<p>
 		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. Curabitur vitae semper ligula. Integer lobortis, dolor nec condimentum aliquet, lectus ligula viverra tortor, vitae euismod nibh augue laoreet massa. Quisque tincidunt magna ex, ac dignissim nulla viverra eget. Maecenas sodales, mauris sed iaculis tincidunt, nisl sapien feugiat metus, sit amet ultrices ipsum neque eu mauris. Nam eleifend lobortis enim. In et egestas tellus. Etiam convallis tincidunt dolor pellentesque vestibulum. Cras vitae commodo nibh. Duis a ligula in ligula scelerisque pellentesque a sed leo. Integer quis mauris eget dui hendrerit iaculis. Ut accumsan dui 
 	</p>
@@ -246,6 +267,9 @@
 	var windowWidthWhenChatIsOpen = ["60vw","61%"]; //[width,left]
 	var othersAreClosed = true;
 	var alertsScreen = document.getElementById("alerts-screen");
+	var buySellWindow = document.getElementById("buy-sell-window");
+	var captainWindow = document.getElementById("captain-window");
+	var tradeWindow = document.getElementById("trade-window");
 	// respond to user interaction through this script
 	function closeChat(){
 		document.getElementById("open-chat-container").style.display = "none";
@@ -259,7 +283,7 @@
 		chatIsClosed = false;	
 		setWidth();
 	}
-	function backChat(){
+	function backChat(){ /*function that allows user to select team to chat with*/
 		document.getElementById("message-content-container").style.display = "none";
 		document.getElementById("chat-select").style.display = "flex";
 		document.getElementById("chat-back").style.display = "none";
@@ -267,13 +291,6 @@
 	function expandText(element){
 		document.getElementById("largeTextDisplay").style.display = "initial";
 		document.getElementById("largeTextDisplay").childNodes[3].innerHTML = element.childNodes[1].childNodes[1].innerHTML;
-	}
-	function closeExpandedText(){
-		document.getElementById("largeTextDisplay").style.display = "none";
-	}
-	function closeAlerts(){
-		document.getElementById("alerts-screen").style.display = "none";
-		setWidth();
 	}
 	function showAlerts(){
 		setWidth();
@@ -283,18 +300,70 @@
 		var alertContainer = document.getElementById("day-alert-box-container");
 		alertContainer.scrollTop = alertContainer.scrollHeight;
 	}
+	function openBuySell(){
+		setWidth();
+		closeOthers();
+		buySellWindow.style.display = "flex";
+		othersAreClosed = false;
+	}
+	function openCaptainWindow(){
+		setWidth();
+		closeOthers();
+		captainWindow.style.display = "flex";
+		othersAreClosed = false;
+	}
+	function openTradeWindow(){
+		setWidth();
+		closeOthers();
+		tradeWindow.style.display = "flex";
+		othersAreClosed = false;
+	}
+	function closeExpandedText(){
+		document.getElementById("largeTextDisplay").style.display = "none";
+	}
+	function closeAlerts(){
+		alertsScreen.style.display = "none";
+		othersAreClosed = true;
+	}
+	function closeBuySell(){
+		buySellWindow.style.display = "none";
+		othersAreClosed = true;
+	}
+	function closeCaptainWindow(){
+		captainWindow.style.display = "none";
+		othersAreClosed = true;
+	}
+	function closeTradeWindow(){
+		tradeWindow.style.display = "none";
+		othersAreClosed = true;
+	}
 	function closeOthers(){ //closes all potentially open windows
 		closeAlerts();
+		closeBuySell();
+		closeCaptainWindow();
+		closeTradeWindow();
 		othersAreClosed = true;
 	}
 	function setWidth(){
 			if(!chatIsClosed){
 				alertsScreen.style.width = windowWidthWhenChatIsOpen[0];
 				alertsScreen.style.left = windowWidthWhenChatIsOpen[1];	
+				buySellWindow.style.width = windowWidthWhenChatIsOpen[0];
+				buySellWindow.style.left = windowWidthWhenChatIsOpen[1];
+				captainWindow.style.width = windowWidthWhenChatIsOpen[0];
+				captainWindow.style.left = windowWidthWhenChatIsOpen[1];
+				tradeWindow.style.width = windowWidthWhenChatIsOpen[0];
+				tradeWindow.style.left = windowWidthWhenChatIsOpen[1];
 			}
 			else{
 				alertsScreen.style.width = windowWidthWhenChatIsClosed[0];
 				alertsScreen.style.left = windowWidthWhenChatIsClosed[1];
+				buySellWindow.style.width = windowWidthWhenChatIsClosed[0];
+				buySellWindow.style.left = windowWidthWhenChatIsClosed[1];
+				captainWindow.style.width = windowWidthWhenChatIsClosed[0];
+				captainWindow.style.left = windowWidthWhenChatIsClosed[1];
+				tradeWindow.style.width = windowWidthWhenChatIsClosed[0];
+				tradeWindow.style.left = windowWidthWhenChatIsClosed[1];
 			}		
 	}
 </script>
