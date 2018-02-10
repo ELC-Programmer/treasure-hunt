@@ -38,9 +38,10 @@
 	<div id="chat-container">
 		<div id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
 			<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; "/>
-			<image onclick="openChat()" src="assets/icons/right-arrow.png" style="height:5vh; position:absolute; right:0; bottom:1.6vh; cursor:pointer;"/>
+			<image onclick="openChat()" src="assets/icons/right-arrow.png" style="height:5vh; position:absolute; right:0.3vw; bottom:1.6vh; cursor:pointer;"/>
 		</div>
 		<div id="open-chat-container">
+			<img id="chat-back" onclick="backChat()" src="./assets/icons/left-arrow.png" />
 			<img id="chat-exit" onclick="closeChat()" src="./assets/icons/exit-icon.png" />
 			<div id="chat-title"><p>Chat</p></div>
 			<hr />
@@ -84,15 +85,42 @@
 				</div>
 				<div id="message-content-container">
 					<div id="messages">
-						<div class="message-local">
-							
+						<div onclick="expandText(this)" class="messages-local">
+							<div class="message">
+								<p>
+									hey
+								</p>
+							</div>							
 						</div>
-						<div class="message-remote">
-
+						<div onclick="expandText(this)" class="messages-remote">
+							<div class="message">
+								<p>
+								hello
+								</p>
+							</div>	
+						</div>	
+						<div onclick="expandText(this)" class="messages-local">
+							<div class="message">
+								<p>
+								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at ligula facilisis, suscipit elit vel, tincidunt risus. Integer aliquam augue in tortor blandit, ullamcorper egestas dui sodales. Mauris sagittis risus at ex laoreet laoreet. Pellentesque iaculis pulvinar dui, sed ornare lacus vehicula eget
+								</p>
+							</div>							
+						</div>
+						<div onclick="expandText(this)" class="messages-remote">
+							<div class="message">
+								<p>
+								hello
+								</p>
+							</div>	
 						</div>	
 					</div>
 					<div id="input-box-button">
-						
+						<input type="text" id="message-input-box">
+
+						</input	>
+						<div id="message-input-button">
+							<img src="./assets/icons/send.png" /> 
+						</div>
 					</div>
 				</div>
 			</div>
@@ -116,7 +144,7 @@
 	<div id="bottom-top-group">
 		<div class="sub-items" style="left:0;">
 			<div class="bottom-box-container">
-				<div id="alerts">
+				<div id="alerts" onclick="showAlerts()">
 					<p id="alerts-text" class="bottom-text">Alerts</p>
 				</div>
 			</div>
@@ -144,15 +172,129 @@
 	</div>
 </div>
 
+<div id="alerts-screen">
+	<div id="alerts-top-bar">
+		<p>Alerts</p>
+		<img onclick="closeAlerts()" src="./assets/icons/exit-icon.png" />
+	</div>
+	<hr class="eighty-percent-hr" />
+	<div id="day-alert-box-container">
+		<div class="day-alert-box">
+			<p>Day 1</p>
+			<hr class="eighty-percent-hr" />
+
+			<div class="alert-box">
+				<p>You're out of food!</p>
+			</div>
+			<div class="alert-box">
+				<p>You're out of food!</p>
+			</div>
+			<div class="alert-box">
+				<p>You're out of food!</p>
+			</div>
+		</div>
+		<div class="day-alert-box">
+			<p>Day 2</p>
+			<hr class="eighty-percent-hr" />
+
+			<div class="alert-box">
+				<p>You're out of food!</p>
+			</div>
+			<div class="alert-box">
+				<p>You're out of food!</p>
+			</div>
+			<div class="alert-box">
+				<p>You're out of food!</p>
+			</div>
+		</div>
+		<div class="day-alert-box">
+			<p>Day 3</p>
+			<hr class="eighty-percent-hr" />
+			<div class="alert-box">
+				<p>You're out of food!</p>
+			</div>
+			<div class="alert-box">
+				<p>You're out of food!</p>
+			</div>
+			<div class="alert-box">
+				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. Curabitur vitae semper ligula. Integer lobortis, dolor nec condimentum aliquet, lectus ligula viverra tortor, vitae euismod nibh augue laoreet massa. Quisque tincidunt magna ex, ac dignissim nulla viverra eget. Maecenas sodales, mauris sed iaculis tincidunt, nisl sapien feugiat metus, sit amet ultrices ipsum neque eu mauris. Nam eleifend lobortis enim. In et egestas tellus. Etiam convallis tincidunt dolor pellentesque vestibulum. Cras vitae commodo nibh. Duis a ligula in ligula scelerisque pellentesque a sed leo. Integer quis mauris eget dui hendrerit iaculis. Ut accumsan dui </p>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="buy-sell-window">
+
+</div>
+<div id="trade-window">
+
+</div>
+<div id="captain-window">
+
+</div>
+
+<div id="largeTextDisplay">
+	<img id="chat-exit" onclick="closeExpandedText()" src="./assets/icons/exit-icon.png" />
+	<p>
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. Curabitur vitae semper ligula. Integer lobortis, dolor nec condimentum aliquet, lectus ligula viverra tortor, vitae euismod nibh augue laoreet massa. Quisque tincidunt magna ex, ac dignissim nulla viverra eget. Maecenas sodales, mauris sed iaculis tincidunt, nisl sapien feugiat metus, sit amet ultrices ipsum neque eu mauris. Nam eleifend lobortis enim. In et egestas tellus. Etiam convallis tincidunt dolor pellentesque vestibulum. Cras vitae commodo nibh. Duis a ligula in ligula scelerisque pellentesque a sed leo. Integer quis mauris eget dui hendrerit iaculis. Ut accumsan dui 
+	</p>
+
+</div>
 
 <script> 
+	var chatIsClosed = true;
+	var windowWidthWhenChatIsClosed = ["80vw","50%"] //[width,left]
+	var windowWidthWhenChatIsOpen = ["60vw","61%"]; //[width,left]
+	var othersAreClosed = true;
+	var alertsScreen = document.getElementById("alerts-screen");
 	// respond to user interaction through this script
 	function closeChat(){
 		document.getElementById("open-chat-container").style.display = "none";
 		document.getElementById("closed-chat").style.display = "flex";
+		chatIsClosed = true;
+		setWidth();
 	}
 	function openChat(){
 		document.getElementById("open-chat-container").style.display = "inline-block";
-		document.getElementById("closed-chat").style.display = "none";				
+		document.getElementById("closed-chat").style.display = "none";
+		chatIsClosed = false;	
+		setWidth();
+	}
+	function backChat(){
+		document.getElementById("message-content-container").style.display = "none";
+		document.getElementById("chat-select").style.display = "flex";
+		document.getElementById("chat-back").style.display = "none";
+	}
+	function expandText(element){
+		document.getElementById("largeTextDisplay").style.display = "initial";
+		document.getElementById("largeTextDisplay").childNodes[3].innerHTML = element.childNodes[1].childNodes[1].innerHTML;
+	}
+	function closeExpandedText(){
+		document.getElementById("largeTextDisplay").style.display = "none";
+	}
+	function closeAlerts(){
+		document.getElementById("alerts-screen").style.display = "none";
+		setWidth();
+	}
+	function showAlerts(){
+		setWidth();
+		closeOthers();
+		alertsScreen.style.display = "flex";
+		othersAreClosed = false;
+		var alertContainer = document.getElementById("day-alert-box-container");
+		alertContainer.scrollTop = alertContainer.scrollHeight;
+	}
+	function closeOthers(){ //closes all potentially open windows
+		closeAlerts();
+		othersAreClosed = true;
+	}
+	function setWidth(){
+			if(!chatIsClosed){
+				alertsScreen.style.width = windowWidthWhenChatIsOpen[0];
+				alertsScreen.style.left = windowWidthWhenChatIsOpen[1];	
+			}
+			else{
+				alertsScreen.style.width = windowWidthWhenChatIsClosed[0];
+				alertsScreen.style.left = windowWidthWhenChatIsClosed[1];
+			}		
 	}
 </script>

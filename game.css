@@ -1,7 +1,7 @@
 body { margin: 0; position:relative; height:100vh; overflow:hidden;}
+	#game-container{ z-index:1; }
 	#hud-container{ width:100vw; height:100vh; display:inline;}
 	#hud-container > div { z-index:3; position:absolute; }
-	#game-container{ z-index:1; }
 		#status-indicators-group{
 			top:2vh;
 			position:absolute;
@@ -26,7 +26,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				display:flex;
 				flex-direction:row;
 				align-items:center;
-				min-height:1px
+				min-height:1px;
 				/*display:none; /*Use "display:none;" when "open chat" is clicked*/
 			}
 				#closed-chat > image{ align-self:flex-start; }
@@ -39,32 +39,50 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				margin-left:-5px;
 				text-align:center;
 				font-family:'Berkshire Swash', cursive;
-				position:relative;
+				position:absolute;
+				z-index:10;
 				display:none;
 			}
 				#chat-exit{
 					position:absolute;
-					right:0;
-					top:0;
+					right:1vh;
+					top:1vh;
 					height:4vh;
 					transition: all .2s ease-in-out;
 					cursor:pointer;
 				}	
-				#chat-exit:hover{ transform: scale(2); }
+				#chat-exit:hover{ transform: scale(1.5); }
+				#chat-back{
+					position:absolute;
+					left:1vh;
+					top:1vh;
+					height:4vh;
+					cursor:pointer;
+					transition: all .2s ease-in-out;
+					display:none;
+				}
+				#chat-back:hover{ transform: scale(1.5); }
 				#chat-title{
 					width: 100%;
 					font-size:3vh;
 					margin-top:1vh;
 				}
-				#chat-title > p{ margin:0; color:white; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;}
+				#chat-title > p{ margin:0; color:white; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
 				#open-chat-container > hr{ width:55%; margin-top:0; }
 				#chat-content-container{
 					width:100%;
 					height:34.5vh;
 					overflow:clip; 
-					color:white; text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+					color:white; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 				}
-					#chat-select{ width:100%; height:100%; overflow:scroll; display:flex; flex-wrap:wrap; }
+					#chat-select{ 
+						width:100%; 
+						height:100%; 
+						overflow:scroll; 
+						display:flex; 
+						flex-wrap:wrap; 
+						display:none;
+					}
 						.team-select{ 
 							width:29.5%;
 							height:7vh;
@@ -77,14 +95,74 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 							transition: all .2s ease-in-out;
 							cursor:pointer;
 						}
-						.team-select:hover{ transform: scale(1.1); opacity:1; filter: alpha(opacity=100);}
+						.team-select:hover{ transform: scale(1.1); }
 						.team-select > p {
 							margin:0;
 							align-self:center;
 							font-size:4vh;
 						}
 						#broadcast-button{ min-width:28.5vw; }
-					#message-content-container{ }
+					#message-content-container{ 
+						height:102%;
+						width:100%;
+						/*display:none;*/
+					}
+						#messages{
+							height:80%;
+							width:100%;
+							overflow:scroll;
+							display:flex;
+							flex-wrap:wrap;
+						}
+							.messages-local{ text-align:left; margin-right:.5vw; }
+							.messages-remote{ text-align:right; margin-left:.5vw; }
+							.messages-local, .messages-remote{
+								width:100%;
+								margin-bottom:1vh;
+								cursor:pointer;
+							}
+							.messages-local > .message{ 
+								background-color:rgba(181, 201, 177,0.7);
+								border-top-right-radius:10px; 
+								border-bottom-right-radius:10px; 
+								border-left:none;
+							}
+							.messages-remote > .message{ 
+								background-color:rgba(203, 221, 237,0.7); 
+								border-top-left-radius:10px; 
+								border-bottom-left-radius:10px; 
+								border-right:none;
+							}
+							.message{
+								height:100%;
+								border:1px solid black;
+							}
+							.message > p{ margin:0.5vh 0.5vw 0.5vh 0.5vw; }
+						#input-box-button{
+							height:20%;
+							width:100%;
+						} /*ERROR: BOTTOM GROUP DIV OVERLAPS WITH BOTTOM HALF OF THIS DIV*/
+							#message-input-box{
+								height:95%;
+								width:79.5%;
+								background-color:rgba(238,229,233,0.7);
+								float:left;
+								margin:0;
+								border:none;
+							} 
+							#message-input-button{
+								height:100%;
+								width:20%;
+								background-color:rgba(238,229,233,.7);
+								float:right;
+								position: relative;
+								cursor:pointer;
+							} 
+								#message-input-button > img{
+									position:relative;
+									height:100%;
+								}
+
 		#right-side-button-group{ 
 			position: absolute; 
 			width:8vw; 
@@ -102,7 +180,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				cursor:pointer;
 			}
 			.right-button > img{ height:10vh; }
-		#bottom-group{ bottom:0; width:100%; left:0; display:flex; flex-direction:column;}
+		#bottom-group{ bottom:0; width:100%; left:0; display:flex; flex-direction:column; z-index:3; position:absolute;}
 			#bottom-top-group{ 
 				width:80vw; 
 				margin:auto; 
@@ -110,13 +188,13 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				position:relative; 
 				font-family:'Berkshire Swash',cursive; 
 				color:#EEE5E9; 
-				text-shadow: -2px 0 black, 0 2px black, 2px 0 black, 0 -2px black;
+				text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 			}
 				.sub-items{ position:absolute; bottom:0; display:flex; flex-direction:row; align-items:stretch; width:32.5vw; text-align:center; }
 				.sub-items > div{ background-color:rgba(239,200,139,0.5); width:16.25vw; }
 				.bottom-text{ align-self:center; width:100%; height:5vh; font-size:4vh; margin:0; }
 				.bottom-box-container{ display:flex; flex-direction:column; justify-content:flex-end; background-color: transparent !important;}
-				#alerts{ height:6vh; background-color:rgba(239,200,139,0.5); }
+				#alerts{ height:6vh; background-color:rgba(239,200,139,0.5); cursor:pointer; }
 					#alerts-text{ margin-top:0.5vh; } /* change css property color to red and back to white here for flashing effect */
 				#day{ height:7.8vh; }
 					#day-text{ margin-top:1vh; }
@@ -164,3 +242,94 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 					width:78%;
 					z-index:4;
 				}
+	#alerts-screen{
+		width:80vw;
+		height:70vh;
+		margin:auto; 
+		margin-left: auto;
+		top:40%;
+		left:50%;
+		border:4px solid;
+		border-color: rgba(247,239,153,0.7);
+		transform:translate(-50%,-50%);
+		text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+		color:white;
+		background-color:rgba(247,142,105,0.9);	
+		display:flex;
+		flex-direction:column;
+		display:none;
+	}
+		#alerts-top-bar{
+			width:100%;
+			text-align:center;
+			display:flex;
+			flex-direction:row;
+			flex-grow:1;
+		}
+			#alerts-top-bar > p{
+				margin:0;
+				flex-grow:2;
+				font-family:'Berkshire Swash',cursive;
+				font-size:3vh;
+				margin-top:1vh;
+			}
+			#alerts-top-bar > img{
+				height:4vh;
+				width:4vh;
+				cursor:pointer;
+				transition: all .1s ease-in-out;
+			}
+			#alerts-top-bar > img:hover{ transform: scale(1.5); }
+		.eighty-percent-hr{ width:75%; background-color:black;  }
+		#day-alert-box-container{ width:100%; flex-grow:2; overflow-y:scroll; }
+			.day-alert-box{
+				width:95%;
+				margin:auto;
+				border-bottom:1px solid black;
+				margin-bottom:2vh;
+			}
+				.day-alert-box > p{
+					margin:0;
+					margin-left:1vw;
+					font-family:"Berkshire Swash",cursive;
+					font-size:3vh;
+				}
+				.day-alert-box > hr{ margin-left:1vw; }
+				.alert-box{
+					border:1px solid black;
+					border-radius:20px;
+					transition:all .1s ease-in-out;
+					font-family:"Berkshire Swash",cursive;
+					margin-bottom:1.5vh;
+					cursor:pointer;
+				}
+					.alert-box:hover{ transform:scale(1); font-size:50pt; background-color:rgba(61, 43, 61, 0.9); text-align:justify; }
+					.alert-box > p{ margin: 1vh; }
+		#largeTextDisplay{
+			position:absolute;
+			height:90%;
+			width:90%;
+			top:1%;
+			left:50%;
+			transform:translate(-50%,0);
+			background-color: rgba(61, 43, 61,0.9);
+				overflow:scroll;
+			display:none;
+		}
+			#largeTextDisplay > img{ position:absolute; top:1vh; right:1vh; cursor:pointer;}
+			#largeTextDisplay > p{
+				color:white;
+				text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+				font-family:"Berkshire Swash",cursive;
+				margin-top:3vh;
+				width:90%;
+				margin:auto;
+				font-size:50pt;
+				margin-top:5vh;
+				text-align:justify;
+			}
+
+
+
+
+
