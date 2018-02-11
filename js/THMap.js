@@ -185,15 +185,18 @@ THMap.prototype = {
 
 		// water object
 		var oceanGeometry = new THREE.PlaneBufferGeometry(40, 40);
-		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture.png");
+		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture4.png");
 		this.ocean = new THREE.Water(oceanGeometry, {
-			color: '#78B2FF',
+			color: '#41acf4',
 			scale: 1.5,
 			flowDirection: new THREE.Vector2(0, 0),
 			textureWidth: 1024,
 			textureHeight: 1024,
 			texture: oceanTexture,
-			reflectivity: 0.6
+			reflectivity: 0.6,
+			waterColor: '#41acf4',
+			alpha: 1.0
+
 		} );
 		this.ocean.rotation.x = Math.PI * -0.5;
 		this.ocean.rotation.z = Math.PI;
@@ -233,13 +236,13 @@ THMap.prototype = {
 		function addBigOcean(geometry, x, z)
 		{
 			var bigOcean = new THREE.Water(geometry, {
-				color: '#005bd7',
+				color: '#41acf4',
 				scale: 100,
 				flowDirection: new THREE.Vector2(0, 0),
 				textureWidth: 1024,
 				textureHeight: 1024,
 				reflectivity: 0.6,
-				waterColor: 0x001e0f,
+				waterColor: 0x41acf4,
 				alpha: 1.0
 			} );
 
