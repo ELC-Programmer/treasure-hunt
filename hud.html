@@ -36,9 +36,9 @@
 		</div>
 	</div>
 	<div id="chat-container">
-		<div id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
+		<div onclick="openChat()" id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
 			<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; "/>
-			<image onclick="openChat()" src="assets/icons/right-arrow.png" style="height:5vh; position:absolute; right:0.3vw; bottom:1.6vh; cursor:pointer;"/>
+			<image src="assets/icons/right-arrow.png" style="height:5vh; position:absolute; right:0.3vw; bottom:1.6vh; cursor:pointer;"/>
 		</div>
 		<div id="open-chat-container">
 			<img id="chat-back" onclick="backChat()" src="./assets/icons/left-arrow.png" />
@@ -224,13 +224,54 @@
 </div>
 <div class="full-size-window" id="buy-sell-window">
 	<div class="full-size-window-top-bar">
-		<p>Buy and Sell</p>
+		<p>Purchase Resources and Sell Treasure</p>
 		<img onclick="closeBuySell()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
-	<div class="full-size-window-content">
+	<div class="full-size-window-content" id="buy-sell-window-content">
+		<div id="buy-food">
+			<div class="buy-items-line" style="margin-top:4vh;">
+				<div class="buy-title"><p>Buy Food</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
+				<img src="assets/icons/minus.png" />
+				<div class="how-many-buying"><p>0</p></div>
+				<img src="assets/icons/plus.png" />
+				<div class="buy-submit-button"><p>Submit</p></div>
+			</div>
+		</div>
+		<div id="buy-water">
+			<div class="buy-items-line">
+				<div class="buy-title"><p>Buy Water</p></div>
+				<div class="cost"><p>$25 / unit</p></div>
+				<img src="assets/icons/minus.png" />
+				<div class="how-many-buying"><p>0</p></div>
+				<img src="assets/icons/plus.png" />
+				<div class="buy-submit-button"><p>Submit</p></div>
+			</div>
+		</div>
+		<div id="buy-gas">
+			<div class="buy-items-line">
+				<div class="buy-title"><p>Buy Gas</p></div>
+				<div class="cost"><p>$25 / unit</p></div>
+				<img src="assets/icons/minus.png" />
+				<div class="how-many-buying"><p>0</p></div>
+				<img src="assets/icons/plus.png" />
+				<div class="buy-submit-button"><p>Submit</p></div>
+			</div>
+		</div>
+		<div id="sell-treasure">
+			<div class="buy-items-line">
+				<div class="buy-title"><p>Sell Treasure</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
+				<img src="assets/icons/minus.png" />
+				<div class="how-many-buying"><p>0</p></div>
+				<img src="assets/icons/plus.png" />
+				<div class="buy-submit-button"><p>Submit</p></div>
+			</div>
+		</div>
 
-	</div>
+
+
 </div>
 <div class="full-size-window" id="trade-window">
 	<div class="full-size-window-top-bar">
