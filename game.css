@@ -14,14 +14,14 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				color:white;
 				position:relative;
 				margin-left:15px;
-				font-family:'Berkshire Swash', cursive;
+				font-family:"Berkshire Swash", cursive;
 			}
 			#closed-chat{
 				border:4px solid;
 				border-color: rgba(247,239,153,0.9);
 				border-radius:25px;
-				margin-top:4.5vh;		
-				margin-left:-25px;	
+				margin-top:4.5vh;
+				margin-left:-25px;
 				background-color:rgba(247,142,105,0.7);
 				display:flex;
 				flex-direction:row;
@@ -39,7 +39,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				width:30vw;
 				margin-left:-5px;
 				text-align:center;
-				font-family:'Berkshire Swash', cursive;
+				font-family:"Ubuntu";
 				position:absolute;
 				z-index:10;
 				display:none;
@@ -51,7 +51,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 					height:4vh;
 					transition: all .2s ease-in-out;
 					cursor:pointer;
-				}	
+				}
 				#chat-exit:hover{ /*transform: scale(1.5);*/ }
 				#chat-back{
 					position:absolute;
@@ -73,19 +73,18 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				#chat-content-container{
 					width:100%;
 					height:34.5vh;
-					overflow:clip; 
-					color:white; 
-					text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+					overflow:clip;
+					color:black;
 				}
-					#chat-select{ 
-						width:100%; 
-						height:100%; 
-						overflow:scroll; 
-						display:flex; 
-						flex-wrap:wrap; 
+					#chat-select{
+						width:100%;
+						height:100%;
+						overflow:scroll;
+						display:flex;
+						flex-wrap:wrap;
 						display:none;
 					}
-						.team-select{ 
+						.team-select{
 							width:29.5%;
 							height:7vh;
 							background-color:rgba(239,200,139,.7);
@@ -104,7 +103,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 							font-size:4vh;
 						}
 						#broadcast-button{ min-width:28.5vw; }
-					#message-content-container{ 
+					#message-content-container{
 						height:102%;
 						width:100%;
 						/*display:none;*/
@@ -123,16 +122,16 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 								margin-bottom:1vh;
 								cursor:pointer;
 							}
-							.messages-local > .message{ 
+							.messages-local > .message{
 								background-color:rgba(181, 201, 177,0.7);
-								border-top-right-radius:10px; 
-								border-bottom-right-radius:10px; 
+								border-top-right-radius:10px;
+								border-bottom-right-radius:10px;
 								border-left:none;
 							}
-							.messages-remote > .message{ 
-								background-color:rgba(203, 221, 237,0.7); 
-								border-top-left-radius:10px; 
-								border-bottom-left-radius:10px; 
+							.messages-remote > .message{
+								background-color:rgba(203, 221, 237,0.7);
+								border-top-left-radius:10px;
+								border-bottom-left-radius:10px;
 								border-right:none;
 							}
 							.message{
@@ -151,7 +150,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 								float:left;
 								margin:0;
 								border:none;
-							} 
+							}
 							#message-input-button{
 								height:100%;
 								width:20%;
@@ -159,19 +158,19 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 								float:right;
 								position: relative;
 								cursor:pointer;
-							} 
+							}
 								#message-input-button > img{
 									position:relative;
 									height:100%;
 								}
 
-		#right-side-button-group{ 
-			position: absolute; 
-			width:8vw; 
-			right:0; 
-			top:15vh; 
-			margin-right:5px; 
-			text-align:center; 
+		#right-side-button-group{
+			position: absolute;
+			width:8vw;
+			right:0;
+			top:15vh;
+			margin-right:5px;
+			text-align:center;
 		}
 			.right-button{
 				border:4px solid;
@@ -183,35 +182,50 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 			}
 			.right-button > img{ height:10vh; }
 		#bottom-group{ bottom:0; width:100%; left:0; display:flex; flex-direction:column; z-index:3; position:absolute;}
-			#bottom-top-group{ 
-				width:80vw; 
-				margin:auto; 
-				height:12vh; 
-				position:relative; 
-				font-family:'Berkshire Swash',cursive; 
-				color:#EEE5E9; 
+			#bottom-top-group{
+				width:80vw;
+				margin:auto;
+				height:12vh;
+				position:relative;
+				font-family:"Berkshire Swash",cursive;
+				color:#EEE5E9;
 				text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 			}
 				.sub-items{ position:absolute; bottom:0; display:flex; flex-direction:row; align-items:stretch; width:32.5vw; text-align:center; }
 				.sub-items > div{ background-color:rgba(239,200,139,0.5); width:16.25vw; }
 				.bottom-text{ align-self:center; width:100%; height:5vh; font-size:4vh; margin:0; }
 				.bottom-box-container{ display:flex; flex-direction:column; justify-content:flex-end; background-color: transparent !important;}
-				#alerts{ height:6vh; background-color:rgba(239,200,139,0.5); cursor:pointer; }
+				#alerts{
+					height:6vh;
+					background-color: #f46842;
+					cursor:pointer;
+					font-family:"Berkshire Swash",cursive;
+					color:#EEE5E9;
+					top: 0;
+					right:0;
+					display:flex;
+					flex-direction:row;
+					align-items:stretch;
+					width:16vw;
+					text-align:center;
+				}
 					#alerts-text{ margin-top:0.5vh; } /* change css property color to red and back to white here for flashing effect */
+				#team{ height:6vh; background-color:rgba(239,200,139,0.5); }
+					#team-text{ margin-top:1vh; }
 				#day{ height:7.8vh; }
 					#day-text{ margin-top:1vh; }
-				#status-container{ 
+				#status-container{
 					overflow:hidden;
 					height:12vh;
 					width:15vw;
 					margin:auto;
 					position:relative;
 				}
-					#status-circle{ 
+					#status-circle{
 						width:20vw;
 						height:25vh;
-						border-radius:50%; 
-						background-color:rgba(239,200,139,0.5); 
+						border-radius:50%;
+						background-color:rgba(239,200,139,0.5);
 						text-align:center;
 						margin:auto;
 						position:absolute;
@@ -223,22 +237,22 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				#location{ height:6vh; background-color:rgba(239,200,139,0.5); }
 					#location-text{ margin-top:0.5vh; }
 			#loading-progress{ width:100%; height:7vh; background-color:rgba(93,103,91,0.7); position:relative; }
-				#loading-bar-back{ 
-					width:100%; 
-					height:3.5vh; 
-					position:absolute; 
+				#loading-bar-back{
+					width:100%;
+					height:3.5vh;
+					position:absolute;
 					top:1.75vh;
-					border: 1px solid rgba(238,229,233,0.7); 
+					border: 1px solid rgba(238,229,233,0.7);
 					background-color:rgba(238,229,233,0.7);
-				} 
-				#loading-bar{ 
-					width:110%; 
-					height:3.5vh; 
-					position:absolute; 
-					top:1.75vh; 
+				}
+				#loading-bar{
+					width:110%;
+					height:3.5vh;
+					position:absolute;
+					top:1.75vh;
 					left:-2%;
 					border:1px solid;
-					border-color:rgba(207,92,54,0.7); 
+					border-color:rgba(207,92,54,0.7);
 					border-radius:20px;
 					background-color:rgba(207,92,54,0.7);
 					width:78%;
@@ -261,8 +275,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 		#largeTextDisplay > img{ position:absolute; top:1.5vh; right:1.5vh; cursor:pointer;}
 		#largeTextDisplay > p{
 			color:white;
-			text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-			font-family:"Berkshire Swash",cursive;
+			font-family:"Ubuntu";
 			margin-top:3vh;
 			width:90%;
 			margin:auto;
@@ -273,16 +286,15 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 	.full-size-window{
 		width:80vw;
 		height:70vh;
-		margin:auto; 
+		margin:auto;
 		margin-left: auto;
 		top:40%;
 		left:50%;
 		border:4px solid;
 		border-color: rgba(247,239,153,0.7);
 		transform:translate(-50%,-50%);
-		text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 		color:white;
-		background-color:rgba(247,142,105,0.9);	
+		background-color:rgba(247,142,105,0.9);
 		display:flex;
 		flex-direction:column;
 		display:none;
@@ -298,7 +310,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 			.full-size-window-top-bar > p{
 				margin:0;
 				flex-grow:2;
-				font-family:'Berkshire Swash',cursive;
+				font-family:"Berkshire Swash",cursive;
 				font-size:3vh;
 				margin-top:1vh;
 			}
@@ -323,7 +335,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				.day-alert-box > p{
 					margin:0;
 					margin-left:1vw;
-					font-family:"Berkshire Swash",cursive;
+					font-family:"Ubuntu";
 					font-size:3vh;
 				}
 				.day-alert-box > hr{ margin-left:1vw; }
@@ -331,7 +343,7 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 					border:1px solid black;
 					border-radius:20px;
 					transition:all .1s ease-in-out;
-					font-family:"Berkshire Swash",cursive;
+					font-family:"Ubuntu";
 					margin-bottom:1.5vh;
 					cursor:pointer;
 				}
@@ -352,5 +364,3 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 		#trade-window-content{ }
 	#captain-window{  }
 		#captain-window-content{ }
-
-
