@@ -48,11 +48,6 @@ THMap.prototype = {
 			// Save the ship model
 			that.shipObject = loadedObjects["ship"];			
 		
-			// Add the ships!
-			var ships = loadedObjects["ships"];
-			ships.rotation.y = Math.PI * 3/4;
-			that.scene.add(ships);
-
 			// Call other initialization Functions
 			that._InitLabels();
 			that._InitOcean();
