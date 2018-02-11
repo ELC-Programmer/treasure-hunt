@@ -185,15 +185,18 @@ THMap.prototype = {
 
 		// water object
 		var oceanGeometry = new THREE.PlaneBufferGeometry(40, 40);
-		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture.png");
+		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture4.png");
 		this.ocean = new THREE.Water(oceanGeometry, {
-			color: '#78B2FF',
+			color: '#41acf4',
 			scale: 1.5,
 			flowDirection: new THREE.Vector2(0, 0),
 			textureWidth: 1024,
 			textureHeight: 1024,
 			texture: oceanTexture,
-			reflectivity: 0.6
+			reflectivity: 0.6,
+			waterColor: '#41acf4',
+			alpha: 1.0
+
 		} );
 		this.ocean.rotation.x = Math.PI * -0.5;
 		this.ocean.rotation.z = Math.PI;
@@ -233,12 +236,14 @@ THMap.prototype = {
 		function addBigOcean(geometry, x, z)
 		{
 			var bigOcean = new THREE.Water(geometry, {
-				color: '#005bd7',
+				color: '#41acf4',
 				scale: 100,
 				flowDirection: new THREE.Vector2(0, 0),
 				textureWidth: 1024,
 				textureHeight: 1024,
-				reflectivity: 0.6
+				reflectivity: 0.6,
+				waterColor: 0x41acf4,
+				alpha: 1.0
 			} );
 
 			bigOcean.rotation.x = -Math.PI/2;
@@ -280,14 +285,37 @@ THMap.prototype = {
 		var material = new THREE.ShaderMaterial( {
 		  uniforms:       uniforms,
 		  vertexShader:   vertexShader,
-		  fragmentShader: fragmentShader
+		  fragmentShader: fragmentShader,
+			transparent: true,
+			opacity: 0.5
 		});
 
-		skyBox = new THREE.Mesh(geometry, material);
-		skyBox.scale.set(-1, 1, 1);
-		skyBox.eulerOrder = 'XZY';
-		skyBox.renderDepth = 1000.0;
+		sun = new THREE.Mesh(geometry, material);
+		sun.scale.set(-1, 1, 1);
+		sun.eulerOrder = 'XZY';
+		sun.renderDepth = 1000.0;
+		this.scene.add(sun);
+
+
+		var imagePrefix = "assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
+		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
+		var imageSuffix = ".png";
+		var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
+
+		var materialArray = [];
+		for (var i=0; i<6; i++)
+		  materialArray.push(new THREE.MeshBasicMaterial({
+			map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
+			side: THREE.BackSide,
+			transparent: true,
+			opacity: 0.5,
+			alpha: 1.0
+		  }));
+		var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+		var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+
 		this.scene.add(skyBox);
+
 	},
 
 	/**
