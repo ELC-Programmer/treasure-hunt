@@ -1,7 +1,7 @@
 var THMap = function()
 {
 	//
-}
+};
 
 THMap.prototype = {
 	
@@ -31,7 +31,7 @@ THMap.prototype = {
 		// Load 3D objects
 		this._LoadObjects({
 			"scene": "./assets/Objects/scene.json",
-			"ships": "./assets/Objects/pirate_ship.json"			
+			"ship": "./assets/Objects/ship.json",			
 		}, function(loadedObjects) {
 			
 			//save the main scene
@@ -45,10 +45,8 @@ THMap.prototype = {
 				islands[i].scale.y = -islands[i].scale.y;
 			}
 			
-			// Add the ships!
-			var ships = loadedObjects["ships"];
-			ships.rotation.y = Math.PI * 3/4;
-			that.scene.add(ships);			
+			// Save the ship model
+			that.shipObject = loadedObjects["ship"];			
 			
 			// Call other initialization Functions
 			that._InitLabels();
@@ -56,6 +54,9 @@ THMap.prototype = {
 			that._InitLights();
 			that._InitCamera();
 			that._InitSky();
+			that._InitPathfinding();
+		
+			that.AddShip("JFF-A", "trojan-island");
 			
 			// Begin rendering loop
 			that._Render();
@@ -340,6 +341,60 @@ THMap.prototype = {
 		controls.update();
 	},
 	
+	/**
+	 * A set of map points. See MapPoint.js
+	 */
+	mapPoints: {},
+	
+	/**
+	 * Initialize pathfinding and map points, etc.
+	 */
+	_InitPathfinding: function()
+	{
+		var that = this;
+		
+		var data = $.ajax({
+			url: "./assets/pathfinding_map.txt",
+			dataType: "text",
+			async: false
+		}).responseText;
+				
+		that.pathfinding_map = data.split(/\r\n|\r|\n/); // split by line			
+		that.pathfinder = new Pathfinder(that.pathfinding_map); // init Pathfinder
+		
+		// Init map points
+		function addMapPoint(id, positions)
+		{
+			that.mapPoints[id] = new MapPoint(that, id, that.pathfinding_map, positions);
+		}
+		addMapPoint("trojan-island", [new Coords(8, 37)]);
+		addMapPoint("bear-island", [new Coords(5, 15)]);
+		addMapPoint("duck-island", [new Coords(12, 7)]);
+		addMapPoint("beaver-island", [new Coords(28, 9), new Coords(32, 9)]);
+		addMapPoint("cardinal-island", [new Coords(38, 18), new Coords(40, 13)]);
+		addMapPoint("bruin-island", [new Coords(26, 39)]);
+		addMapPoint("sea-devil-island", [new Coords(19, 20), new Coords(16, 21)]);
+		addMapPoint("treasure-spot", [new Coords(39, 25)]);
+		addMapPoint("SD1", [new Coords(10, 20)]);
+		addMapPoint("SD2", [new Coords(13, 27)]);
+		addMapPoint("SD3", [new Coords(21, 27)]);
+		addMapPoint("SD4", [new Coords(26, 26)]);
+		addMapPoint("SD5", [new Coords(31, 22)]);
+		addMapPoint("SD6", [new Coords(30, 17)]);
+		addMapPoint("T1", [new Coords(18, 32)]);
+		addMapPoint("T2", [new Coords(30, 30)]);
+		addMapPoint("B1", [new Coords(18, 37)]);
+		addMapPoint("B2", [new Coords(38, 37)]);
+	},
+	
+	/**
+	 * Update a value on the pathfinding map.
+	 */
+	UpdatePathfindingMap(position, obstacle)
+	{
+		var old = this.pathfinding_map[position.y];
+		this.pathfinding_map[position.y] = old.slice(0, position.x) + (obstacle ? 'x' : '.') + old.slice(position.x+1);
+	},
 	
 	/**
 	 * Create a billboard with a text label.
@@ -400,6 +455,32 @@ THMap.prototype = {
 	},
 	
 	/**
+	 * An array of all the ships on the map, indexed by ID. See Ship.js
+	 */
+	ships: {},
+	
+	/**
+	 * Add a ship to the map!
+	 * @param id A unique string ID for this ship, to identify it later.
+	 * @param startingPoint The ID of the MapPoint to start at.
+	 */
+	AddShip(id, startingPoint)
+	{
+		var ship = new Ship(this, id, this.mapPoints[startingPoint]);
+		this.ships[id] = ship;
+	},
+	
+	/**
+	 * Move a ship to a new map point.
+	 * @param id The ID of the ship to move.
+	 * @param destination The ID of the destination map point.
+	 */
+	MoveShip: function(shipID, destinationID)
+	{
+		this.ships[shipID].MoveTo(this.mapPoints[destinationID]);
+	},
+	
+	/**
 	 * Enter the rendering/animation loop.
 	 */
 	_Render: function() {
@@ -411,6 +492,11 @@ THMap.prototype = {
 			that._AnimateSky();
 			that._AnimateOcean();
 			that._AnimateSpriteScaling();
+			
+			for (i in that.ships) // Update ships
+			{
+				that.ships[i].Update();
+			}
 		
 			that.renderer.render(that.scene, that.camera);
 		}
