@@ -194,8 +194,23 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 				.sub-items > div{ background-color:rgba(239,200,139,0.5); width:16.25vw; }
 				.bottom-text{ align-self:center; width:100%; height:5vh; font-size:4vh; margin:0; }
 				.bottom-box-container{ display:flex; flex-direction:column; justify-content:flex-end; background-color: transparent !important;}
-				#alerts{ height:6vh; background-color:rgba(239,200,139,0.5); cursor:pointer; }
+				#alerts{
+					height:6vh;
+					background-color: #f46842;
+					cursor:pointer;
+					font-family:"Berkshire Swash",cursive;
+					color:#EEE5E9;
+					top: 0;
+					right:0;
+					display:flex;
+					flex-direction:row;
+					align-items:stretch;
+					width:16vw;
+					text-align:center;
+				}
 					#alerts-text{ margin-top:0.5vh; } /* change css property color to red and back to white here for flashing effect */
+				#team{ height:6vh; background-color:rgba(239,200,139,0.5); }
+					#team-text{ margin-top:1vh; }
 				#day{ height:7.8vh; }
 					#day-text{ margin-top:1vh; }
 				#status-container{
@@ -259,7 +274,6 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 		#largeTextDisplay > img{ position:absolute; top:1.5vh; right:1.5vh; cursor:pointer;}
 		#largeTextDisplay > p{
 			color:white;
-			text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 			font-family:"Ubuntu";
 			margin-top:3vh;
 			width:90%;
@@ -278,7 +292,6 @@ body { margin: 0; position:relative; height:100vh; overflow:hidden;}
 		border:4px solid;
 		border-color: rgba(247,239,153,0.7);
 		transform:translate(-50%,-50%);
-		text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 		color:white;
 		background-color:rgba(247,142,105,0.9);
 		display:flex;
