@@ -36,9 +36,9 @@
 		</div>
 	</div>
 	<div id="chat-container">
-		<div id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
+		<div onclick="openChat()" id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
 			<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; "/>
-			<image onclick="openChat()" src="assets/icons/right-arrow.png" style="height:5vh; position:absolute; right:0.3vw; bottom:1.6vh; cursor:pointer;"/>
+			<image src="assets/icons/right-arrow.png" style="height:5vh; position:absolute; right:0.3vw; bottom:1.6vh; cursor:pointer;"/>
 		</div>
 		<div id="open-chat-container">
 			<img id="chat-back" onclick="backChat()" src="./assets/icons/left-arrow.png" />
@@ -90,36 +90,36 @@
 								<p>
 									hey
 								</p>
-							</div>							
+							</div>
 						</div>
 						<div onclick="expandText(this)" class="messages-remote">
 							<div class="message">
 								<p>
 								hello
 								</p>
-							</div>	
-						</div>	
+							</div>
+						</div>
 						<div onclick="expandText(this)" class="messages-local">
 							<div class="message">
 								<p>
 								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at ligula facilisis, suscipit elit vel, tincidunt risus. Integer aliquam augue in tortor blandit, ullamcorper egestas dui sodales. Mauris sagittis risus at ex laoreet laoreet. Pellentesque iaculis pulvinar dui, sed ornare lacus vehicula eget
 								</p>
-							</div>							
+							</div>
 						</div>
 						<div onclick="expandText(this)" class="messages-remote">
 							<div class="message">
 								<p>
 								hello
 								</p>
-							</div>	
-						</div>	
+							</div>
+						</div>
 					</div>
 					<div id="input-box-button">
 						<input type="text" id="message-input-box">
 
 						</input	>
 						<div id="message-input-button">
-							<img src="./assets/icons/send.png" /> 
+							<img src="./assets/icons/send.png" />
 						</div>
 					</div>
 				</div>
@@ -144,8 +144,8 @@
 	<div id="bottom-top-group">
 		<div class="sub-items" style="left:0;">
 			<div class="bottom-box-container">
-				<div id="alerts" onclick="showAlerts()">
-					<p id="alerts-text" class="bottom-text">Alerts</p>
+				<div id="team">
+					<p id="team-text" class="bottom-text">Team A</p>
 				</div>
 			</div>
 			<div id="day">
@@ -153,7 +153,9 @@
 			</div>
 		</div>
 		<div id="status-container">
-			<div id="status-circle" class="bottom-text"><p id="status-text">Ready</p></div>
+			<div id="status-circle" class="bottom-text" onclick="readyPressed()">
+				<p id="status-text">Ready</p>
+			</div>
 		</div>
 		<div class="sub-items" style="right:0;">
 			<div id="weather">
@@ -170,6 +172,10 @@
 		<div id="loading-bar-back"> </div>
 		<div id="loading-bar"> </div>
 	</div>
+</div>
+
+<div id="alerts" onclick="showAlerts()">
+	<p id="alerts-text" class="bottom-text">Alerts</p>
 </div>
 
 <div class="full-size-window" id="alerts-screen">
@@ -224,12 +230,51 @@
 </div>
 <div class="full-size-window" id="buy-sell-window">
 	<div class="full-size-window-top-bar">
-		<p>Buy and Sell</p>
+		<p>Purchase Resources and Sell Treasure</p>
 		<img onclick="closeBuySell()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
-	<div class="full-size-window-content">
-
+	<div class="full-size-window-content" id="buy-sell-window-content">
+		<div id="buy-food">
+			<div class="buy-items-line" style="margin-top:4vh;">
+				<div class="buy-title"><p>Buy Food</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
+				<img src="assets/icons/minus.png" />
+				<div class="how-many-buying"><p>0</p></div>
+				<img src="assets/icons/plus.png" />
+				<div class="buy-submit-button"><p>Submit</p></div>
+			</div>
+		</div>
+		<div id="buy-water">
+			<div class="buy-items-line">
+				<div class="buy-title"><p>Buy Water</p></div>
+				<div class="cost"><p>$25 / unit</p></div>
+				<img src="assets/icons/minus.png" />
+				<div class="how-many-buying"><p>0</p></div>
+				<img src="assets/icons/plus.png" />
+				<div class="buy-submit-button"><p>Submit</p></div>
+			</div>
+		</div>
+		<div id="buy-gas">
+			<div class="buy-items-line">
+				<div class="buy-title"><p>Buy Gas</p></div>
+				<div class="cost"><p>$25 / unit</p></div>
+				<img src="assets/icons/minus.png" />
+				<div class="how-many-buying"><p>0</p></div>
+				<img src="assets/icons/plus.png" />
+				<div class="buy-submit-button"><p>Submit</p></div>
+			</div>
+		</div>
+		<div id="sell-treasure">
+			<div class="buy-items-line">
+				<div class="buy-title"><p>Sell Treasure</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
+				<img src="assets/icons/minus.png" />
+				<div class="how-many-buying"><p>0</p></div>
+				<img src="assets/icons/plus.png" />
+				<div class="buy-submit-button"><p>Submit</p></div>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="full-size-window" id="trade-window">
@@ -238,8 +283,122 @@
 		<img onclick="closeTradeWindow()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
-	<div class="full-size-window-content">
-		
+	<div class="full-size-window-content" id="trade-window-content">
+		<div id="trade-team-select-container">
+			<div class="team-select trade-team-item">
+				<p>JFF B</p>
+			</div>
+			<div class="team-select trade-team-item">
+				<p>JFF C</p>
+			</div>
+			<div class="team-select trade-team-item">
+				<p>JFF D</p>
+			</div>
+			<div class="team-select trade-team-item">
+				<p>JFF E</p>
+			</div>
+			<div class="team-select trade-team-item">
+				<p>JFF F</p>
+			</div>
+			<div class="team-select trade-team-item">
+				<p>JFF G</p>
+			</div>
+			<div class="team-select trade-team-item">
+				<p>JFF H</p>
+			</div>
+			<div class="team-select trade-team-item">
+				<p>JFF I</p>
+			</div><div class="team-select trade-team-item">
+				<p>JFF J</p>
+			</div><div class="team-select trade-team-item">
+				<p>JFF K</p>
+			</div><div class="team-select trade-team-item">
+				<p>JFF L</p>
+			</div><div class="team-select trade-team-item">
+				<p>JFF M</p>
+			</div>
+		</div>
+		<div id="trade-items-select">
+			<div id="trade-item-select-title">
+				<p style="margin:0">Trading with JFF-B</p>
+			</div>
+			<div id="trade-receive-container">
+				<div id="trade-in">
+					<p id="trade-in-title">Trade in</p>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Cash</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Food</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Water</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Gas</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Treasure</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+				</div>
+				<div id="to-receive">
+					<p id="to-receive-title">To Receive</p>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Cash</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Food</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Water</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Gas</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+					<div class="buy-items-line trade-item-line">
+						<div class="buy-title trade-item-title"><p>Treasure</p></div>
+						<img src="assets/icons/minus.png" />
+						<div class="how-many-buying"><p>0</p></div>
+						<img src="assets/icons/plus.png" />
+					</div>
+				</div>
+			</div>
+			<div id="trade-button-container">
+				<div onclick="backTrade()" id="choose-another-team">
+					<p>Choose another team</p>
+				</div>
+				<div id="send-offer">
+					<p>Send offer</p>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="full-size-window" id="captain-window">
@@ -249,19 +408,37 @@
 	</div>
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content" id="captain-window-content" >
-		
+		<div id="captain-face">
+			<!-- image inserted as background div -->
+		</div>
+		<div id="buttons-and-message">
+			<div id="captains-buttons-container">
+				<div id="instructions">
+					<p>Arr!! Choose an option, matey!</p>
+				</div>
+				<div onclick="showCaptainsMessage()" class="captains-buttons">
+					<p>something</p>
+				</div>
+				<div onclick="showCaptainsMessage()" class="captains-buttons">
+					<p>or other</p>
+				</div>
+			</div>
+			<div onclick="expandText(this)" id="captains-message">
+				<p>Nulla ut turpis sit amet nisl lacinia ullamcorper gravida nec ex. Sed tincidunt turpis justo, eget pellentesque nisl cursus non. Morbi dapibus lacus sed tempus gravida. Etiam ut erat vitae eros viverra bibendum. Curabitur dapibus libero quis mi mollis, quis commodo sem lacinia. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus congue in leo sit amet consectetur. Curabitur quis tristique ex. Etiam interdum volutpat lorem eget porttitor. Aliquam non consequat quam, eu vehicula nunc.</p>
+			</div>
+		</div>
 	</div>
 </div>
 
 <div id="largeTextDisplay">
 	<img id="chat-exit" onclick="closeExpandedText()" src="./assets/icons/close-button.png" />
 	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. Curabitur vitae semper ligula. Integer lobortis, dolor nec condimentum aliquet, lectus ligula viverra tortor, vitae euismod nibh augue laoreet massa. Quisque tincidunt magna ex, ac dignissim nulla viverra eget. Maecenas sodales, mauris sed iaculis tincidunt, nisl sapien feugiat metus, sit amet ultrices ipsum neque eu mauris. Nam eleifend lobortis enim. In et egestas tellus. Etiam convallis tincidunt dolor pellentesque vestibulum. Cras vitae commodo nibh. Duis a ligula in ligula scelerisque pellentesque a sed leo. Integer quis mauris eget dui hendrerit iaculis. Ut accumsan dui 
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. Curabitur vitae semper ligula. Integer lobortis, dolor nec condimentum aliquet, lectus ligula viverra tortor, vitae euismod nibh augue laoreet massa. Quisque tincidunt magna ex, ac dignissim nulla viverra eget. Maecenas sodales, mauris sed iaculis tincidunt, nisl sapien feugiat metus, sit amet ultrices ipsum neque eu mauris. Nam eleifend lobortis enim. In et egestas tellus. Etiam convallis tincidunt dolor pellentesque vestibulum. Cras vitae commodo nibh. Duis a ligula in ligula scelerisque pellentesque a sed leo. Integer quis mauris eget dui hendrerit iaculis. Ut accumsan dui
 	</p>
 
 </div>
 
-<script> 
+<script>
 	var chatIsClosed = true;
 	var windowWidthWhenChatIsClosed = ["80vw","50%"] //[width,left]
 	var windowWidthWhenChatIsOpen = ["60vw","61%"]; //[width,left]
@@ -280,7 +457,7 @@
 	function openChat(){
 		document.getElementById("open-chat-container").style.display = "inline-block";
 		document.getElementById("closed-chat").style.display = "none";
-		chatIsClosed = false;	
+		chatIsClosed = false;
 		setWidth();
 	}
 	function backChat(){ /*function that allows user to select team to chat with*/
@@ -290,7 +467,8 @@
 	}
 	function expandText(element){
 		document.getElementById("largeTextDisplay").style.display = "initial";
-		document.getElementById("largeTextDisplay").childNodes[3].innerHTML = element.childNodes[1].childNodes[1].innerHTML;
+		document.getElementById("largeTextDisplay").childNodes[3].innerHTML = element.querySelector("p").innerHTML.trim();
+
 	}
 	function showAlerts(){
 		setWidth();
@@ -299,6 +477,16 @@
 		othersAreClosed = false;
 		var alertContainer = document.getElementById("day-alert-box-container");
 		alertContainer.scrollTop = alertContainer.scrollHeight;
+	}
+	function readyPressed(){
+		var readyButton = document.getElementById("status-circle");
+		if(window.getComputedStyle(readyButton).backgroundColor == "rgba(214, 51, 51, 0.85)") {
+			//readyButton.innerHTML = "Unready";
+			readyButton.style.backgroundColor = "rgba(72, 209, 54, 0.85)";
+		} else {
+			//readyButton.innerHTML = "Ready";
+			readyButton.style.backgroundColor = "rgba(214, 51, 51, 0.85)";
+		}
 	}
 	function openBuySell(){
 		setWidth();
@@ -344,10 +532,18 @@
 		closeTradeWindow();
 		othersAreClosed = true;
 	}
+	function backTrade(){
+		document.getElementById("trade-items-select").style.display = "none";
+		document.getElementById("trade-team-select-container").style.display = "flex";
+	}
+	function showCaptainsMessage(){
+		document.getElementById("captains-buttons-container").style.display = "none";
+		document.getElementById("captains-message").style.display = "flex";
+	}
 	function setWidth(){
 			if(!chatIsClosed){
 				alertsScreen.style.width = windowWidthWhenChatIsOpen[0];
-				alertsScreen.style.left = windowWidthWhenChatIsOpen[1];	
+				alertsScreen.style.left = windowWidthWhenChatIsOpen[1];
 				buySellWindow.style.width = windowWidthWhenChatIsOpen[0];
 				buySellWindow.style.left = windowWidthWhenChatIsOpen[1];
 				captainWindow.style.width = windowWidthWhenChatIsOpen[0];
@@ -364,6 +560,6 @@
 				captainWindow.style.left = windowWidthWhenChatIsClosed[1];
 				tradeWindow.style.width = windowWidthWhenChatIsClosed[0];
 				tradeWindow.style.left = windowWidthWhenChatIsClosed[1];
-			}		
+			}
 	}
 </script>

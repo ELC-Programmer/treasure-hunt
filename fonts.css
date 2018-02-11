@@ -7,3 +7,13 @@
 	font-family: "Cousine";
 	src:url("assets/Fonts/Cousine/Cousine-Regular.ttf");
 }
+
+@font-face{
+	font-family: "Ubuntu";
+	src:url("assets/Fonts/Ubuntu/Ubuntu-Light.ttf");
+}
+
+@font-face{
+	font-family: "Roboto";
+	src:url("assets/Fonts/Roboto/Roboto-Thin.ttf");
+}
