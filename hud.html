@@ -391,7 +391,7 @@
 				</div>
 			</div>
 			<div id="trade-button-container">
-				<div id="choose-another-team">
+				<div onclick="backTrade()" id="choose-another-team">
 					<p>Choose another team</p>
 				</div>
 				<div id="send-offer">
@@ -512,6 +512,10 @@
 		closeCaptainWindow();
 		closeTradeWindow();
 		othersAreClosed = true;
+	}
+	function backTrade(){
+		document.getElementById("trade-items-select").style.display = "none";
+		document.getElementById("trade-team-select-container").style.display = "flex";
 	}
 	function setWidth(){
 			if(!chatIsClosed){
