@@ -20,7 +20,19 @@ THMap.prototype = {
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		containerElement.appendChild(this.renderer.domElement);
-
+		
+		// Init the Raycaster
+		this.raycaster = new THREE.Raycaster();
+		this.mousePos = new THREE.Vector2();
+		this.renderer.domElement.addEventListener('mousemove', function(event) {
+			that.mousePos.x = (event.clientX / window.innerWidth) * 2 - 1;
+			that.mousePos.y = -(event.clientY / window.innerHeight) * 2 + 1;
+		});
+		this.renderer.domElement.addEventListener('onclick', function(event) {
+			that._OnClick(event);
+		}, false);
+		
+		
 		// OnResize
 		window.addEventListener('resize', function(event) {
 			that.renderer.setSize(that.window.innerWidth, that.window.innerHeight);
@@ -446,7 +458,8 @@ THMap.prototype = {
 		// Make Canvas
 		var canvas = this.window.document.createElement("canvas");
 		canvas.width = 1024;
-		canvas.height = 1024;
+		canvas.height = 256;
+		document.body.appendChild(canvas);
 
 		var ctx = canvas.getContext("2d");
 		ctx.font = "Bold 100px Cousine";
@@ -471,7 +484,9 @@ THMap.prototype = {
 			map: texture
 		});
 		var sprite = new THREE.Sprite(material);
-		sprite.scale.set(5, 5, 1);
+		sprite.aspectRatio = canvas.height / canvas.width;
+		
+		sprite.scale.set(5, 5/4, 1);
 
 		return sprite;
 	},
@@ -519,7 +534,16 @@ THMap.prototype = {
 	{
 		this.ships[shipID].MoveTo(this.mapPoints[destinationID]);
 	},
+
 	
+	/**
+	 * Called on click.
+	 * @param event The object passed to the Javascript event handler.
+	 */
+	_OnClick: function(event) {
+		console.log("TODO THMap::_OnClick()");
+	},
+	 
 	/**
 	 * Enter the rendering/animation loop.
 	 */
@@ -531,12 +555,27 @@ THMap.prototype = {
 
 			that._AnimateSky();
 			that._AnimateOcean();
-			that._AnimateSpriteScaling();
 			
 			for (i in that.ships) // Update ships
 			{
-				that.ships[i].Update();
+				var ship = that.ships[i];
+				
+				// Raycast to check ship labels:
+				ship.labelVisible = false;
+				that.raycaster.setFromCamera(that.mousePos, that.camera);
+				var intersects = that.raycaster.intersectObject(ship.object, true);
+				for (x in intersects) {
+					if (!intersects[x].object.isSprite) {
+						ship.labelVisible = true;
+						break;
+					}
+				}
+				
+				ship.Update();
 			}
+			
+			that._AnimateSpriteScaling();
+			
 			that.renderer.render(that.scene, that.camera);
 		}
 		animate();
@@ -666,7 +705,7 @@ THMap.prototype = {
 				scale *= Math.pow(-that.camera.getWorldDirection().dot(that.camera.up), 0.3);
 
 				obj.scale.x = scale;
-				obj.scale.y = scale;
+				obj.scale.y = scale * obj.aspectRatio;
 			}
 		});
 	}

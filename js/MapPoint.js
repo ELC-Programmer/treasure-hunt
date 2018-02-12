@@ -16,7 +16,7 @@ var MapPoint = function(thmap, id, map, positions)
 	
 	this.parkingSpaces = []; // 13 elements of type ParkingSpace
 	
-	for (i in positions)
+	for (i in positions) // Find all 13 parking spaces!
 	{
 		var coords = positions[i];
 		var queue = [coords];
