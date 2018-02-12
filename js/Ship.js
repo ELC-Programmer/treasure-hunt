@@ -16,16 +16,24 @@ var Ship = function(thmap, id, startingPoint)
 	// spawn at a parking space
 	this.destination = startingPoint.ReserveParkingSpace(this.id);
 	this.position = this.GridToWorld(this.destination, this.thmap.pathfinding_map);
-	
+		
+	// set a random starting angle
 	var angle = THREE.Math.randFloatSpread(2*Math.PI);
-	//var angle = Math.PI/2;
 	this.forward = new THREE.Vector2(Math.cos(angle), Math.sin(angle));
 	
+	// Spawn a new ship object
 	this.object = this.thmap.shipObject.clone(true);
 	this.object.rotation.order = "YXZ";
 	thmap.scene.add(this.object);
 	
-	window.ship = this;
+	// Make a label for the ship
+	this.label = this.thmap._CreateBillboard(this.id);
+	this.label.position.y = 0.4 + Math.random() * 0.01;
+	this.thmap._RegisterSpriteScaling(this.label, 1, 2, 10, 4);
+	this.object.add(this.label);
+	this.labelVisible = false;
+	
+	window.ship = this; // for DEBUGGING!
 };
 
 Ship.prototype = {
@@ -173,6 +181,9 @@ Ship.prototype = {
 		this.object.position.x = -this.position.x;
 		this.object.position.z = this.position.y;
 		this.object.rotation.y = this.forward.angle() - Math.PI/2;
+		
+		// Update the label.
+		this.label.visible = this.labelVisible;
 	},
 	
 	/**
