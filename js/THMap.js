@@ -68,13 +68,19 @@ THMap.prototype = {
 			that._InitSky();
 			that._InitPathfinding();
 		
-			that.AddShip("A", "SD2");
-			that.AddShip("B", "SD3");
-			that.AddShip("C", "SD2");
-			that.AddShip("D", "SD2");
-			that.AddShip("E", "SD2");
-			// that.AddShip("F", "trojan-island");
-			// that.AddShip("G", "trojan-island");
+			that.AddShip("A", "trojan-island");
+			that.AddShip("B", "trojan-island");
+			that.AddShip("C", "trojan-island");
+			that.AddShip("D", "trojan-island");
+			that.AddShip("E", "trojan-island");
+			that.AddShip("F", "trojan-island");
+			that.AddShip("G", "trojan-island");
+			that.AddShip("H", "trojan-island");
+			that.AddShip("I", "trojan-island");
+			that.AddShip("J", "trojan-island");
+			that.AddShip("K", "trojan-island");
+			that.AddShip("L", "trojan-island");
+			that.AddShip("M", "trojan-island");
 			
 			// Begin rendering loop
 			that._Render();
@@ -556,22 +562,28 @@ THMap.prototype = {
 			that._AnimateSky();
 			that._AnimateOcean();
 			
-			for (i in that.ships) // Update ships
+			var hoveredShip; // the ship that the mouse is hovering over.
+			var closestShipDist; // the distance from the camera to the closest ship.
+			for (i in that.ships) // Pick a ship to display the label of
 			{
 				var ship = that.ships[i];
 				
-				// Raycast to check ship labels:
 				ship.labelVisible = false;
 				that.raycaster.setFromCamera(that.mousePos, that.camera);
 				var intersects = that.raycaster.intersectObject(ship.object, true);
 				for (x in intersects) {
 					if (!intersects[x].object.isSprite) {
-						ship.labelVisible = true;
-						break;
+						if (hoveredShip === undefined || intersects[x].distance < closestShipDist) {
+							hoveredShip = ship;
+							closestShipDist = intersects[x].distance;
+						}
 					}
 				}
-				
-				ship.Update();
+			}
+			if (hoveredShip !== undefined) hoveredShip.labelVisible = true;
+			for (i in that.ships) // Update ships
+			{
+				that.ships[i].Update();
 			}
 			
 			that._AnimateSpriteScaling();
