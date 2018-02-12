@@ -5,6 +5,7 @@
 		#status-indicators-group{
 			top:2vh;
 			position:absolute;
+			user-select: none;
 		}
 			#status-indicators-group > div{ margin-top:1.5vh; }
 			.sigroups{ display:flex; flex-direction:row; margin-left:5px;}
@@ -28,6 +29,7 @@
 				align-items:center;
 				min-height:1px;
 				cursor:pointer;
+				user-select: none;
 				/*display:none; /*Use "display:none;" when "open chat" is clicked*/
 			}
 				#closed-chat > img{ align-self:center; }
@@ -171,6 +173,7 @@
 			top:15vh;
 			margin-right:5px;
 			text-align:center;
+			user-select: none;
 		}
 			.right-button{
 				border:4px solid;
@@ -190,6 +193,7 @@
 				font-family:"Berkshire Swash",cursive;
 				color:#EEE5E9;
 				text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+				user-select: none;
 			}
 				.sub-items{ position:absolute; bottom:0; display:flex; flex-direction:row; align-items:stretch; width:32.5vw; text-align:center; }
 				.sub-items > div{ background-color:rgba(239,200,139,0.5); width:16.25vw; }
@@ -200,7 +204,7 @@
 					cursor:pointer;
 					font-family:"Berkshire Swash",cursive;
 					color:#EEE5E9;
-					top: -2vh;
+					top: -3vh;
 					right:-2vh;
 					display:flex;
 					flex-direction:row;
@@ -210,7 +214,7 @@
 					background-color: rgba(166,111,101,0.7));
 					border:4px solid;
 					border-color: rgba(247,239,153,0.9);
-					border-radius:20px;
+					border-radius:10px;
 				}
 					#alerts-text{ margin-top:3vh; margin-bottom:1vh; user-select: none;} /* change css property color to red and back to white here for flashing effect */
 				#team{ height:6vh; background-color:rgba(239,200,139,0.5); border-right:1px solid black;}
@@ -235,7 +239,7 @@
 						left:-2.5vw;
 						cursor: pointer;
 					}
-						#status-text{  margin-top:3vh; font-size:5vh; user-select: none;}
+						#status-text{  margin-top:3vh; font-size:5vh;}
 				#weather{ height:7.8vh; border-left:1px solid black;}
 					#weather-text{ margin-top:1vh; }
 				#location{ height:6vh; background-color:rgba(239,200,139,0.5); border-left:1px solid black;}
