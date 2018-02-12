@@ -17,11 +17,12 @@ var Ship = function(thmap, id, startingPoint)
 	this.destination = startingPoint.ReserveParkingSpace(this.id);
 	this.position = this.GridToWorld(this.destination, this.thmap.pathfinding_map);
 	
-	//var angle = THREE.Math.randFloatSpread(2*Math.PI);
-	var angle = Math.PI/2;
+	var angle = THREE.Math.randFloatSpread(2*Math.PI);
+	//var angle = Math.PI/2;
 	this.forward = new THREE.Vector2(Math.cos(angle), Math.sin(angle));
 	
 	this.object = this.thmap.shipObject.clone(true);
+	this.object.rotation.order = "YXZ";
 	thmap.scene.add(this.object);
 	
 	window.ship = this;

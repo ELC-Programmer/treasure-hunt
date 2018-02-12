@@ -56,7 +56,13 @@ THMap.prototype = {
 			that._InitSky();
 			that._InitPathfinding();
 		
-			that.AddShip("JFF-A", "trojan-island");
+			that.AddShip("A", "SD2");
+			that.AddShip("B", "SD3");
+			that.AddShip("C", "SD2");
+			that.AddShip("D", "SD2");
+			that.AddShip("E", "SD2");
+			// that.AddShip("F", "trojan-island");
+			// that.AddShip("G", "trojan-island");
 			
 			// Begin rendering loop
 			that._Render();
@@ -417,11 +423,17 @@ THMap.prototype = {
 	
 	/**
 	 * Update a value on the pathfinding map.
+	 * @param position The Coords of the position at which to change the map.
+	 * @param status The status to set the position to. Valid values are "empty", "obstacle", and "parked".
 	 */
-	UpdatePathfindingMap(position, obstacle)
+	UpdatePathfindingMap(position, status)
 	{
+		var character = (status == "free" ? '.' : (status == "parked" ? '@' : 'x'));
+		
+		console.log(character);
+		
 		var old = this.pathfinding_map[position.y];
-		this.pathfinding_map[position.y] = old.slice(0, position.x) + (obstacle ? 'x' : '.') + old.slice(position.x+1);
+		this.pathfinding_map[position.y] = old.slice(0, position.x) + character + old.slice(position.x+1);
 	},
 
 	/**
@@ -616,6 +628,18 @@ THMap.prototype = {
 		var t_ocean = Date.now() * 0.001;
 		var h = 0.01;
 		this.ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
+		
+		// animate the ships on the ocean
+		for (i in this.ships)
+		{
+			var ship = this.ships[i];
+			
+			h = 0.05;
+			ship.object.position.y = h/2*Math.sin(t_ocean) + h/2;
+			
+			var a = 0.1;
+			ship.object.rotation.x = -a*Math.cos(t_ocean);
+		}
 	},
 
 	/**

@@ -165,7 +165,7 @@ function Display(sizeInPixels)
                     mapCellSizeInPixels
                 );
                   
-                this.graphics.fillStyle = mapCellAtPos.obstacle ? "Green" : "Blue";
+                //this.graphics.fillStyle = mapCellAtPos.obstacle ? "Green" : "Blue";
                 this.graphics.fillRect
                 (
                     drawPos.x,
@@ -343,10 +343,8 @@ function Pathfinder(cellsAsStrings)
     Pathfinder.prototype.cellAtPos = function(cellPos)
     {
         var codeChar = this.cellsAsStrings[cellPos.y][cellPos.x];
-          
-		var obstacle = (codeChar == "x");
-		  
-        return new MapCell(obstacle);
+	  
+        return new MapCell(codeChar);
     }
 
 	Pathfinder.prototype.findPath = function(startPos, destPos)
@@ -364,9 +362,9 @@ function Pathfinder(cellsAsStrings)
 }
 
 
-function MapCell(obstacle)
+function MapCell(character)
 {
-	this.obstacle = obstacle;
+	this.cost = (character == "x" ? Number.POSITIVE_INFINITY : (character == "@" ? 10 : 1));
 }
  
 function Path(map, startPos, goalPos)
@@ -548,8 +546,8 @@ function PathNode(cellPos, costFromStart, costToGoalEstimated, prev)
             if (neighborPos.isInRange(mapSizeInCellsMinusOnes) == true)
             {
                 var neighborMapCell = map.cellAtPos(neighborPos);
-                var neighborCostToTraverse = (neighborOffset.x != 0 && neighborOffset.y !=0) ? 1.74 : 1;
-                if (neighborMapCell.obstacle) neighborCostToTraverse = Number.POSITIVE_INFINITY;
+                var neighborCostToTraverse = neighborMapCell.cost;
+				if (neighborOffset.x != 0 && neighborOffset.y != 0) neighborCostToTraverse *= 1.74;
                   
                 var neighborCostFromStart = 
                     this.costFromStart 

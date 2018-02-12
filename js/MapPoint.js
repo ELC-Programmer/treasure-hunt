@@ -96,14 +96,12 @@ MapPoint.prototype = {
 			var parkingSpace = this.parkingSpaces[i];
 			if (parkingSpace.reserved && parkingSpace.shipID == shipID)
 			{
-				this.thmap.UpdatePathfindingMap(parkingSpace.position, true);
+				this.thmap.UpdatePathfindingMap(parkingSpace.position, "parked");
 				
 				parkingSpace.occupied = true;
 				return;
 			}
 		}
-
-		this.thmap.UpdatePathfindingMap(parkingSpace.position, true);
 	},
 	
 	/**
@@ -117,7 +115,7 @@ MapPoint.prototype = {
 			var parkingSpace = this.parkingSpaces[i];
 			if (parkingSpace.reserved && parkingSpace.shipID == shipID)
 			{
-				this.thmap.UpdatePathfindingMap(parkingSpace.position, false);
+				this.thmap.UpdatePathfindingMap(parkingSpace.position, "free");
 				
 				parkingSpace.reserved = false;
 				parkingSpace.occupied = false;
