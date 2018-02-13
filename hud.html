@@ -154,7 +154,7 @@
 		</div>
 		<div id="status-container">
 			<div id="status-circle" class="bottom-text" onclick="readyPressed()">
-				<p id="status-text">Ready</p>
+				<p id="status-text">Not Ready</p>
 			</div>
 		</div>
 		<div class="sub-items" style="right:0;">
@@ -479,11 +479,13 @@
 	}
 	function readyPressed(){
 		var readyButton = document.getElementById("status-circle");
+		var readyText = document.getElementById("status-text");
 		if(window.getComputedStyle(readyButton).backgroundColor == "rgba(214, 51, 51, 0.85)") {
-			//readyButton.innerHTML = "Unready";
+			readyText.innerHTML = "Ready";
 			readyButton.style.backgroundColor = "rgba(72, 209, 54, 0.85)";
+			Map3D.PassDay();
 		} else {
-			//readyButton.innerHTML = "Ready";
+			readyText.innerHTML = "Not Ready";
 			readyButton.style.backgroundColor = "rgba(214, 51, 51, 0.85)";
 		}
 	}

@@ -1,7 +1,7 @@
 var THMap = function()
 {
 	//
-}
+};
 
 THMap.prototype = {
 
@@ -21,6 +21,18 @@ THMap.prototype = {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		containerElement.appendChild(this.renderer.domElement);
 
+		// Init the Raycaster
+		this.raycaster = new THREE.Raycaster();
+		this.mousePos = new THREE.Vector2();
+		this.renderer.domElement.addEventListener('mousemove', function(event) {
+			that.mousePos.x = (event.clientX / window.innerWidth) * 2 - 1;
+			that.mousePos.y = -(event.clientY / window.innerHeight) * 2 + 1;
+		});
+		this.renderer.domElement.addEventListener('onclick', function(event) {
+			that._OnClick(event);
+		}, false);
+
+
 		// OnResize
 		window.addEventListener('resize', function(event) {
 			that.renderer.setSize(that.window.innerWidth, that.window.innerHeight);
@@ -31,7 +43,7 @@ THMap.prototype = {
 		// Load 3D objects
 		this._LoadObjects({
 			"scene": "./assets/Objects/scene.json",
-			"ships": "./assets/Objects/pirate_ship.json"
+			"ship": "./assets/Objects/ship.json",
 		}, function(loadedObjects) {
 
 			//save the main scene
@@ -45,10 +57,8 @@ THMap.prototype = {
 				islands[i].scale.y = -islands[i].scale.y;
 			}
 
-			// Add the ships!
-			var ships = loadedObjects["ships"];
-			ships.rotation.y = Math.PI * 3/4;
-			that.scene.add(ships);
+			// Save the ship model
+			that.shipObject = loadedObjects["ship"];
 
 			// Call other initialization Functions
 			that._InitLabels();
@@ -56,6 +66,21 @@ THMap.prototype = {
 			that._InitLights();
 			that._InitCamera();
 			that._InitSky();
+			that._InitPathfinding();
+
+			that.AddShip("A", "trojan-island");
+			that.AddShip("B", "trojan-island");
+			that.AddShip("C", "trojan-island");
+			that.AddShip("D", "trojan-island");
+			that.AddShip("E", "trojan-island");
+			that.AddShip("F", "trojan-island");
+			that.AddShip("G", "trojan-island");
+			that.AddShip("H", "trojan-island");
+			that.AddShip("I", "trojan-island");
+			that.AddShip("J", "trojan-island");
+			that.AddShip("K", "trojan-island");
+			that.AddShip("L", "trojan-island");
+			that.AddShip("M", "trojan-island");
 
 			// Begin rendering loop
 			that._Render();
@@ -185,7 +210,7 @@ THMap.prototype = {
 
 		// water object
 		var oceanGeometry = new THREE.PlaneBufferGeometry(40, 40);
-		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture4.png");
+		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture5.png");
 		this.ocean = new THREE.Water(oceanGeometry, {
 			color: '#41acf4',
 			scale: 1.5,
@@ -368,6 +393,66 @@ THMap.prototype = {
 		controls.update();
 	},
 
+	/**
+	 * A set of map points. See MapPoint.js
+	 */
+	mapPoints: {},
+
+	/**
+	 * Initialize pathfinding and map points, etc.
+	 */
+	_InitPathfinding: function()
+	{
+		var that = this;
+
+		var data = $.ajax({
+			url: "./assets/pathfinding_map.txt",
+			dataType: "text",
+			async: false
+		}).responseText;
+
+		that.pathfinding_map = data.split(/\r\n|\r|\n/); // split by line
+		that.pathfinder = new Pathfinder(that.pathfinding_map); // init Pathfinder
+
+		// Init map points
+		function addMapPoint(id, positions)
+		{
+			that.mapPoints[id] = new MapPoint(that, id, that.pathfinding_map, positions);
+		}
+		addMapPoint("trojan-island", [new Coords(8, 37)]);
+		addMapPoint("bear-island", [new Coords(5, 15)]);
+		addMapPoint("duck-island", [new Coords(12, 7)]);
+		addMapPoint("beaver-island", [new Coords(28, 9), new Coords(32, 9)]);
+		addMapPoint("cardinal-island", [new Coords(38, 18), new Coords(40, 13)]);
+		addMapPoint("bruin-island", [new Coords(26, 39)]);
+		addMapPoint("sea-devil-island", [new Coords(19, 20), new Coords(16, 21)]);
+		addMapPoint("treasure-spot", [new Coords(39, 25)]);
+		addMapPoint("SD1", [new Coords(10, 20)]);
+		addMapPoint("SD2", [new Coords(13, 27)]);
+		addMapPoint("SD3", [new Coords(21, 27)]);
+		addMapPoint("SD4", [new Coords(26, 26)]);
+		addMapPoint("SD5", [new Coords(31, 22)]);
+		addMapPoint("SD6", [new Coords(30, 17)]);
+		addMapPoint("T1", [new Coords(18, 32)]);
+		addMapPoint("T2", [new Coords(30, 30)]);
+		addMapPoint("B1", [new Coords(18, 37)]);
+		addMapPoint("B2", [new Coords(38, 37)]);
+	},
+
+	/**
+	 * Update a value on the pathfinding map.
+	 * @param position The Coords of the position at which to change the map.
+	 * @param status The status to set the position to. Valid values are "empty", "obstacle", and "parked".
+	 */
+	UpdatePathfindingMap(position, status)
+	{
+		var character = (status == "free" ? '.' : (status == "parked" ? '@' : 'x'));
+
+		console.log(character);
+
+		var old = this.pathfinding_map[position.y];
+		this.pathfinding_map[position.y] = old.slice(0, position.x) + character + old.slice(position.x+1);
+	},
 
 	/**
 	 * Create a billboard with a text label.
@@ -379,7 +464,8 @@ THMap.prototype = {
 		// Make Canvas
 		var canvas = this.window.document.createElement("canvas");
 		canvas.width = 1024;
-		canvas.height = 1024;
+		canvas.height = 256;
+		document.body.appendChild(canvas);
 
 		var ctx = canvas.getContext("2d");
 		ctx.font = "Bold 100px Cousine";
@@ -404,7 +490,9 @@ THMap.prototype = {
 			map: texture
 		});
 		var sprite = new THREE.Sprite(material);
-		sprite.scale.set(5, 5, 1);
+		sprite.aspectRatio = canvas.height / canvas.width;
+
+		sprite.scale.set(5, 5/4, 1);
 
 		return sprite;
 	},
@@ -428,6 +516,41 @@ THMap.prototype = {
 	},
 
 	/**
+	 * An array of all the ships on the map, indexed by ID. See Ship.js
+	 */
+	ships: {},
+
+	/**
+	 * Add a ship to the map!
+	 * @param id A unique string ID for this ship, to identify it later.
+	 * @param startingPoint The ID of the MapPoint to start at.
+	 */
+	AddShip(id, startingPoint)
+	{
+		var ship = new Ship(this, id, this.mapPoints[startingPoint]);
+		this.ships[id] = ship;
+	},
+
+	/**
+	 * Move a ship to a new map point.
+	 * @param id The ID of the ship to move.
+	 * @param destination The ID of the destination map point.
+	 */
+	MoveShip: function(shipID, destinationID)
+	{
+		this.ships[shipID].MoveTo(this.mapPoints[destinationID]);
+	},
+
+
+	/**
+	 * Called on click.
+	 * @param event The object passed to the Javascript event handler.
+	 */
+	_OnClick: function(event) {
+		console.log("TODO THMap::_OnClick()");
+	},
+
+	/**
 	 * Enter the rendering/animation loop.
 	 */
 	_Render: function() {
@@ -438,6 +561,31 @@ THMap.prototype = {
 
 			that._AnimateSky();
 			that._AnimateOcean();
+
+			var hoveredShip; // the ship that the mouse is hovering over.
+			var closestShipDist; // the distance from the camera to the closest ship.
+			for (i in that.ships) // Pick a ship to display the label of
+			{
+				var ship = that.ships[i];
+
+				ship.labelVisible = false;
+				that.raycaster.setFromCamera(that.mousePos, that.camera);
+				var intersects = that.raycaster.intersectObject(ship.object, true);
+				for (x in intersects) {
+					if (!intersects[x].object.isSprite) {
+						if (hoveredShip === undefined || intersects[x].distance < closestShipDist) {
+							hoveredShip = ship;
+							closestShipDist = intersects[x].distance;
+						}
+					}
+				}
+			}
+			if (hoveredShip !== undefined) hoveredShip.labelVisible = true;
+			for (i in that.ships) // Update ships
+			{
+				that.ships[i].Update();
+			}
+
 			that._AnimateSpriteScaling();
 
 			that.renderer.render(that.scene, that.camera);
@@ -531,6 +679,18 @@ THMap.prototype = {
 		var t_ocean = Date.now() * 0.001;
 		var h = 0.01;
 		this.ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
+
+		// animate the ships on the ocean
+		for (i in this.ships)
+		{
+			var ship = this.ships[i];
+
+			h = 0.05;
+			ship.object.position.y = h/2*Math.sin(t_ocean) + h/2;
+
+			var a = 0.1;
+			ship.object.rotation.x = -a*Math.cos(t_ocean);
+		}
 	},
 
 	/**
@@ -557,7 +717,7 @@ THMap.prototype = {
 				scale *= Math.pow(-that.camera.getWorldDirection().dot(that.camera.up), 0.3);
 
 				obj.scale.x = scale;
-				obj.scale.y = scale;
+				obj.scale.y = scale * obj.aspectRatio;
 			}
 		});
 	}

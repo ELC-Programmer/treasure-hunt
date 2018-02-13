@@ -17,6 +17,10 @@
 		<script src="js/lib/three/sky.js"></script>
 
 		<script src="js/THMap.js"></script>
+		<script src="js/Ship.js"></script>
+		<script src="js/Pathfinder.js"></script>
+		<script src="js/MapPoint.js"></script>
+		
 		<script src="js/HUD.js"></script>
 
 		<script>
@@ -30,14 +34,41 @@
 				HUD2D.Load(window, document.getElementById("hud-container"));
 			}
 			// Load Fonts before continuing!
+			
 			WebFont.load({
 				custom: {
 					families: ["Cousine"]
-				},
-				active: function() {
-
 				}
 			});
+						
+			// Functions Below for DEBUGGING ONLY!!!!
+			var queue = [];
+			function queueShip(shipID, destinationID)
+			{
+				queue.push({
+					ship: shipID,
+					mapPoint: destinationID
+				});
+			}
+			
+			function moveAll(destinationID)
+			{
+				for (id in Map3D.ships)
+				{
+					Map3D.MoveShip(id, destinationID);
+				}
+			}
+			
+			function moveFromQueue()
+			{
+				while (queue.length > 0)
+				{
+					var current = queue.shift();
+					Map3D.MoveShip(current.ship, current.mapPoint);
+				}
+			}
+			
+			
 		</script>
 	</head>
 	<body>
