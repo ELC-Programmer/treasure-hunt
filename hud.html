@@ -424,7 +424,7 @@
 				</div>
 			</div>
 			<div onclick="expandText(this)" id="captains-message">
-				<p>Nulla ut turpis sit amet nisl lacinia ullamcorper gravida nec ex. Sed tincidunt turpis justo, eget pellentesque nisl cursus non. Morbi dapibus lacus sed tempus gravida. Etiam ut erat vitae eros viverra bibendum. Curabitur dapibus libero quis mi mollis, quis commodo sem lacinia. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus congue in leo sit amet consectetur. Curabitur quis tristique ex. Etiam interdum volutpat lorem eget porttitor. Aliquam non consequat quam, eu vehicula nunc.</p>
+				<p>Nulla ut turpis sit amet nisl lacinia ullamcorper gravida nec ex. Sed tincidunt turpis justo, eget pellentesque nisl cursus non. Morbi dapibus lacus sed tempus gravida.</p>
 			</div>
 		</div>
 	</div>
@@ -433,7 +433,7 @@
 <div id="largeTextDisplay">
 	<img id="chat-exit" onclick="closeExpandedText()" src="./assets/icons/close-button.png" />
 	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. Curabitur vitae semper ligula. Integer lobortis, dolor nec condimentum aliquet, lectus ligula viverra tortor, vitae euismod nibh augue laoreet massa. Quisque tincidunt magna ex, ac dignissim nulla viverra eget. Maecenas sodales, mauris sed iaculis tincidunt, nisl sapien feugiat metus, sit amet ultrices ipsum neque eu mauris. Nam eleifend lobortis enim. In et egestas tellus. Etiam convallis tincidunt dolor pellentesque vestibulum. Cras vitae commodo nibh. Duis a ligula in ligula scelerisque pellentesque a sed leo. Integer quis mauris eget dui hendrerit iaculis. Ut accumsan dui
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. 
 	</p>
 
 </div>
@@ -468,7 +468,6 @@
 	function expandText(element){
 		document.getElementById("largeTextDisplay").style.display = "initial";
 		document.getElementById("largeTextDisplay").childNodes[3].innerHTML = element.querySelector("p").innerHTML.trim();
-
 	}
 	function showAlerts(){
 		setWidth();
