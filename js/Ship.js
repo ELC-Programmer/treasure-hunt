@@ -3,14 +3,16 @@
  * Init a ship
  * @param thmap A pointer back to the THMap.
  * @param id A unique string ID for this ship.
+ * @param isLocal True iff this is the local player's ship.
  * @param startingPoint The MapPoint at which to start.
  */
 
-var Ship = function(thmap, id, startingPoint)
+var Ship = function(thmap, id, isLocal, startingPoint)
 {
 	// save values
 	this.thmap = thmap;
 	this.id = id;
+	this.isLocal = isLocal;
 	this.mapPoint = startingPoint;
 	
 	// spawn at a parking space
@@ -26,14 +28,33 @@ var Ship = function(thmap, id, startingPoint)
 	this.object.rotation.order = "YXZ";
 	thmap.scene.add(this.object);
 	
+	// Color the sails appropriately
+	var sails = this.object.getObjectByName("Sails");
+	sails.material = sails.material.clone();
+	if (this.isLocal) { // Red Sails
+		sails.material.color = new THREE.Color("rgb(134, 2, 4)");
+	} else { // Off-White Sails
+		sails.material.color = new THREE.Color("rgb(200, 200, 180)"); // TODO: this color is kinda gross... idk what would be better, though
+	}
+	
+	// Setup the ship for transparency
+	for (var i in this.object.children)
+	{
+		var obj = this.object.children[i];
+		if (obj.material !== undefined)
+		{
+			// TODO!!!!
+			//obj.material.transparent = true;
+			obj.material.opacity = 1.0;
+		}
+	}
+	
 	// Make a label for the ship
 	this.label = this.thmap._CreateBillboard(this.id);
 	this.label.position.y = 0.4 + Math.random() * 0.01;
 	this.thmap._RegisterSpriteScaling(this.label, 1, 2, 10, 4);
 	this.object.add(this.label);
 	this.labelVisible = false;
-	
-	window.ship = this; // for DEBUGGING!
 };
 
 Ship.prototype = {
@@ -171,8 +192,6 @@ Ship.prototype = {
 					this.traveling = false;
 					this.path = [];
 					this.mapPoint.OccupyParkingSpace(this.id);
-					
-					console.log("ARRIVED!");
 				}
 			}
 		}
@@ -184,6 +203,11 @@ Ship.prototype = {
 		
 		// Update the label.
 		this.label.visible = this.labelVisible;
+		
+		// The ship is only visible if co-located with the local player.
+		var appear = (this.mapPoint == this.thmap.localShip.mapPoint);
+		this.object.visible = appear;
+		
 	},
 	
 	/**

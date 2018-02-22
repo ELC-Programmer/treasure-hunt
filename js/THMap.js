@@ -68,19 +68,19 @@ THMap.prototype = {
 			that._InitSky();
 			that._InitPathfinding();
 		
-			that.AddShip("A", "trojan-island");
-			that.AddShip("B", "trojan-island");
-			that.AddShip("C", "trojan-island");
-			that.AddShip("D", "trojan-island");
-			that.AddShip("E", "trojan-island");
-			that.AddShip("F", "trojan-island");
-			that.AddShip("G", "trojan-island");
-			that.AddShip("H", "trojan-island");
-			that.AddShip("I", "trojan-island");
-			that.AddShip("J", "trojan-island");
-			that.AddShip("K", "trojan-island");
-			that.AddShip("L", "trojan-island");
-			that.AddShip("M", "trojan-island");
+			that.AddShip("A", "trojan-island", true);
+			that.AddShip("B", "trojan-island", false);
+			that.AddShip("C", "trojan-island", false);
+			that.AddShip("D", "trojan-island", false);
+			that.AddShip("E", "trojan-island", false);
+			that.AddShip("F", "trojan-island", false);
+			that.AddShip("G", "trojan-island", false);
+			that.AddShip("H", "trojan-island", false);
+			that.AddShip("I", "trojan-island", false);
+			that.AddShip("J", "trojan-island", false);
+			that.AddShip("K", "trojan-island", false);
+			that.AddShip("L", "trojan-island", false);
+			that.AddShip("M", "trojan-island", false);
 			
 			// Begin rendering loop
 			that._Render();
@@ -176,153 +176,8 @@ THMap.prototype = {
 		// Init fog
 		this.scene.fog = new THREE.Fog( 0xffffff, 10, 1000 );
 
-		/*
-		// SKYBOX
-		var imagePrefix = "assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
-		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
-		var imageSuffix = ".png";
-		var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
-
-		var materialArray = [];
-		for (var i=0; i<6; i++)
-		  materialArray.push(new THREE.MeshBasicMaterial({
-			map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
-			side: THREE.BackSide
-		  }));
-		var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
-		var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
-
-		this.scene.add(skyBox);
-		*/
-	},
-
-	/**
-	 * Initialize the ocean.
-	 */
-	_InitOcean: function()
-	{
-		var that = this;
-
-		// extend ocean floor to horizon:
-		var floor = this.scene.getObjectByName("floor");
-		floor.scale.x = 1000;
-		floor.scale.y = 1000;
-
-		// water object
-		var oceanGeometry = new THREE.PlaneBufferGeometry(40, 40);
-		var oceanTexture = new THREE.TextureLoader().load("assets/Textures/ocean_texture4.png");
-		this.ocean = new THREE.Water(oceanGeometry, {
-			color: '#41acf4',
-			scale: 1.5,
-			flowDirection: new THREE.Vector2(0, 0),
-			textureWidth: 1024,
-			textureHeight: 1024,
-			texture: oceanTexture,
-			reflectivity: 0.6,
-			waterColor: '#41acf4',
-			alpha: 1.0
-
-		} );
-		this.ocean.rotation.x = Math.PI * -0.5;
-		this.ocean.rotation.z = Math.PI;
-		this.scene.add(this.ocean);
-
-		// big water object
-		var bigOceanGeometry = new THREE.Geometry();
-		bigOceanGeometry.vertices.push(new THREE.Vector3(-1000, 0, -1000));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(-1000, 0, 1000));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(-20, 0, 1000));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(20, 0, 1000));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(1000, 0, 1000));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(1000, 0, -1000));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(20, 0, -1000));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(-20, 0, -1000));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(-20, 0, -20));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(-20, 0, 20));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(20, 0, 20));
-		bigOceanGeometry.vertices.push(new THREE.Vector3(20, 0, -20));
-
-		var normal = new THREE.Vector3(0, 1, 0);
-		bigOceanGeometry.faces.push(new THREE.Face3(0, 1, 2, normal));
-		bigOceanGeometry.faces.push(new THREE.Face3(0, 2, 7, normal));
-		// bigOceanGeometry.faces.push(new THREE.Face3(9, 2, 3, normal));
-		// bigOceanGeometry.faces.push(new THREE.Face3(9, 3, 10, normal));
-		// bigOceanGeometry.faces.push(new THREE.Face3(7, 8, 11, normal));
-		// bigOceanGeometry.faces.push(new THREE.Face3(7, 11, 6, normal));
-		// bigOceanGeometry.faces.push(new THREE.Face3(6, 3, 4, normal));
-		// bigOceanGeometry.faces.push(new THREE.Face3(6, 4, 5, normal));
-
-		//addBigOcean(bigOceanGeometry, 0, 0);
-		addBigOcean(new THREE.PlaneBufferGeometry(2000, 2000), 0, 0);
-		//addBigOcean(new THREE.PlaneBufferGeometry(980, 2000), -510, 0);
-		//addBigOcean(new THREE.PlaneBufferGeometry(40, 980), 0, 510);
-		//addBigOcean(new THREE.PlaneBufferGeometry(980, 2000));
-
-		function addBigOcean(geometry, x, z)
-		{
-			var bigOcean = new THREE.Water(geometry, {
-				color: '#41acf4',
-				scale: 100,
-				flowDirection: new THREE.Vector2(0, 0),
-				textureWidth: 1024,
-				textureHeight: 1024,
-				reflectivity: 0.6,
-				waterColor: 0x41acf4,
-				alpha: 1.0
-			} );
-
-			bigOcean.rotation.x = -Math.PI/2;
-			bigOcean.position.x = x;
-			bigOcean.position.z = z;
-			bigOcean.position.y = -0.01;
-
-			that.scene.add(bigOcean);
-
-			return bigOcean;
-		}
-
-		//ocean reflections
-		var geometry = new THREE.SphereGeometry(3000, 60, 40);
-		var uniforms = {
-		  texture: { type: 't', value: THREE.ImageUtils.loadTexture("assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWaterFront2048.png") }
-		};
-
-		var vertexShader = [
-			'varying vec2 vUV;',
-
-			'void main() {',
-			'  vUV = uv;',
-			'  vec4 pos = vec4(position, 1.0);',
-			'  gl_Position = projectionMatrix * modelViewMatrix * pos;',
-			'}'
-		].join("\n");
-
-		var fragmentShader = [
-			'uniform sampler2D texture;',
-			'varying vec2 vUV;',
-
-			'void main() {',
-			'  vec4 sample = texture2D(texture, vUV);',
-			'  gl_FragColor = vec4(sample.xyz, sample.w);',
-			'}'
-		].join("\n");
-
-		var material = new THREE.ShaderMaterial( {
-		  uniforms:       uniforms,
-		  vertexShader:   vertexShader,
-		  fragmentShader: fragmentShader,
-			transparent: true,
-			opacity: 0.5
-		});
-
-		sun = new THREE.Mesh(geometry, material);
-		sun.scale.set(-1, 1, 1);
-		sun.eulerOrder = 'XZY';
-		sun.renderDepth = 1000.0;
-		this.scene.add(sun);
-
-
-		var imagePrefix = "assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
+		// Init SKYBOX
+		var imagePrefix = "assets/Textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDay";
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
 		var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
@@ -344,6 +199,47 @@ THMap.prototype = {
 	},
 
 	/**
+	 * Initialize the ocean.
+	 */
+	_InitOcean: function()
+	{
+		var waterColor = 0x013D57;
+		
+		//extend ocean floor to horizon:
+		var floor = this.scene.getObjectByName("floor");
+		floor.scale.x = 1000;
+		floor.scale.y = 1000;
+		floor.material.color = new THREE.Color(waterColor);
+
+		// Make the water itself
+		var waterGeometry = new THREE.PlaneBufferGeometry( 2000, 2000 );
+
+		water = new THREE.Water(
+			waterGeometry,
+			{
+				textureWidth: 512,
+				textureHeight: 512,
+				waterNormals: new THREE.TextureLoader().load( 'assets/Textures/waternormals.jpg', function ( texture ) {
+					texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+				}),
+				alpha: 0.7,
+				//sunDirection: THREE.Vector3(1, 1, 1),
+				sunColor: 0x000000,
+				waterColor: waterColor,
+				distortionScale: 0.08,
+				fog: true,
+				overlayTexture: new THREE.TextureLoader().load("assets/Textures/ocean_texture_trans.png")
+			}
+		);
+		water.material.uniforms.size.value = 500;
+
+		water.rotation.x = - Math.PI / 2;
+
+		this.ocean = water;
+		this.scene.add( water );
+	},
+
+	/**
 	 * Initialize the lights.
 	 */
 	_InitLights: function()
@@ -353,15 +249,19 @@ THMap.prototype = {
 		this.sunlight.position.set(1, 1, -1);
 		this.scene.add(this.sunlight);
 
+		this.ambient_light = new THREE.PointLight();
+		this.ambient_light.position.set(0, 10, 0);
+		this.scene.add(this.ambient_light);
+		
 		// counter light
-		this.counter_light = new THREE.DirectionalLight();
+		this.counter_light = new THREE.PointLight();
 		this.counter_light.position.set(-1, -1, 1);
-		this.scene.add(this.counter_light);
+		//this.scene.add(this.counter_light);
 
 		// ambient light
 		this.moonlight = new THREE.PointLight(0x8888ff);
 		this.moonlight.position.set(0, 10, 0);
-		this.scene.add(this.moonlight);
+		//this.scene.add(this.moonlight);
 
 	},
 
@@ -447,9 +347,7 @@ THMap.prototype = {
 	UpdatePathfindingMap(position, status)
 	{
 		var character = (status == "free" ? '.' : (status == "parked" ? '@' : 'x'));
-		
-		console.log(character);
-		
+				
 		var old = this.pathfinding_map[position.y];
 		this.pathfinding_map[position.y] = old.slice(0, position.x) + character + old.slice(position.x+1);
 	},
@@ -524,11 +422,13 @@ THMap.prototype = {
 	 * Add a ship to the map!
 	 * @param id A unique string ID for this ship, to identify it later.
 	 * @param startingPoint The ID of the MapPoint to start at.
+	 * @param isLocal True iff this is the local player's ship.
 	 */
-	AddShip(id, startingPoint)
+	AddShip(id, startingPoint, isLocal)
 	{
-		var ship = new Ship(this, id, this.mapPoints[startingPoint]);
+		var ship = new Ship(this, id, isLocal, this.mapPoints[startingPoint]);
 		this.ships[id] = ship;
+		if (isLocal) this.localShip = ship;
 	},
 	
 	/**
@@ -554,7 +454,7 @@ THMap.prototype = {
 	 * Enter the rendering/animation loop.
 	 */
 	_Render: function() {
-
+				
 		var that = this;
 		function animate() {
 			requestAnimationFrame(animate);
@@ -652,9 +552,12 @@ THMap.prototype = {
 		this.counter_light.position.y = this.sunlight.position.y;
 		this.counter_light.position.z = -this.sunlight.position.z;
 
-		this.sunlight.intensity = Math.sin(-theta);
-		this.counter_light.intensity = 0.3*this.sunlight.intensity;
+		
+		this.sunlight.intensity = 1.2*Math.sin(-theta);
+		this.counter_light.intensity = 0.2*this.sunlight.intensity;
 
+		this.ambient_light.intensity = 0.5 * this.sunlight.intensity;
+		
 		this.moonlight.intensity = Math.pow(Math.max(0.3, Math.sin(theta)), 0.05);
 
 		// Update sprite lighting
@@ -675,7 +578,10 @@ THMap.prototype = {
 	 * Animate the ocean.
 	 */
 	_AnimateOcean: function() {
-		// animate ocean
+		// animate water (waves)
+		this.ocean.material.uniforms.time.value += 1.0 / 60.0 * 0.5;
+		
+		// animate ocean (tides)
 		var t_ocean = Date.now() * 0.001;
 		var h = 0.01;
 		this.ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
