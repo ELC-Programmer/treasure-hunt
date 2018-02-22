@@ -20,7 +20,7 @@ THMap.prototype = {
 		this.renderer.setPixelRatio( window.devicePixelRatio );
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		containerElement.appendChild(this.renderer.domElement);
-		
+
 		// Init the Raycaster
 		this.raycaster = new THREE.Raycaster();
 		this.mousePos = new THREE.Vector2();
@@ -31,8 +31,8 @@ THMap.prototype = {
 		this.renderer.domElement.addEventListener('onclick', function(event) {
 			that._OnClick(event);
 		}, false);
-		
-		
+
+
 		// OnResize
 		window.addEventListener('resize', function(event) {
 			that.renderer.setSize(that.window.innerWidth, that.window.innerHeight);
@@ -43,7 +43,7 @@ THMap.prototype = {
 		// Load 3D objects
 		this._LoadObjects({
 			"scene": "./assets/Objects/scene.json",
-			"ship": "./assets/Objects/ship.json",			
+			"ship": "./assets/Objects/ship.json",
 		}, function(loadedObjects) {
 
 			//save the main scene
@@ -56,10 +56,10 @@ THMap.prototype = {
 				islands[i].scale.x = -islands[i].scale.x;
 				islands[i].scale.y = -islands[i].scale.y;
 			}
-			
+
 			// Save the ship model
-			that.shipObject = loadedObjects["ship"];			
-		
+			that.shipObject = loadedObjects["ship"];
+
 			// Call other initialization Functions
 			that._InitLabels();
 			that._InitOcean();
@@ -214,7 +214,7 @@ THMap.prototype = {
 		// Make the water itself
 		var waterGeometry = new THREE.PlaneBufferGeometry( 2000, 2000 );
 
-		water = new THREE.Water(
+		var water = new THREE.Water(
 			waterGeometry,
 			{
 				textureWidth: 512,
@@ -292,28 +292,28 @@ THMap.prototype = {
 		controls.maxPanZ = 10;
 		controls.update();
 	},
-	
+
 	/**
 	 * A set of map points. See MapPoint.js
 	 */
 	mapPoints: {},
-	
+
 	/**
 	 * Initialize pathfinding and map points, etc.
 	 */
 	_InitPathfinding: function()
 	{
 		var that = this;
-		
+
 		var data = $.ajax({
 			url: "./assets/pathfinding_map.txt",
 			dataType: "text",
 			async: false
 		}).responseText;
-				
-		that.pathfinding_map = data.split(/\r\n|\r|\n/); // split by line			
+
+		that.pathfinding_map = data.split(/\r\n|\r|\n/); // split by line
 		that.pathfinder = new Pathfinder(that.pathfinding_map); // init Pathfinder
-		
+
 		// Init map points
 		function addMapPoint(id, positions)
 		{
@@ -338,7 +338,7 @@ THMap.prototype = {
 		addMapPoint("B1", [new Coords(18, 37)]);
 		addMapPoint("B2", [new Coords(38, 37)]);
 	},
-	
+
 	/**
 	 * Update a value on the pathfinding map.
 	 * @param position The Coords of the position at which to change the map.
@@ -347,7 +347,7 @@ THMap.prototype = {
 	UpdatePathfindingMap(position, status)
 	{
 		var character = (status == "free" ? '.' : (status == "parked" ? '@' : 'x'));
-				
+
 		var old = this.pathfinding_map[position.y];
 		this.pathfinding_map[position.y] = old.slice(0, position.x) + character + old.slice(position.x+1);
 	},
@@ -389,7 +389,7 @@ THMap.prototype = {
 		});
 		var sprite = new THREE.Sprite(material);
 		sprite.aspectRatio = canvas.height / canvas.width;
-		
+
 		sprite.scale.set(5, 5/4, 1);
 
 		return sprite;
@@ -417,7 +417,7 @@ THMap.prototype = {
 	 * An array of all the ships on the map, indexed by ID. See Ship.js
 	 */
 	ships: {},
-	
+
 	/**
 	 * Add a ship to the map!
 	 * @param id A unique string ID for this ship, to identify it later.
@@ -430,7 +430,7 @@ THMap.prototype = {
 		this.ships[id] = ship;
 		if (isLocal) this.localShip = ship;
 	},
-	
+
 	/**
 	 * Move a ship to a new map point.
 	 * @param id The ID of the ship to move.
@@ -441,7 +441,7 @@ THMap.prototype = {
 		this.ships[shipID].MoveTo(this.mapPoints[destinationID]);
 	},
 
-	
+
 	/**
 	 * Called on click.
 	 * @param event The object passed to the Javascript event handler.
@@ -449,7 +449,7 @@ THMap.prototype = {
 	_OnClick: function(event) {
 		console.log("TODO THMap::_OnClick()");
 	},
-	 
+
 	/**
 	 * Enter the rendering/animation loop.
 	 */
@@ -461,13 +461,13 @@ THMap.prototype = {
 
 			that._AnimateSky();
 			that._AnimateOcean();
-			
+
 			var hoveredShip; // the ship that the mouse is hovering over.
 			var closestShipDist; // the distance from the camera to the closest ship.
 			for (i in that.ships) // Pick a ship to display the label of
 			{
 				var ship = that.ships[i];
-				
+
 				ship.labelVisible = false;
 				that.raycaster.setFromCamera(that.mousePos, that.camera);
 				var intersects = that.raycaster.intersectObject(ship.object, true);
@@ -485,9 +485,9 @@ THMap.prototype = {
 			{
 				that.ships[i].Update();
 			}
-			
+
 			that._AnimateSpriteScaling();
-			
+
 			that.renderer.render(that.scene, that.camera);
 		}
 		animate();
@@ -585,15 +585,15 @@ THMap.prototype = {
 		var t_ocean = Date.now() * 0.001;
 		var h = 0.01;
 		this.ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
-		
+
 		// animate the ships on the ocean
 		for (i in this.ships)
 		{
 			var ship = this.ships[i];
-			
+
 			h = 0.05;
 			ship.object.position.y = h/2*Math.sin(t_ocean) + h/2;
-			
+
 			var a = 0.1;
 			ship.object.rotation.x = -a*Math.cos(t_ocean);
 		}
