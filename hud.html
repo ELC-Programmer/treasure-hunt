@@ -30,7 +30,7 @@
 		</div>
 	</div>
 	<div id="capacity" class="sigroups">
-		<image class="status-indicator-image" src="assets/icons/box.png" />
+		<image class="status-indicator-image" src="assets/icons/barrel.png" />
 		<div class="status-indicators" id="capacity-text">
 			12/30
 		</div>
@@ -248,7 +248,7 @@
 		<div id="buy-water">
 			<div class="buy-items-line">
 				<div class="buy-title"><p>Buy Water</p></div>
-				<div class="cost"><p>$25 / unit</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -258,7 +258,7 @@
 		<div id="buy-gas">
 			<div class="buy-items-line">
 				<div class="buy-title"><p>Buy Gas</p></div>
-				<div class="cost"><p>$25 / unit</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -424,7 +424,7 @@
 				</div>
 			</div>
 			<div onclick="expandText(this)" id="captains-message">
-				<p>Nulla ut turpis sit amet nisl lacinia ullamcorper gravida nec ex. Sed tincidunt turpis justo, eget pellentesque nisl cursus non. Morbi dapibus lacus sed tempus gravida. Etiam ut erat vitae eros viverra bibendum. Curabitur dapibus libero quis mi mollis, quis commodo sem lacinia. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Vivamus congue in leo sit amet consectetur. Curabitur quis tristique ex. Etiam interdum volutpat lorem eget porttitor. Aliquam non consequat quam, eu vehicula nunc.</p>
+				<p>Nulla ut turpis sit amet nisl lacinia ullamcorper gravida nec ex. Sed tincidunt turpis justo, eget pellentesque nisl cursus non. Morbi dapibus lacus sed tempus gravida.</p>
 			</div>
 		</div>
 	</div>
@@ -433,10 +433,12 @@
 <div id="largeTextDisplay">
 	<img id="chat-exit" onclick="closeExpandedText()" src="./assets/icons/close-button.png" />
 	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. Curabitur vitae semper ligula. Integer lobortis, dolor nec condimentum aliquet, lectus ligula viverra tortor, vitae euismod nibh augue laoreet massa. Quisque tincidunt magna ex, ac dignissim nulla viverra eget. Maecenas sodales, mauris sed iaculis tincidunt, nisl sapien feugiat metus, sit amet ultrices ipsum neque eu mauris. Nam eleifend lobortis enim. In et egestas tellus. Etiam convallis tincidunt dolor pellentesque vestibulum. Cras vitae commodo nibh. Duis a ligula in ligula scelerisque pellentesque a sed leo. Integer quis mauris eget dui hendrerit iaculis. Ut accumsan dui
+		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. 
 	</p>
 
 </div>
+
+<script src="js/Howler/howler.core.js"></script>
 
 <script>
 	var chatIsClosed = true;
@@ -447,6 +449,7 @@
 	var buySellWindow = document.getElementById("buy-sell-window");
 	var captainWindow = document.getElementById("captain-window");
 	var tradeWindow = document.getElementById("trade-window");
+
 	// respond to user interaction through this script
 	function closeChat(){
 		document.getElementById("open-chat-container").style.display = "none";
@@ -468,7 +471,6 @@
 	function expandText(element){
 		document.getElementById("largeTextDisplay").style.display = "initial";
 		document.getElementById("largeTextDisplay").childNodes[3].innerHTML = element.querySelector("p").innerHTML.trim();
-
 	}
 	function showAlerts(){
 		setWidth();
@@ -485,6 +487,7 @@
 			readyText.innerHTML = "Ready";
 			readyButton.style.backgroundColor = "rgba(72, 209, 54, 0.85)";
 			Map3D.PassDay();
+			buoyBells.play(); //error, need for way to have a callback on passday
 		} else {
 			readyText.innerHTML = "Not Ready";
 			readyButton.style.backgroundColor = "rgba(214, 51, 51, 0.85)";
@@ -541,6 +544,7 @@
 	function showCaptainsMessage(){
 		document.getElementById("captains-buttons-container").style.display = "none";
 		document.getElementById("captains-message").style.display = "flex";
+		piratesArrgh.play();
 	}
 	function setWidth(){
 			if(!chatIsClosed){
@@ -564,4 +568,42 @@
 				tradeWindow.style.left = windowWidthWhenChatIsClosed[1];
 			}
 	}
+
+	//sounds
+
+	var piratesArrgh = new Audio('assets/Sounds/pirate-arrgh.mp3');
+	var birdSounds = new Audio('assets/Sounds/bird-sounds.mp3');
+	var stormSounds = new Audio('assets/Sounds/storm-sounds.mp3');
+	var buoyBells = new Audio('assets/Sounds/buoy-bells.mp3');
+	var ambientNoiseVolume = 0.2;
+	var ambientNoisePlay = true;
+	//play ambient noise
+	var ambientNoise = new Howl({
+	  src: ['assets/Sounds/ambient-noise.mp3'],
+	  autoplay: true,
+	  loop: true,
+	  volume: ambientNoiseVolume
+	});
+	var stormAmbientNoise = new Howl({
+	  src: ['assets/Sounds/storm-ambient-noise.mp3'],
+	  autoplay: false,
+	  loop: true,
+	  volume: ambientNoiseVolume
+	});
+	function lowerAmbientSound(){
+		ambientNoise.volume(0.05);
+	}
+	function restoreAmbientSound(){
+		ambientNoise.volume(ambientNoiseVolume);
+		ambientNoise.play();
+
+	}
+	function startStormAmbientNoise(){
+		stormAmbientNoise.play();
+	}
+	function stopStormAmbientNoise(){
+		stormAmbientNoise.stop();
+	}
+
 </script>
+
