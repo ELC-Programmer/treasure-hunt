@@ -177,13 +177,13 @@ THMap.prototype = {
 		uniforms.sunPosition.value.copy(this.sun.position);
 
 		// Init fog
-		this.scene.fog = new THREE.Fog( 0xffffff, 10, 1000 );
+		// this.scene.fog = new THREE.Fog( 0xffffff, 10, 1000 );
 
 		// Init SKYBOX
-		var imagePrefix = "assets/Textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDay";
+		var imagePrefix = "assets/Textures/SkyboxSet1/DarkStormy/DarkStormy";
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
-		var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
+		var skyGeometry = new THREE.CubeGeometry(10000,10000,10000);
 
 		var materialArray = [];
 		for (var i=0; i<6; i++)
@@ -211,8 +211,8 @@ THMap.prototype = {
 		
 		//extend ocean floor to horizon:
 		var floor = this.scene.getObjectByName("floor");
-		floor.scale.x = 1000;
-		floor.scale.y = 1000;
+		floor.scale.x = 500;
+		floor.scale.y = 500;
 		floor.material.color = new THREE.Color(waterColor);
 		this.oceanFloor = floor;
 		
@@ -672,7 +672,7 @@ THMap.prototype = {
 		// Darken the sky at night!
 		for (var i in this.skyBox.material)
 		{
-			this.skyBox.material[i].opacity = Math.min(0.7, THREE.Math.mapLinear(Math.sin(-theta),
+			this.skyBox.material[i].opacity = Math.min(1, THREE.Math.mapLinear(Math.sin(-theta),
 				-1, 1,
 				-0.5, 1
 			));
@@ -689,9 +689,9 @@ THMap.prototype = {
 		// });
 
 		// Update the fog color
-		var time = (theta + Math.PI/2) % (2*Math.PI); // 0 is midnight, PI is noon, 2PI is midnight
-		var color = Math.pow(0.5*Math.cos(time) + 0.5, 3);
-		this.scene.fog.color = new THREE.Color(color, color, color);
+		// var time = (theta + Math.PI/2) % (2*Math.PI); // 0 is midnight, PI is noon, 2PI is midnight
+		// var color = Math.pow(0.5*Math.cos(time) + 0.5, 3);
+		// this.scene.fog.color = new THREE.Color(color, color, color);
 	 },
 
 	/**
