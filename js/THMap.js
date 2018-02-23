@@ -184,7 +184,7 @@ THMap.prototype = {
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
 		var skyGeometry = new THREE.CubeGeometry(10000,10000,10000);
-
+		
 		var materialArray = [];
 		for (var i=0; i<6; i++)
 		  materialArray.push(new THREE.MeshBasicMaterial({
@@ -199,7 +199,18 @@ THMap.prototype = {
 		this.skyBox = skyBox;
 		
 		this.scene.add(skyBox);
-
+		
+		// Init lightning box!
+		var lightningBoxGeometry = new THREE.CubeGeometry(900, 900, 900);
+		var lightningBoxMaterial = new THREE.MeshBasicMaterial({
+			color: 0xffffff,
+			side: THREE.BackSide,
+			transparent: true,
+			opacity: 0.0
+		});
+		this.lightningBox = new THREE.Mesh(lightningBoxGeometry, lightningBoxMaterial);
+		this.scene.add(this.lightningBox);
+		
 	},
 
 	/**
@@ -257,6 +268,10 @@ THMap.prototype = {
 		this.ambient_light = new THREE.PointLight();
 		this.ambient_light.position.set(0, 10, 0);
 		this.scene.add(this.ambient_light);
+		
+		this.lightning = new THREE.PointLight();
+		this.lightning.position.set(100, 100, 100);
+		this.scene.add(this.lightning);
 		
 		// counter light
 		// this.counter_light = new THREE.PointLight();
@@ -678,6 +693,9 @@ THMap.prototype = {
 			));
 		}
 		
+		// Lightning!
+		this._AnimateLightning();
+		
 		// this.moonlight.intensity = Math.pow(Math.max(0.3, Math.sin(theta)), 0.05);
 
 		// Update sprite lighting
@@ -693,6 +711,38 @@ THMap.prototype = {
 		// var color = Math.pow(0.5*Math.cos(time) + 0.5, 3);
 		// this.scene.fog.color = new THREE.Color(color, color, color);
 	 },
+	 
+	/**
+	 * Start a lightning animation.
+	 */
+	Lightning: function()
+	{
+		this.lightningStartTime = Date.now();
+	},
+	
+	/**
+	 * Animate lightning (call every frame).
+	 */
+	_AnimateLightning: function()
+	{
+		// if not in lighting
+		this.lightningBox.material.opacity = 0;
+		this.lightning.intensity = 0;
+		
+		var lightningLength = 300;
+		if (this.lightningStartTime !== undefined)
+		{
+			var t = Date.now() - this.lightningStartTime;
+			t /= lightningLength; // normalized between 0 and 1
+			
+			// if in lightning
+			if (t < 1)
+			{
+				this.lightningBox.material.opacity = -2*(t)*(t-1); //-15*(t)*(t-1)*Math.pow(t-0.4, 2);
+				this.lightning.intensity = -8*(t)*(t-1); //-60*(t)*(t-1)*Math.pow(t-0.4, 2);
+			}
+		}
+	},
 
 	/**
 	 * Animate the ocean.
