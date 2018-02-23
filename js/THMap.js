@@ -60,6 +60,7 @@ THMap.prototype = {
 			// Save the ship model
 			that.shipObject = loadedObjects["ship"];
 
+
 			// Call other initialization Functions
 			that._InitLabels();
 			that._InitOcean();
@@ -67,7 +68,17 @@ THMap.prototype = {
 			that._InitCamera();
 			that._InitSky();
 			that._InitPathfinding();
-		
+
+	// that.AnimateRain();
+	// that.scene.rain = loadedObjects["rain"];
+	// that.init_rain();
+	// that.scene.add(loadedObjects["rain"]);
+
+	var geometry = new THREE.CubeGeometry( 200, 200, 200 );
+    var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
+    var mesh = new THREE.Mesh( geometry, material );
+    that.scene.add(mesh);
+
 			that.AddShip("A", "trojan-island", true);
 			that.AddShip("B", "trojan-island", false);
 			that.AddShip("C", "trojan-island", false);
@@ -100,10 +111,21 @@ THMap.prototype = {
 		for (let key in filenames)
 		{
 			var filename = filenames[key];
-			loader.load(filename, function(loadedScene) {
-				out[key] = loadedScene;
-				finishLoading();
-			});
+			if(filename.substr(filename.length-5) == '.json'){ //load json objects
+				loader.load(filename, function(loadedScene) {
+					out[key] = loadedScene;
+					finishLoading();
+				});
+			}
+			else if(filename.substr(filename.length-4) == '.obj'){ //load obj objects
+				new THREE.OBJLoader().load( filename, function(loadedScene){
+					out[key] = loadedScene;
+					finishLoading();
+				} );
+			}
+			else{ //else error
+				console.log("Object load error.");
+			}
 		}
 
 		function finishLoading()
@@ -136,6 +158,11 @@ THMap.prototype = {
 				obj.add(bb);
 			}
 		});
+	},
+
+	//initialize rain
+	_InitRain: function(){
+		console.log(that.scene.rain);
 	},
 
 	/**
@@ -177,7 +204,7 @@ THMap.prototype = {
 		this.scene.fog = new THREE.Fog( 0xffffff, 10, 1000 );
 
 		// Init SKYBOX
-		var imagePrefix = "assets/Textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDay";
+		var imagePrefix = "assets/Textures/SkyboxSet1/DarkStormy/DarkStormy";
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
 		var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
@@ -454,10 +481,8 @@ THMap.prototype = {
 	 * Enter the rendering/animation loop.
 	 */
 	_Render: function() {
-				
 		var that = this;
 		function animate() {
-			requestAnimationFrame(animate);
 
 			that._AnimateSky();
 			that._AnimateOcean();
@@ -487,7 +512,19 @@ THMap.prototype = {
 			}
 
 			that._AnimateSpriteScaling();
+			
 
+			// TWEEN.update(); //rain method 1 
+            // var vertices = that.cloud.geometry.vertices; //rain method 2 
+            // vertices.forEach(function (v) {
+            //     v.y = v.y - (v.velocityY);
+            //     v.x = v.x - (v.velocityX);
+
+            //     if (v.y <= 0) v.y = 60;
+            //     if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
+            // });
+            // that.cloud
+			requestAnimationFrame(animate);
 			that.renderer.render(that.scene, that.camera);
 		}
 		animate();
@@ -553,7 +590,7 @@ THMap.prototype = {
 		this.counter_light.position.z = -this.sunlight.position.z;
 
 		
-		this.sunlight.intensity = 1.2*Math.sin(-theta);
+		this.sunlight.intensity = 1.2*Math.sin(-theta)*.7;
 		this.counter_light.intensity = 0.2*this.sunlight.intensity;
 
 		this.ambient_light.intensity = 0.5 * this.sunlight.intensity;
@@ -626,7 +663,85 @@ THMap.prototype = {
 				obj.scale.y = scale * obj.aspectRatio;
 			}
 		});
-	}
+	},
+/*
+	AnimateRain: function() {	
+		var material = new THREE.SpriteMaterial( {
+			map: new THREE.CanvasTexture( this.generateSprite() ),
+			blending: THREE.AdditiveBlending
+		} );
 
+		for ( var i = 0; i < 1500; i++ ) {
+			particle = new THREE.Sprite( material );
+			this.initParticle( particle, 3 );
+			this.scene.add( particle );
+		}
+	},
+	generateSprite: function() {
+		var canvas = document.createElement( 'canvas' );
+		canvas.width = 32;
+		canvas.height = 16;
+		var context = canvas.getContext( '2d' );
+		var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
+		gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
+		gradient.addColorStop( 0.2, 'rgba(0,255,255,1)' );
+		gradient.addColorStop( 0.4, 'rgba(0,0,64,1)' );
+		gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
+		context.fillStyle = gradient;
+		context.fillRect( 0, 0, canvas.width, canvas.height );
+		return canvas;
+	},
+	initParticle: function( particle, delay ) {
+		var particle = this instanceof THREE.Sprite ? this : particle;
+		var delay = delay !== undefined ? delay : 0;
+		var startY = Math.random()*50-25;
+		particle.position.set( Math.random()*50-25, startY, Math.random()*50-25 );
+		particle.scale.x = particle.scale.y = 0.5;
+		tween = new TWEEN.Tween( particle.position )
+			.delay( delay )
+			.to( { x: particle.position.x, y: -10, z: particle.position.z }, 10000 )
+			.easing(TWEEN.Easing.Quadratic.Out)
+			.onUpdate(function() { 
+				if(particle.position.y == -10){ particle.position.y = startY; }
+        	});
+        tween.chain(tween);
+        tween.start();
+	},
+	//another way:
+	init_rain : function() {
+        this.cloud = null;
+        var that = this;
 
+        function createPointCloud(size, transparent, opacity, sizeAttenuation, color, range) {
+
+            var texture = THREE.ImageUtils.loadTexture("temp/raindrop-3.png");
+            var geom = new THREE.Geometry();
+
+            var material = new THREE.ParticleBasicMaterial({
+                size: size,
+                transparent: transparent,
+                opacity: opacity,
+                map: texture,
+                blending: THREE.AdditiveBlending,
+                sizeAttenuation: sizeAttenuation,
+                color: color
+            });
+
+            for (var i = 0; i < 1500; i++) {
+                var particle = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range * 1.5, Math.random() * range - range / 2);
+                particle.velocityY = 0.1 + Math.random() / 5;
+                particle.velocityX = (Math.random() - 0.5) / 3;
+                geom.vertices.push(particle);
+            }
+
+            that.cloud = new THREE.ParticleSystem(geom, material);
+            that.cloud.sortParticles = true;
+            // console.log("here",that.cloud);
+            that.scene.add(that.cloud);
+        }
+
+        var size = .3, transparent = true, opacity = 0.6, color = 0xffffff, sizeAttenuation = true, range = 30;
+        createPointCloud(size, transparent, opacity, sizeAttenuation, color, range);
+
+    }*/
 };
