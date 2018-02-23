@@ -28,8 +28,11 @@ THMap.prototype = {
 			that.mousePos.x = (event.clientX / window.innerWidth) * 2 - 1;
 			that.mousePos.y = -(event.clientY / window.innerHeight) * 2 + 1;
 		});
-		this.renderer.domElement.addEventListener('onclick', function(event) {
-			that._OnClick(event);
+		this.renderer.domElement.addEventListener('mousedown', function(event) {
+			that._OnMouseDown(event);
+		}, false);
+		this.renderer.domElement.addEventListener('click', function(event) {
+			that._OnMouseUp(event);
 		}, false);
 
 
@@ -60,7 +63,6 @@ THMap.prototype = {
 			// Save the ship model
 			that.shipObject = loadedObjects["ship"];
 
-
 			// Call other initialization Functions
 			that._InitLabels();
 			that._InitOcean();
@@ -68,17 +70,7 @@ THMap.prototype = {
 			that._InitCamera();
 			that._InitSky();
 			that._InitPathfinding();
-
-	// that.AnimateRain();
-	// that.scene.rain = loadedObjects["rain"];
-	// that.init_rain();
-	// that.scene.add(loadedObjects["rain"]);
-
-	var geometry = new THREE.CubeGeometry( 200, 200, 200 );
-    var material = new THREE.MeshBasicMaterial( { color: 0x000000 } );
-    var mesh = new THREE.Mesh( geometry, material );
-    that.scene.add(mesh);
-
+		
 			that.AddShip("A", "trojan-island", true);
 			that.AddShip("B", "trojan-island", false);
 			that.AddShip("C", "trojan-island", false);
@@ -149,11 +141,6 @@ THMap.prototype = {
 		});
 	},
 
-	//initialize rain
-	_InitRain: function(){
-		console.log(that.scene.rain);
-	},
-
 	/**
 	 * Initialize the skybox.
 	 */
@@ -193,7 +180,7 @@ THMap.prototype = {
 		this.scene.fog = new THREE.Fog( 0xffffff, 10, 1000 );
 
 		// Init SKYBOX
-		var imagePrefix = "assets/Textures/SkyboxSet1/DarkStormy/DarkStormy";
+		var imagePrefix = "assets/Textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDay";
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
 		var skyGeometry = new THREE.CubeGeometry(1000,1000,1000);
@@ -204,12 +191,13 @@ THMap.prototype = {
 			map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
 			side: THREE.BackSide,
 			transparent: true,
-			opacity: 0.5,
-			alpha: 1.0
+			opacity: 0.5
 		  }));
 		var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
 		var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
 
+		this.skyBox = skyBox;
+		
 		this.scene.add(skyBox);
 
 	},
@@ -226,7 +214,8 @@ THMap.prototype = {
 		floor.scale.x = 1000;
 		floor.scale.y = 1000;
 		floor.material.color = new THREE.Color(waterColor);
-
+		this.oceanFloor = floor;
+		
 		// Make the water itself
 		var waterGeometry = new THREE.PlaneBufferGeometry( 2000, 2000 );
 
@@ -270,13 +259,13 @@ THMap.prototype = {
 		this.scene.add(this.ambient_light);
 		
 		// counter light
-		this.counter_light = new THREE.PointLight();
-		this.counter_light.position.set(-1, -1, 1);
+		// this.counter_light = new THREE.PointLight();
+		// this.counter_light.position.set(-1, -1, 1);
 		//this.scene.add(this.counter_light);
 
 		// ambient light
-		this.moonlight = new THREE.PointLight(0x8888ff);
-		this.moonlight.position.set(0, 10, 0);
+		// this.moonlight = new THREE.PointLight(0x8888ff);
+		// this.moonlight.position.set(0, 10, 0);
 		//this.scene.add(this.moonlight);
 
 	},
@@ -307,6 +296,8 @@ THMap.prototype = {
 		controls.minPanZ = -10;
 		controls.maxPanZ = 10;
 		controls.update();
+		
+		window.orbiter = controls;
 	},
 
 	/**
@@ -333,7 +324,12 @@ THMap.prototype = {
 		// Init map points
 		function addMapPoint(id, positions)
 		{
-			that.mapPoints[id] = new MapPoint(that, id, that.pathfinding_map, positions);
+			var object = that.scene.getObjectByName(id);
+			if (object === undefined) {
+				object = that.scene.getObjectByName("Label:" + id);
+			}
+			
+			that.mapPoints[id] = new MapPoint(that, id, that.pathfinding_map, positions, object);
 		}
 		addMapPoint("trojan-island", [new Coords(8, 37)]);
 		addMapPoint("bear-island", [new Coords(5, 15)]);
@@ -457,21 +453,116 @@ THMap.prototype = {
 		this.ships[shipID].MoveTo(this.mapPoints[destinationID]);
 	},
 
-
+	/**
+	 * Called on mousedown.
+	 * @param event The object passed to the Javascript event handler.
+	 */
+	_OnMouseDown: function(event) {
+		this.mouseDownPos = this.mousePos.clone();
+	},
+	
+	/**
+	 * Called on mouseup.
+	 * @param event The object passed to the Javascript event handler.
+	 */
+	_OnMouseUp: function(event) {
+		
+		var threshhold = 0.1; // fraction of screen
+		
+		if (this.mousePos.distanceTo(this.mouseDownPos) < threshhold) {
+			this._OnClick(event);
+		}
+	},
+	
 	/**
 	 * Called on click.
 	 * @param event The object passed to the Javascript event handler.
 	 */
 	_OnClick: function(event) {
-		console.log("TODO THMap::_OnClick()");
+		console.log("THMap::_OnClick()");
+		
+		this.raycaster.setFromCamera(this.mousePos, this.camera);
+		
+		var closestMapPointClicked;
+		var closestMapPointDistance = Infinity;
+		for (var id in this.mapPoints)
+		{ // find what map point we're clicking
+			var mapPoint = this.mapPoints[id];
+			
+			if (mapPoint.selectable) // with this code, you can select map points that are behind other (unselectable) map points. I think this is okay.
+			{
+				var dist = mapPoint.Intersect(this.raycaster);
+				if (dist && dist < closestMapPointDistance) {
+					closestMapPointDistance = dist;
+					closestMapPointClicked = mapPoint;
+				}
+			}
+		}
+		
+		// check that the intersection isn't under the ocean floor
+		var intersects = this.raycaster.intersectObject(this.oceanFloor, false);
+		if (intersects.length > 0 && intersects[0].distance < closestMapPointDistance)
+			return; // the click wasn't meaningful
+		
+		if (closestMapPointClicked !== undefined && closestMapPointClicked.selectable == true)
+		{ // then update the selection
+			this.SetSelectedMapPoint(closestMapPointClicked.id);
+		}
+	},
+	
+	/**
+	 * Set the selectable map points.
+	 * @param ids An array of map point IDs that are to be selectable. All others will be made unselectable.
+	 */
+	SetSelectableMapPoints: function(ids) {
+		// make all map points unselectable
+		for (var i in this.mapPoints)
+		{
+			this.mapPoints[i].selectable = false;
+		}
+		
+		// make the specified map points selectable
+		for (var i in ids)
+		{
+			var id = ids[i];
+			
+			this.mapPoints[id].selectable = true;
+		}
+	},
+	
+	/**
+	 * Selected MapPoint, or false if no selection
+	 */
+	selectedMapPoint: false,
+	
+	/**
+	 * Set the selected map point.
+	 * @param id The ID of the map point to be selected, or false to simply deselect all.
+	 */
+	SetSelectedMapPoint: function(id) {
+		// deselect all map points
+		for (var i in this.mapPoints)
+		{
+			this.mapPoints[i].selected = false;
+		}
+		
+		if (id)
+		{	// select this map point
+			this.selectedMapPoint = this.mapPoints[id];
+			this.selectedMapPoint.selected = true;
+		} else { // select no map point
+			this.selectedMapPoint = false;
+		}
 	},
 
 	/**
 	 * Enter the rendering/animation loop.
 	 */
 	_Render: function() {
+				
 		var that = this;
 		function animate() {
+			requestAnimationFrame(animate);
 
 			that._AnimateSky();
 			that._AnimateOcean();
@@ -499,21 +590,14 @@ THMap.prototype = {
 			{
 				that.ships[i].Update();
 			}
+			
+			for (i in that.mapPoints) // Update map points
+			{
+				that.mapPoints[i].Update();
+			}
 
 			that._AnimateSpriteScaling();
-			
 
-			// TWEEN.update(); //rain method 1 
-            // var vertices = that.cloud.geometry.vertices; //rain method 2 
-            // vertices.forEach(function (v) {
-            //     v.y = v.y - (v.velocityY);
-            //     v.x = v.x - (v.velocityX);
-
-            //     if (v.y <= 0) v.y = 60;
-            //     if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
-            // });
-            // that.cloud
-			requestAnimationFrame(animate);
 			that.renderer.render(that.scene, that.camera);
 		}
 		animate();
@@ -574,17 +658,27 @@ THMap.prototype = {
 		this.sunlight.position.y = this.sun.position.y;
 		this.sunlight.position.z = this.sun.position.z;
 
-		this.counter_light.position.x = -this.sunlight.position.x;
-		this.counter_light.position.y = this.sunlight.position.y;
-		this.counter_light.position.z = -this.sunlight.position.z;
+		// this.counter_light.position.x = -this.sunlight.position.x;
+		// this.counter_light.position.y = this.sunlight.position.y;
+		// this.counter_light.position.z = -this.sunlight.position.z;
 
 		
 		this.sunlight.intensity = 1.2*Math.sin(-theta);
-		this.counter_light.intensity = 0.2*this.sunlight.intensity;
-
+		// this.counter_light.intensity = 0.2*this.sunlight.intensity;
+		//this.sunlight.intensity = 0;
+		
 		this.ambient_light.intensity = 0.5 * this.sunlight.intensity;
 		
-		this.moonlight.intensity = Math.pow(Math.max(0.3, Math.sin(theta)), 0.05);
+		// Darken the sky at night!
+		for (var i in this.skyBox.material)
+		{
+			this.skyBox.material[i].opacity = Math.min(0.7, THREE.Math.mapLinear(Math.sin(-theta),
+				-1, 1,
+				-0.5, 1
+			));
+		}
+		
+		// this.moonlight.intensity = Math.pow(Math.max(0.3, Math.sin(theta)), 0.05);
 
 		// Update sprite lighting
 		// this.scene.traverseVisible(function(obj) { // foreach object in scene
@@ -610,7 +704,8 @@ THMap.prototype = {
 		// animate ocean (tides)
 		var t_ocean = Date.now() * 0.001;
 		var h = 0.01;
-		this.ocean.position.y = h/2*Math.sin(t_ocean) + h/2;
+		var newY = h/2*Math.sin(t_ocean) + h/2;
+		this.ocean.position.y = newY;
 
 		// animate the ships on the ocean
 		for (i in this.ships)
@@ -652,85 +747,7 @@ THMap.prototype = {
 				obj.scale.y = scale * obj.aspectRatio;
 			}
 		});
-	},
-/*
-	AnimateRain: function() {	
-		var material = new THREE.SpriteMaterial( {
-			map: new THREE.CanvasTexture( this.generateSprite() ),
-			blending: THREE.AdditiveBlending
-		} );
+	}
 
-		for ( var i = 0; i < 1500; i++ ) {
-			particle = new THREE.Sprite( material );
-			this.initParticle( particle, 3 );
-			this.scene.add( particle );
-		}
-	},
-	generateSprite: function() {
-		var canvas = document.createElement( 'canvas' );
-		canvas.width = 32;
-		canvas.height = 16;
-		var context = canvas.getContext( '2d' );
-		var gradient = context.createRadialGradient( canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2 );
-		gradient.addColorStop( 0, 'rgba(255,255,255,1)' );
-		gradient.addColorStop( 0.2, 'rgba(0,255,255,1)' );
-		gradient.addColorStop( 0.4, 'rgba(0,0,64,1)' );
-		gradient.addColorStop( 1, 'rgba(0,0,0,1)' );
-		context.fillStyle = gradient;
-		context.fillRect( 0, 0, canvas.width, canvas.height );
-		return canvas;
-	},
-	initParticle: function( particle, delay ) {
-		var particle = this instanceof THREE.Sprite ? this : particle;
-		var delay = delay !== undefined ? delay : 0;
-		var startY = Math.random()*50-25;
-		particle.position.set( Math.random()*50-25, startY, Math.random()*50-25 );
-		particle.scale.x = particle.scale.y = 0.5;
-		tween = new TWEEN.Tween( particle.position )
-			.delay( delay )
-			.to( { x: particle.position.x, y: -10, z: particle.position.z }, 10000 )
-			.easing(TWEEN.Easing.Quadratic.Out)
-			.onUpdate(function() { 
-				if(particle.position.y == -10){ particle.position.y = startY; }
-        	});
-        tween.chain(tween);
-        tween.start();
-	},
-	//another way:
-	init_rain : function() {
-        this.cloud = null;
-        var that = this;
 
-        function createPointCloud(size, transparent, opacity, sizeAttenuation, color, range) {
-
-            var texture = THREE.ImageUtils.loadTexture("temp/raindrop-3.png");
-            var geom = new THREE.Geometry();
-
-            var material = new THREE.ParticleBasicMaterial({
-                size: size,
-                transparent: transparent,
-                opacity: opacity,
-                map: texture,
-                blending: THREE.AdditiveBlending,
-                sizeAttenuation: sizeAttenuation,
-                color: color
-            });
-
-            for (var i = 0; i < 1500; i++) {
-                var particle = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range * 1.5, Math.random() * range - range / 2);
-                particle.velocityY = 0.1 + Math.random() / 5;
-                particle.velocityX = (Math.random() - 0.5) / 3;
-                geom.vertices.push(particle);
-            }
-
-            that.cloud = new THREE.ParticleSystem(geom, material);
-            that.cloud.sortParticles = true;
-            // console.log("here",that.cloud);
-            that.scene.add(that.cloud);
-        }
-
-        var size = .3, transparent = true, opacity = 0.6, color = 0xffffff, sizeAttenuation = true, range = 30;
-        createPointCloud(size, transparent, opacity, sizeAttenuation, color, range);
-
-    }*/
 };
