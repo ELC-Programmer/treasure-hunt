@@ -439,6 +439,7 @@
 </div>
 
 <script src="js/Howler/howler.core.js"></script>
+<script src="js/Sounds.js"></script>
 
 <script>
 	var chatIsClosed = true;
@@ -449,7 +450,8 @@
 	var buySellWindow = document.getElementById("buy-sell-window");
 	var captainWindow = document.getElementById("captain-window");
 	var tradeWindow = document.getElementById("trade-window");
-
+	var sounds = new Sounds();
+	sounds.fadeInOut(sounds.sunnyAmbience, 0, sounds.ambientNoiseVolume, 6000);
 	// respond to user interaction through this script
 	function closeChat(){
 		document.getElementById("open-chat-container").style.display = "none";
@@ -487,7 +489,7 @@
 			readyText.innerHTML = "Ready";
 			readyButton.style.backgroundColor = "rgba(72, 209, 54, 0.85)";
 			Map3D.PassDay();
-			buoyBells.play(); //error, need for way to have a callback on passday
+			sounds.fadeInOut(sounds.buoyBells, 0, sounds.ambientNoiseVolume, 6000); //error, need for way to have a callback on passday
 		} else {
 			readyText.innerHTML = "Not Ready";
 			readyButton.style.backgroundColor = "rgba(214, 51, 51, 0.85)";
@@ -544,7 +546,7 @@
 	function showCaptainsMessage(){
 		document.getElementById("captains-buttons-container").style.display = "none";
 		document.getElementById("captains-message").style.display = "flex";
-		piratesArrgh.play();
+		sounds.fadeInOut(sounds.piratesArrgh, 0, 1, 0);
 	}
 	function setWidth(){
 			if(!chatIsClosed){
@@ -568,41 +570,4 @@
 				tradeWindow.style.left = windowWidthWhenChatIsClosed[1];
 			}
 	}
-
-	//sounds
-
-	var piratesArrgh = new Audio('assets/Sounds/pirate-arrgh.mp3');
-	var birdSounds = new Audio('assets/Sounds/bird-sounds.mp3');
-	var stormSounds = new Audio('assets/Sounds/storm-sounds.mp3');
-	var buoyBells = new Audio('assets/Sounds/buoy-bells.mp3');
-	var ambientNoiseVolume = 0.2;
-	var ambientNoisePlay = true;
-	//play ambient noise
-	var ambientNoise = new Howl({
-	  src: ['assets/Sounds/ambient-noise.mp3'],
-	  autoplay: true,
-	  loop: true,
-	  volume: ambientNoiseVolume
-	});
-	var stormAmbientNoise = new Howl({
-	  src: ['assets/Sounds/storm-ambient-noise.mp3'],
-	  autoplay: false,
-	  loop: true,
-	  volume: ambientNoiseVolume
-	});
-	function lowerAmbientSound(){
-		ambientNoise.volume(0.05);
-	}
-	function restoreAmbientSound(){
-		ambientNoise.volume(ambientNoiseVolume);
-		ambientNoise.play();
-
-	}
-	function startStormAmbientNoise(){
-		stormAmbientNoise.play();
-	}
-	function stopStormAmbientNoise(){
-		stormAmbientNoise.stop();
-	}
-
 </script>

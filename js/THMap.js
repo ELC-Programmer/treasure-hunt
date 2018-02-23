@@ -720,6 +720,10 @@ THMap.prototype = {
 		}
 	},
 
+	_Lightning : function(){
+
+	},
+
 	/**
 	 * Animate sprite scaling (see _RegisterSpriteScaling).
 	 */

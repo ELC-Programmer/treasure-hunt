@@ -200,7 +200,7 @@
 				.bottom-text{ align-self:center; width:100%; height:5vh; font-size:4vh; margin:0; }
 				.bottom-box-container{ display:flex; flex-direction:column; justify-content:flex-end; background-color: transparent !important;}
 				#alerts{
-					background-color: #f46842;
+					background-color: rgba(247,142,105,0.7);
 					cursor:pointer;
 					font-family:"Berkshire Swash",cursive;
 					color:#EEE5E9;
@@ -211,7 +211,6 @@
 					align-items:stretch;
 					width:10vw;
 					text-align:center;
-					background-color: rgba(166,111,101,0.7));
 					border:3px solid;
 					border-color: rgba(247,239,153,0.9);
 					border-radius:10px;
