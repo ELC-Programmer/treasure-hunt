@@ -729,17 +729,29 @@ THMap.prototype = {
 		this.lightningBox.material.opacity = 0;
 		this.lightning.intensity = 0;
 		
-		var lightningLength = 300;
+		var lightningLength = 550;
+		var secondFlash = 1.0; // the fraction of the way through the first flash at which to start the second
+		
 		if (this.lightningStartTime !== undefined)
 		{
 			var t = Date.now() - this.lightningStartTime;
 			t /= lightningLength; // normalized between 0 and 1
-			
+						
 			// if in lightning
-			if (t < 1)
+			if (t < 1.0)
 			{
-				this.lightningBox.material.opacity = -2*(t)*(t-1); //-15*(t)*(t-1)*Math.pow(t-0.4, 2);
-				this.lightning.intensity = -8*(t)*(t-1); //-60*(t)*(t-1)*Math.pow(t-0.4, 2);
+				var t1 = t * (secondFlash + 1);
+				
+				this.lightningBox.material.opacity = -2*(t1)*(t1-1); //-15*(t)*(t-1)*Math.pow(t-0.4, 2);
+				this.lightning.intensity = -8*(t1)*(t1-1); //-60*(t)*(t-1)*Math.pow(t-0.4, 2);
+				
+				if (t1 > secondFlash) // second flash!
+				{
+					var t2 = t1 - secondFlash;
+					
+					this.lightningBox.material.opacity = -2*(t2)*(t2-1); //-15*(t)*(t-1)*Math.pow(t-0.4, 2);
+					this.lightning.intensity = -8*(t2)*(t2-1); //-60*(t)*(t-1)*Math.pow(t-0.4, 2);
+				}
 			}
 		}
 	},
