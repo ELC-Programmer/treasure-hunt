@@ -299,7 +299,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		return Math.pow( 0.95, scope.zoomSpeed );
 
 	}
-
+	
 	function rotateLeft( angle ) {
 
 		sphericalDelta.theta -= angle;

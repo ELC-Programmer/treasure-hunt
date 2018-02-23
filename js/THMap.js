@@ -111,21 +111,10 @@ THMap.prototype = {
 		for (let key in filenames)
 		{
 			var filename = filenames[key];
-			if(filename.substr(filename.length-5) == '.json'){ //load json objects
-				loader.load(filename, function(loadedScene) {
-					out[key] = loadedScene;
-					finishLoading();
-				});
-			}
-			else if(filename.substr(filename.length-4) == '.obj'){ //load obj objects
-				new THREE.OBJLoader().load( filename, function(loadedScene){
-					out[key] = loadedScene;
-					finishLoading();
-				} );
-			}
-			else{ //else error
-				console.log("Object load error.");
-			}
+			loader.load(filename, function(loadedScene) {
+				out[key] = loadedScene;
+				finishLoading();
+			});
 		}
 
 		function finishLoading()
@@ -590,7 +579,7 @@ THMap.prototype = {
 		this.counter_light.position.z = -this.sunlight.position.z;
 
 		
-		this.sunlight.intensity = 1.2*Math.sin(-theta)*.7;
+		this.sunlight.intensity = 1.2*Math.sin(-theta);
 		this.counter_light.intensity = 0.2*this.sunlight.intensity;
 
 		this.ambient_light.intensity = 0.5 * this.sunlight.intensity;

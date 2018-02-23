@@ -8,11 +8,34 @@
  * @param id A unique string ID for this map point.
  * @param map The map as a string.
  * @param positions One or more coords of parking spaces. Adjacent parking spaces will be explored automatically.
+ * @param object The THREE.Object3D representing this map point in the scene.
  */
-var MapPoint = function(thmap, id, map, positions)
+var MapPoint = function(thmap, id, map, positions, object)
 {
+	var that = this;
+	
 	this.id = id;
 	this.thmap = thmap;
+	this.object = object;
+	
+	// Find the label object
+	var prefix = "Label:";
+	this.object.traverseVisible(function(obj) {
+		if (obj.name.startsWith(prefix)) {
+			that.labelObject = obj;
+		}
+	});
+	
+	// Initialize Selection Widget:
+	var widgetGeometry = new THREE.IcosahedronGeometry( 0.2, 2 );
+	var widgetMaterial = new THREE.MeshStandardMaterial();
+
+	this.selectionWidget = new THREE.Mesh( widgetGeometry, widgetMaterial );	
+	this.selectionWidget.position.z = this.labelObject.getWorldPosition().z - this.object.getWorldPosition().z + 0.5;
+	this.object.add( this.selectionWidget );
+	//this.selectionWidget.material.transparent = true;
+	
+	// Initialize Parking:
 	
 	this.parkingSpaces = []; // 13 elements of type ParkingSpace
 	
@@ -123,7 +146,54 @@ MapPoint.prototype = {
 				return;
 			}
 		}
+	},
+	
+	/**
+	 * True if this map point is selectable.
+	 */
+	selectable: false,
+	 
+	/**
+	 * True if this map point is selected.
+	 */
+	selected: false,
+	
+	/**
+	 * Set the selection state of the map point!
+	 * @param selectable True if this map point should indicate that it is selectable.
+	 * @param selected True if this map point should indicate that it is selected.
+	 */
+	SetSelectionState: function(selectable, selected) {
+		this.selectable = selectable;
+		this.selected = selected;
+	},
+	
+	/**
+	 * Check for intersections with a raycaster.
+	 * @param raycaster A THREE.Raycaster.
+	 * @returns If intersection, the distance from the raycaster origin. Else, false.
+	 */
+	Intersect: function(raycaster)
+	{
+		var intersects = raycaster.intersectObject(this.object, true);
+		if (intersects.length > 0) { // we intersect!
+			return intersects[0].distance;
+		}
+
+		// no intersection  :(
+		return false;
+	},
+	
+	/**
+	 * Update the map point. This function should be called in every iteration of the game loop.
+	 */
+	Update: function()
+	{
+		this.selectionWidget.visible = this.selectable;
+		var widgetColor = this.selected ? 0x00ff00 : 0x0000ff;
+		this.selectionWidget.material.color.setHex(widgetColor);
 	}
+	
 };
 
 /**
