@@ -1,11 +1,22 @@
- body { margin: 0; position:relative; height:100vh; overflow:hidden;}
+ body { margin: 0; position:relative; height:100vh; overflow:hidden; }
+ 	body *{ 
+ 		-webkit-user-drag: none; 
+ 		-khtml-user-drag: none; 
+ 		-moz-user-drag: none; 
+ 		-o-user-drag: none; 
+ 		user-drag: none; 
+ 		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-o-user-select: none;
+		user-select: none; 
+	}
 	#game-container{ z-index:1; }
 	#hud-container{ width:100vw; height:100vh; display:inline;}
 	#hud-container > div { z-index:3; position:absolute; }
 		#status-indicators-group{
 			top:2vh;
 			position:absolute;
-			user-select: none;
 		}
 			#status-indicators-group > div{ margin-top:1.5vh; }
 			.sigroups{ display:flex; flex-direction:row; margin-left:5px;}
@@ -29,7 +40,6 @@
 				align-items:center;
 				min-height:1px;
 				cursor:pointer;
-				user-select: none;
 				/*display:none; /*Use "display:none;" when "open chat" is clicked*/
 			}
 				#closed-chat > img{ align-self:center; }
@@ -173,7 +183,6 @@
 			top:15vh;
 			margin-right:5px;
 			text-align:center;
-			user-select: none;
 		}
 			.right-button{
 				border:3px solid;
@@ -193,14 +202,13 @@
 				font-family:"Berkshire Swash",cursive;
 				color:#EEE5E9;
 				text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-				user-select: none;
 			}
 				.sub-items{ position:absolute; bottom:0; display:flex; flex-direction:row; align-items:stretch; width:32.5vw; text-align:center; }
 				.sub-items > div{ background-color:rgba(239,200,139,0.5); width:16.25vw; }
 				.bottom-text{ align-self:center; width:100%; height:5vh; font-size:4vh; margin:0; }
 				.bottom-box-container{ display:flex; flex-direction:column; justify-content:flex-end; background-color: transparent !important;}
 				#alerts{
-					background-color: #f46842;
+					background-color: rgba(247,142,105,0.7);
 					cursor:pointer;
 					font-family:"Berkshire Swash",cursive;
 					color:#EEE5E9;
@@ -211,12 +219,12 @@
 					align-items:stretch;
 					width:10vw;
 					text-align:center;
-					background-color: rgba(166,111,101,0.7));
 					border:3px solid;
 					border-color: rgba(247,239,153,0.9);
 					border-radius:10px;
 				}
-					#alerts-text{ margin-top:3vh; margin-bottom:1vh; user-select: none;} /* change css property color to red and back to white here for flashing effect */
+					#alerts-dot{ border-radius:50%; background-color:red; position:absolute; top:4.5vh; left:7px; height:2vh; width:2vh; display:none; }
+					#alerts-text{ margin-top:3vh; margin-bottom:1vh; } /* change css property color to red and back to white here for flashing effect */
 				#team{ height:6vh; background-color:rgba(239,200,139,0.5); border-right:1px solid black;}
 					#team-text{ margin-top:0.5vh; }
 				#day{ height:7.8vh; border-right:1px solid black;}

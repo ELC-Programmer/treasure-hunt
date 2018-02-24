@@ -718,6 +718,7 @@ THMap.prototype = {
 	Lightning: function()
 	{
 		this.lightningStartTime = Date.now();
+		window.sounds.playOnce("lightningSound");
 	},
 	
 	/**
@@ -780,6 +781,10 @@ THMap.prototype = {
 			var a = 0.1;
 			ship.object.rotation.x = -a*Math.cos(t_ocean);
 		}
+	},
+
+	_Lightning : function(){
+
 	},
 
 	/**
