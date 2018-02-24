@@ -30,7 +30,7 @@ class Sounds{
 	}
 	loadSounds(){
 		Object.assign(this.soundsDict, this.soundsDict, {  	"piratesArrgh" : new Howl({src: ['assets/Sounds/pirate-arrgh.mp3']}),
-															"buoyBells" : new Howl({src: ['assets/Sounds/buoy-bells.mp3']}),
+															"buoyBells" : new Howl({src: ['assets/Sounds/buoy-bells.mp3'], loop: true}),
 															"lightningSound" : new Howl({src: ['assets/Sounds/lightning.mp3']}),
 															"stormyAmbience" : new Howl({
 															  src: ['assets/Sounds/storm-ambient-noise.mp3'],
@@ -44,13 +44,14 @@ class Sounds{
 																volume: 0,
 																autoplay: false
 															})
-														})
+														});
 		this.loadFinished = true;
 		this.executeQueue();
 	}
 	fadeInOut(soundKey, fromVolume, toVolume, duration){
+		console.log(soundKey, fromVolume, toVolume, duration);
 		if(this.soundsDict[soundKey] == null && !this.loadFinished){ //if this function is called before selected sound is loaded, wait for load to complete
-			if(soundKey != "stormyAmbience" && soundKey != "dockedAmbience" && soundKey != "sunnyAmbience") 
+			if(soundKey != "stormyAmbience" && soundKey != "dockedAmbience" && soundKey != "sunnyAmbience" && soundKey != "buoyBells") 
 				return; //we only care about the looped sounds being played late; others would sound out of time
 			var that = this;
 			this.queue.push( function(){ that.fadeInOut(soundKey, fromVolume, toVolume, duration) } );
@@ -61,8 +62,15 @@ class Sounds{
 			return; 
 		}
 		if(toVolume != 0) this.soundsDict[soundKey].play();
-		this.soundsDict[soundKey].fade(fromVolume, toVolume,duration);
-		if(toVolume == 0) this.soundsDict[soundKey].stop();
+		this.soundsDict[soundKey].fade(fromVolume, toVolume, duration);
+		// if(toVolume == 0) this.soundsDict[soundKey].stop();
+	}
+	playOnce(key){
+		if(this.soundsDict[key] == null){
+			console.log("Still loading file.");
+			return;
+		}
+		this.soundsDict[key].play();
 	}
 	executeQueue(){
 		if(!this.loadFinished) return; 

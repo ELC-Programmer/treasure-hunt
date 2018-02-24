@@ -176,6 +176,7 @@
 
 <div id="alerts" onclick="showAlerts()">
 	<p id="alerts-text" class="bottom-text">Alerts</p>
+	<div id="alerts-dot"> </div>
 </div>
 
 <div class="full-size-window" id="alerts-screen">
@@ -440,7 +441,7 @@
 
 <script src="js/Howler/howler.core.js"></script>
 <script src="js/Sounds.js"></script>
-
+<script src="js/lib/jquery-ui.min.js"></script>
 <script>
 	var chatIsClosed = true;
 	var windowWidthWhenChatIsClosed = ["80vw","50%"] //[width,left]
@@ -450,7 +451,7 @@
 	var buySellWindow = document.getElementById("buy-sell-window");
 	var captainWindow = document.getElementById("captain-window");
 	var tradeWindow = document.getElementById("trade-window");
-	var sounds = new Sounds();
+	window.sounds = new Sounds();
 	sounds.fadeInOut("stormyAmbience", 0, sounds.ambientNoiseVolume, 6000);
 	// respond to user interaction through this script
 	function closeChat(){
@@ -481,6 +482,8 @@
 		othersAreClosed = false;
 		var alertContainer = document.getElementById("day-alert-box-container");
 		alertContainer.scrollTop = alertContainer.scrollHeight;
+		sounds.fadeInOut("buoyBells", 0, 0, 0); 
+		alertsFlash(false);
 	}
 	function readyPressed(){
 		var readyButton = document.getElementById("status-circle");
@@ -489,10 +492,20 @@
 			readyText.innerHTML = "Ready";
 			readyButton.style.backgroundColor = "rgba(72, 209, 54, 0.85)";
 			Map3D.PassDay();
-			sounds.fadeInOut(sounds.buoyBells, 0, sounds.ambientNoiseVolume, 6000); //error, need for way to have a callback on passday
+			sounds.fadeInOut("buoyBells", 0, 1, 5000); //timing is off, need for way to have a callback on passday
+			alertsFlash(true);
 		} else {
 			readyText.innerHTML = "Not Ready";
 			readyButton.style.backgroundColor = "rgba(214, 51, 51, 0.85)";
+		}
+	}
+	function alertsFlash(flash){
+		alerts = document.getElementById("alerts-dot");
+		if(flash){
+			alerts.style.display = "initial";
+		}
+		else{
+			alerts.style.display = "none";
 		}
 	}
 	function openBuySell(){

@@ -718,6 +718,7 @@ THMap.prototype = {
 	Lightning: function()
 	{
 		this.lightningStartTime = Date.now();
+		window.sounds.playOnce("lightningSound");
 	},
 	
 	/**
