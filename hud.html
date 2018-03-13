@@ -441,6 +441,8 @@
 
 <script src="js/Howler/howler.core.js"></script>
 <script src="js/Sounds.js"></script>
+<script src="js/notify.min.js"></script>
+<script src="js/notifications.js"></script>
 <script src="js/lib/jquery-ui.min.js"></script>
 <script>
 	var chatIsClosed = true;
@@ -452,7 +454,15 @@
 	var captainWindow = document.getElementById("captain-window");
 	var tradeWindow = document.getElementById("trade-window");
 	window.sounds = new Sounds();
-	sounds.fadeInOut("stormyAmbience", 0, sounds.ambientNoiseVolume, 6000);
+	//this is how you make a notification
+	setTimeout(()=>{
+						window.notifications = new Notifications();
+						window.notifications.newMessage("hey ship a!!");
+						window.notifications.newMessage("hey ship a!!");
+						window.notifications.newMessage("hey ship a!!");
+						window.notifications.newMessage("hey ship a!!");
+					},4000);
+	window.sounds.fadeInOut("dockedAmbience", 0, sounds.ambientNoiseVolume, 6000);
 	// respond to user interaction through this script
 	function closeChat(){
 		document.getElementById("open-chat-container").style.display = "none";
@@ -492,7 +502,8 @@
 			readyText.innerHTML = "Ready";
 			readyButton.style.backgroundColor = "rgba(72, 209, 54, 0.85)";
 			Map3D.PassDay();
-			sounds.fadeInOut("buoyBells", 0, 1, 5000); //timing is off, need for way to have a callback on passday
+			// sounds.fadeInOut("buoyBells", 0, 1, 5000); //timing is off, need for way to have a callback on passday
+			// showAlerts();
 			alertsFlash(true);
 		} else {
 			readyText.innerHTML = "Not Ready";

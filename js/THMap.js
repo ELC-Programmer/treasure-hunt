@@ -180,7 +180,7 @@ THMap.prototype = {
 		// this.scene.fog = new THREE.Fog( 0xffffff, 10, 1000 );
 
 		// Init SKYBOX
-		var imagePrefix = "assets/Textures/SkyboxSet1/DarkStormy/DarkStormy";
+		var imagePrefix = "assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
 		var skyGeometry = new THREE.CubeGeometry(10000,10000,10000);
