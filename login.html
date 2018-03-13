@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Treasure Hunt - Login</title>
+
+	<script src="js/lib/socket.io.js"></script>
+	<script src="js/lib/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+	<p><a href="register.html">Register</a></p>
+
+	<p>Username:</p>
+	<input type="text" id="username" />
+	
+	<p>Password:</p>
+	<input type="password" id="password" />
+	
+	<p>
+		<input type="button" id="submit" value="Login" />
+	</p>
+	
+	<p id="waitMessage" style="color:blue">Authenticating...</p>
+	<p id="errorMessage" style="color:red"></p>
+	
+	<script>
+	
+		// Open socket to server
+		var socket = io("localhost:3000?noAuth");
+		
+		// Handle click
+		$("#waitMessage").hide();
+		$("#submit").click(function() {
+		
+			$("#errorMessage").hide();
+			$("#waitMessage").show();
+			
+			let username = $("#username").val();
+			let password = $("#password").val();
+			
+			socket.emit("client function login",
+			{
+				username: username,
+				password: password
+			},
+			function(response) {
+				
+				if (!response.success)
+				{ // failure
+					$("#errorMessage").text(response.error);
+					$("#errorMessage").show();
+					$("#waitMessage").hide();
+					
+					$("#submit").removeProp("disabled");
+				}
+				else
+				{ // success
+					
+					if (response.user.type == "player")
+					{
+						window.location.assign("serverTest.html?token=" + response.token);
+					}
+					else
+					{
+						window.location.assign("serverTest.html?token=" + response.token);
+
+						//alert("Facilitator view not yet made!");
+					}
+				}
+			});
+			$("#submit").prop("disabled");
+			
+		});
+		
+	</script>
+	
+</body>

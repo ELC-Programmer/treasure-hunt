@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Treasure Hunt - Register</title>
+
+	<script src="js/lib/socket.io.js"></script>
+	<script src="js/lib/jquery-3.3.1.min.js"></script>
+</head>
+
+<body>
+	<p>Username:</p>
+	<input type="text" id="username" />
+	
+	<p>Password:</p>
+	<input type="password" id="password" />
+	
+	<p>Room:<p>
+	<select id="room">
+	
+	</select>
+	
+	<p>Type:<p>
+	<input type="radio" name="type" value="player" checked>Player
+	<input type="radio" name="type" value="facilitator">Facilitator
+	
+	<p>Display Name:<p>
+	<input type="text" id="displayName" />
+	
+	<p>
+		<input type="button" id="submit" value="Register" />
+	</p>
+	
+	<p id="waitMessage" style="color:blue">Attempting...</p>
+	<p id="errorMessage" style="color:red"></p>
+	
+	<script>
+		
+		// Open socket to server
+		var socket = io("localhost:3000?noAuth");
+		
+		// Fill room select
+		socket.emit("client fetch rooms", {}, function(response) {
+		
+			for (var i in response.rooms)
+			{
+				let room = response.rooms[i];
+				$("<option>").text(room.name).attr("value", room.id).appendTo($("#room"));
+			}
+		});
+		
+		// Handle click
+		$("#waitMessage").hide();
+		$("#submit").click(function() {
+		
+			$("#errorMessage").hide();
+			$("#waitMessage").show();
+			
+			let username = $("#username").val();
+			let password = $("#password").val();
+			let roomID = $("#room").val();
+			let type = $("input[name=type]:checked").val();
+			let displayName = $("#displayName").val();
+			
+			socket.emit("client function registerUser",
+			{
+				username: username,
+				password: password,
+				roomID: roomID,
+				type: type,
+				displayName: displayName
+			},
+			function(response) {
+				
+				if (!response.success)
+				{ // failure
+					$("#errorMessage").text(response.error);
+					$("#errorMessage").show();
+					$("#waitMessage").hide();
+					
+					$("#submit").removeProp("disabled");
+				}
+				else
+				{ // success
+					window.location.assign("login.html");
+				}
+			});
+			$("#submit").prop("disabled");
+			
+		});
+		
+	</script>
+	
+</body>

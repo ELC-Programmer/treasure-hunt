@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+	<head>
+		<title>TH Server Testing!</title>
+	</head>
+	<script src="js/lib/socket.io.js"></script>
+	<script src="js/lib/jquery-3.3.1.min.js"></script>
+	<script src="js/lib/utils.js"></script>
+
+	<script>
+	
+		// Open a socket to the server!
+		let token = getUrlParameter("token");
+		if (!token)
+			window.location.assign("login.html");
+		
+		var socket = io.connect("localhost:3000?token=" + token);
+		socket.on("error", function()
+		{
+			console.log("Auth failure!");
+		});
+		socket.on("server send authentication", function(user)
+		{
+			console.log("Hi, I am " + user.display_name);
+		});
+		
+		// Do other stuff!
+		socket.on("server send updateDay", function(data)
+		{
+			console.log(data);
+		});
+		socket.on("server send updatePlayers", function(data)
+		{
+			console.log(data);
+		});
+		socket.on("server send updateResources", function(data)
+		{
+			console.log(data);
+		});
+		socket.on("server send updateChat", function(data) {
+			console.log(data);
+		});
+		
+		socket.on("server send endGame", function(data) {
+			console.log("END GAME");
+		});
+		
+		socket.emit("player send joinGame");
+		
+		
+	</script>
+	
+	<body>
+	
+	</body>
+</html>

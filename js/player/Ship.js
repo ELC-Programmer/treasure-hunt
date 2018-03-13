@@ -2,22 +2,24 @@
 /**
  * Init a ship
  * @param thmap A pointer back to the THMap.
- * @param id A unique string ID for this ship.
+ * @param id A unique ID for this ship.
+ * @param displayName A string display name for this ship.
  * @param isLocal True iff this is the local player's ship.
- * @param startingPoint The MapPoint at which to start.
  */
 
-var Ship = function(thmap, id, isLocal, startingPoint)
+var Ship = function(thmap, id, displayName, isLocal)
 {
 	// save values
 	this.thmap = thmap;
 	this.id = id;
+	this.displayName = displayName;
 	this.isLocal = isLocal;
-	this.mapPoint = startingPoint;
-	
-	// spawn at a parking space
-	this.destination = startingPoint.ReserveParkingSpace(this.id);
-	this.position = this.GridToWorld(this.destination, this.thmap.pathfinding_map);
+
+	this.mapPoint = false;
+	this.quartersToDestination = false;
+	this.previousMapPoint = false;
+	this.betweenMapPoints = false;
+	this.destination = false;
 		
 	// set a random starting angle
 	var angle = THREE.Math.randFloatSpread(2*Math.PI);
@@ -26,7 +28,10 @@ var Ship = function(thmap, id, isLocal, startingPoint)
 	// Spawn a new ship object
 	this.object = this.thmap.shipObject.clone(true);
 	this.object.rotation.order = "YXZ";
+	this.baseY = -1;
+	this.visible = false;
 	thmap.scene.add(this.object);
+	this.position = new Coords(-this.object.x, this.object.z);
 	
 	// Color the sails appropriately
 	var sails = this.object.getObjectByName("Sails");
@@ -37,20 +42,8 @@ var Ship = function(thmap, id, isLocal, startingPoint)
 		sails.material.color = new THREE.Color("rgb(200, 200, 180)"); // TODO: this color is kinda gross... idk what would be better, though
 	}
 	
-	// Setup the ship for transparency
-	for (var i in this.object.children)
-	{
-		var obj = this.object.children[i];
-		if (obj.material !== undefined)
-		{
-			// TODO!!!!
-			//obj.material.transparent = true;
-			obj.material.opacity = 1.0;
-		}
-	}
-	
 	// Make a label for the ship
-	this.label = this.thmap._CreateBillboard(this.id);
+	this.label = this.thmap._CreateBillboard(this.displayName);
 	this.label.position.y = 0.4 + Math.random() * 0.01;
 	this.thmap._RegisterSpriteScaling(this.label, 1, 2, 10, 4);
 	this.object.add(this.label);
@@ -87,7 +80,7 @@ Ship.prototype = {
 		var speed = 1; // world distance / second
 		var angularSpeed = 3; // radians / second
 		
-		if (!this.traveling && !this.GetGridPosition().equals(this.destination)) // need to move!
+		if (!this.traveling && this.destination && !this.GetGridPosition().equals(this.destination)) // need to move!
 		{
 			this.traveling = true;
 			this.turning = true;
@@ -191,7 +184,7 @@ Ship.prototype = {
 					
 					this.traveling = false;
 					this.path = [];
-					this.mapPoint.OccupyParkingSpace(this.id);
+					this._OnArrive();
 				}
 			}
 		}
@@ -204,24 +197,108 @@ Ship.prototype = {
 		// Update the label.
 		this.label.visible = this.labelVisible;
 		
-		// The ship is only visible if co-located with the local player.
-		var appear = (this.mapPoint == this.thmap.localShip.mapPoint);
-		this.object.visible = appear;
-		
+		// Translate the ship in/out of the sea based on this.visible.
+		let maxY = 0;
+		let minY = -1;
+		if (this.baseY != (this.visible ? maxY : minY))
+		{			
+			this.baseY += (this.visible ? 1 : -1) * 0.01;
+			this.baseY = THREE.Math.clamp(this.baseY, minY, maxY);
+			
+			this.object.visible = (this.baseY != minY);
+		}
 	},
 	
 	/**
-	 * Move to a map point.
-	 * @param mapPoint A map point to navigate to.
+	 * Disappear from the map.
 	 */
-	MoveTo: function(dest_mapPoint)
+	Disappear: function()
 	{
-		this.mapPoint.ReleaseParkingSpace(this.id); // release old space
-		
-		this.destination = dest_mapPoint.ReserveParkingSpace(this.id); // claim new space
-		this.mapPoint = dest_mapPoint;
+		this.visible = false;
+		this._OnDepart();
 	},
 	
+	/**
+	 * Move to a map point. Automatically sets visible to true.
+	 * @param mapPoint A map point to navigate to.
+	 * @param quartersFrom How many quarters of the way from the otherMapPoint to the mapPoint that we want to be. Can be false or undefined if just all the way at mapPoint.
+	 * @param otherMapPoint The map point from which we want to be quartersFrom quarters of the way to mapPoint. Can be false or undefined if just all the way at mapPoint.
+	 * @param arrivalCallback Called upon arriving at destination. No parameters. Optional.
+	 */
+	MoveTo: function(mapPoint, quartersFrom, otherMapPoint, arrivalCallback)
+	{
+		this.arrivalCallback = arrivalCallback;
+		
+		if (mapPoint == this.mapPoint && quartersFrom == this.quartersToDestination && otherMapPoint == this.previousMapPoint)
+		{ // no need to move, we're already there!
+			console.log("VISIBLE");
+			this.visible = true;
+			this._OnArrive();
+			return;	
+		}
+		
+		if (this.destination) this._OnDepart();
+		
+		this.mapPoint = mapPoint;
+		if (quartersFrom >= 4) quartersFrom = false;
+		this.betweenMapPoints = (quartersFrom && otherMapPoint);
+		this.quartersToDestination = quartersFrom;
+		this.previousMapPoint = otherMapPoint;
+		
+		if (!this.betweenMapPoints) // heading to a map point parking space
+		{
+			this.destination = mapPoint.ReserveParkingSpace(this.id); // claim new space
+		}
+		else // heading to a spot between map points
+		{
+			var pathfinder = this.thmap.pathfinder;
+			var path = pathfinder.findPath(
+				otherMapPoint.GetLocation(), // startPos
+				mapPoint.GetLocation() // goalPos
+			);
+			
+			var pathIndex = Math.floor((path.length - 1) * quartersFrom / 4);
+			
+			this.destination = path[pathIndex].cellPos;
+		}
+		
+		if (!this.visible)
+		{ // teleport, then appear
+			this.position = this.GridToWorld(this.destination);
+			this._OnArrive();
+			
+			this.visible = true;
+		}
+	},
+	
+	/**
+	 * Called before departing a location.
+	 */
+	_OnDepart: function()
+	{
+		if (!this.betweenMapPoints) // parked at a map point
+		{
+			if (this.mapPoint) this.mapPoint.ReleaseParkingSpace(this.id);
+		}
+		else // stopped between map points
+		{
+			if (this.destination) this.thmap.UpdatePathfindingMap(this.destination, "free");
+		}
+	},
+	
+	/**
+	 * Called upon arriving at destination.
+	 */
+	_OnArrive: function()
+	{
+		if (this.betweenMapPoints) // stopped between map points
+		{
+			this.thmap.UpdatePathfindingMap(this.destination, "parked");
+		}
+		
+		if (this.arrivalCallback) this.arrivalCallback();
+	},
+		
 	/**
 	 * the size of one grid space in actual space
 	 */

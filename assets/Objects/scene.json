@@ -175,7 +175,7 @@
                     "type":"Object"
                 }]
             },{
-                "name":"sea-devil-island",
+                "name":"sun-devil-island",
                 "uuid":"48B2FC87-3AD5-4F17-B2A5-A241FE631359",
                 "matrix":[1,0,0,0,0,1,0,0,0,0,1,0,-1,1,0,1],
                 "visible":true,
@@ -185,7 +185,7 @@
                 "receiveShadow":true,
                 "geometry":"4C1495ED-319C-4562-96DA-F14B595A00BD",
                 "children":[{
-                    "name":"Label:Sea Devil Island",
+                    "name":"Label:Sun Devil Island",
                     "uuid":"A645816E-AAA1-407C-9EE4-84A0D4B9C04C",
                     "matrix":[1,0,0,0,0,1,0,0,0,0,1,0,-0.067637,0.388948,0.793529,1],
                     "visible":true,

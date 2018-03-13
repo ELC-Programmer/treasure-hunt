@@ -364,7 +364,7 @@ function Pathfinder(cellsAsStrings)
 
 function MapCell(character)
 {
-	this.cost = (character == "x" ? Number.POSITIVE_INFINITY : (character == "@" ? 10 : 1));
+	this.cost = (character == "x" ? Number.POSITIVE_INFINITY : (character == "@" ? 100 : 1));
 }
  
 function Path(map, startPos, goalPos)

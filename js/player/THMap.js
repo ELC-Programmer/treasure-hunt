@@ -1,6 +1,6 @@
-var THMap = function()
+var THMap = function(controller)
 {
-	//
+	this.controller = controller;
 };
 
 THMap.prototype = {
@@ -9,8 +9,9 @@ THMap.prototype = {
 	 * Initialize the 3D Map
 	 * @param window The window in which to draw the map.
 	 * @param containerElement The HTML element in which to draw the map.
+	 * @param callback A callback to trigger once everything is loaded.
 	 */
-	Start: function(window, containerElement) {
+	Start: function(window, containerElement, callback) {
 
 		this.window = window; // Save the window variable
 		var that = this; // Save 'this' for inner function contexts
@@ -70,20 +71,11 @@ THMap.prototype = {
 			that._InitCamera();
 			that._InitSky();
 			that._InitPathfinding();
-		
-			that.AddShip("A", "trojan-island", true);
-			that.AddShip("B", "trojan-island", false);
-			that.AddShip("C", "trojan-island", false);
-			that.AddShip("D", "trojan-island", false);
-			that.AddShip("E", "trojan-island", false);
-			that.AddShip("F", "trojan-island", false);
-			that.AddShip("G", "trojan-island", false);
-			that.AddShip("H", "trojan-island", false);
-			that.AddShip("I", "trojan-island", false);
-			that.AddShip("J", "trojan-island", false);
-			that.AddShip("K", "trojan-island", false);
-			that.AddShip("L", "trojan-island", false);
-			that.AddShip("M", "trojan-island", false);
+						
+			console.log(that.mapPoints);
+
+			// Callback
+			if (callback) callback();
 			
 			// Begin rendering loop
 			that._Render();
@@ -219,16 +211,17 @@ THMap.prototype = {
 	_InitOcean: function()
 	{
 		var waterColor = 0x013D57;
+		let size = 1000;
 		
 		//extend ocean floor to horizon:
 		var floor = this.scene.getObjectByName("floor");
-		floor.scale.x = 500;
-		floor.scale.y = 500;
+		floor.scale.x = size/4;
+		floor.scale.y = size/4;
 		floor.material.color = new THREE.Color(waterColor);
 		this.oceanFloor = floor;
 		
 		// Make the water itself
-		var waterGeometry = new THREE.PlaneBufferGeometry( 2000, 2000 );
+		var waterGeometry = new THREE.PlaneBufferGeometry( size, size );
 
 		var water = new THREE.Water(
 			waterGeometry,
@@ -352,7 +345,7 @@ THMap.prototype = {
 		addMapPoint("beaver-island", [new Coords(28, 9), new Coords(32, 9)]);
 		addMapPoint("cardinal-island", [new Coords(38, 18), new Coords(40, 13)]);
 		addMapPoint("bruin-island", [new Coords(26, 39)]);
-		addMapPoint("sea-devil-island", [new Coords(19, 20), new Coords(16, 21)]);
+		addMapPoint("sun-devil-island", [new Coords(19, 20), new Coords(16, 21)]);
 		addMapPoint("treasure-spot", [new Coords(39, 25)]);
 		addMapPoint("SD1", [new Coords(10, 20)]);
 		addMapPoint("SD2", [new Coords(13, 27)]);
@@ -447,25 +440,15 @@ THMap.prototype = {
 
 	/**
 	 * Add a ship to the map!
-	 * @param id A unique string ID for this ship, to identify it later.
-	 * @param startingPoint The ID of the MapPoint to start at.
+	 * @param id A unique ID for this ship, to identify it later.
+	 * @param displayName A string display name for this ship.
 	 * @param isLocal True iff this is the local player's ship.
 	 */
-	AddShip(id, startingPoint, isLocal)
+	AddShip(id, displayName, isLocal)
 	{
-		var ship = new Ship(this, id, isLocal, this.mapPoints[startingPoint]);
+		var ship = new Ship(this, id, displayName, isLocal);
 		this.ships[id] = ship;
 		if (isLocal) this.localShip = ship;
-	},
-
-	/**
-	 * Move a ship to a new map point.
-	 * @param id The ID of the ship to move.
-	 * @param destination The ID of the destination map point.
-	 */
-	MoveShip: function(shipID, destinationID)
-	{
-		this.ships[shipID].MoveTo(this.mapPoints[destinationID]);
 	},
 
 	/**
@@ -494,40 +477,42 @@ THMap.prototype = {
 	 * @param event The object passed to the Javascript event handler.
 	 */
 	_OnClick: function(event) {
-		console.log("THMap::_OnClick()");
-		
-		this.raycaster.setFromCamera(this.mousePos, this.camera);
-		
-		var closestMapPointClicked;
-		var closestMapPointDistance = Infinity;
-		for (var id in this.mapPoints)
-		{ // find what map point we're clicking
-			var mapPoint = this.mapPoints[id];
+
+		if (this.mapPointSelectionEnabled)
+		{
+			this.raycaster.setFromCamera(this.mousePos, this.camera);
 			
-			if (mapPoint.selectable) // with this code, you can select map points that are behind other (unselectable) map points. I think this is okay.
-			{
-				var dist = mapPoint.Intersect(this.raycaster);
-				if (dist && dist < closestMapPointDistance) {
-					closestMapPointDistance = dist;
-					closestMapPointClicked = mapPoint;
+			var closestMapPointClicked;
+			var closestMapPointDistance = Infinity;
+			for (var id in this.mapPoints)
+			{ // find what map point we're clicking
+				var mapPoint = this.mapPoints[id];
+				
+				if (mapPoint.selectable) // with this code, you can select map points that are behind other (unselectable) map points. I think this is okay.
+				{
+					var dist = mapPoint.Intersect(this.raycaster);
+					if (dist && dist < closestMapPointDistance) {
+						closestMapPointDistance = dist;
+						closestMapPointClicked = mapPoint;
+					}
 				}
 			}
-		}
-		
-		// check that the intersection isn't under the ocean floor
-		var intersects = this.raycaster.intersectObject(this.oceanFloor, false);
-		if (intersects.length > 0 && intersects[0].distance < closestMapPointDistance)
-			return; // the click wasn't meaningful
-		
-		if (closestMapPointClicked !== undefined && closestMapPointClicked.selectable == true)
-		{ // then update the selection
-			this.SetSelectedMapPoint(closestMapPointClicked.id);
+			
+			// check that the intersection isn't under the ocean floor
+			var intersects = this.raycaster.intersectObject(this.oceanFloor, false);
+			if (intersects.length > 0 && intersects[0].distance < closestMapPointDistance)
+				return; // the click wasn't meaningful
+			
+			if (closestMapPointClicked !== undefined && closestMapPointClicked.selectable == true)
+			{ // then update the selection
+				this.SetSelectedMapPoint(closestMapPointClicked.id);
+			}
 		}
 	},
 	
 	/**
 	 * Set the selectable map points.
-	 * @param ids An array of map point IDs that are to be selectable. All others will be made unselectable.
+	 * @param ids An array of map point IDs that are to be selectable. All others will be made unselectable. If false, none will be selectable.
 	 */
 	SetSelectableMapPoints: function(ids) {
 		// make all map points unselectable
@@ -537,13 +522,21 @@ THMap.prototype = {
 		}
 		
 		// make the specified map points selectable
-		for (var i in ids)
+		if (ids)
 		{
-			var id = ids[i];
-			
-			this.mapPoints[id].selectable = true;
+			for (var i in ids)
+			{
+				var id = ids[i];
+				
+				this.mapPoints[id].selectable = true;
+			}
 		}
 	},
+	
+	/**
+	 * Whether map point selection is enabled. When disabled, the widgets will still be visible, but simply uncontrollable.
+	 */
+	mapPointSelectionEnabled: false,
 	
 	/**
 	 * Selected MapPoint, or false if no selection
@@ -579,9 +572,6 @@ THMap.prototype = {
 		function animate() {
 			requestAnimationFrame(animate);
 
-			that._AnimateSky();
-			that._AnimateOcean();
-
 			var hoveredShip; // the ship that the mouse is hovering over.
 			var closestShipDist; // the distance from the camera to the closest ship.
 			for (i in that.ships) // Pick a ship to display the label of
@@ -611,6 +601,8 @@ THMap.prototype = {
 				that.mapPoints[i].Update();
 			}
 
+			that._AnimateSky();
+			that._AnimateOcean();
 			that._AnimateSpriteScaling();
 
 			that.renderer.render(that.scene, that.camera);
@@ -620,11 +612,13 @@ THMap.prototype = {
 
 	/**
 	 * Pass a day.
+	 * @param weather The weather state for the new day. ("sunny" or "rain")
+	 * @param callback A callback to be triggered at the end of the day cycle.
 	 */
-	PassDay: function() {
-
+	PassDay: function(weather, callback) {
 		this.dayCycleClockStartTime = Date.now();
-
+		this.newDayWeather = weather;
+		this.onNewDay = callback;
 	},
 
 	/**
@@ -648,6 +642,17 @@ THMap.prototype = {
 		if (Date.now() - this.dayCycleClockStartTime < cycleLength)
 		{
 			this.dayCycleTime = this.dayCycleStopTime + Date.now() - this.dayCycleClockStartTime;
+			
+			if (this.dayCycleTime >= this.dayCycleStopTime / 2 && this.newDayWeather) // it's midnight, update the weather
+			{
+				// TODO
+				this.newDayWeather = false;
+			}
+		}
+		else if (this.onNewDay) // callback
+		{
+			this.onNewDay();
+			this.onNewDay = false;
 		}
 
 		var t = this.dayCycleTime;
@@ -746,7 +751,7 @@ THMap.prototype = {
 				this.lightningBox.material.opacity = -2*(t1)*(t1-1); //-15*(t)*(t-1)*Math.pow(t-0.4, 2);
 				this.lightning.intensity = -8*(t1)*(t1-1); //-60*(t)*(t-1)*Math.pow(t-0.4, 2);
 				
-				if (t1 > secondFlash) // second flash!
+				if (t1 > secondFlash) // in second flash!
 				{
 					var t2 = t1 - secondFlash;
 					
@@ -766,8 +771,8 @@ THMap.prototype = {
 		
 		// animate ocean (tides)
 		var t_ocean = Date.now() * 0.001;
-		var h = 0.01;
-		var newY = h/2*Math.sin(t_ocean) + h/2;
+		var h = 0.01;		
+		var newY = h/2*Math.sin(t_ocean) + h/2;		
 		this.ocean.position.y = newY;
 
 		// animate the ships on the ocean
@@ -776,7 +781,7 @@ THMap.prototype = {
 			var ship = this.ships[i];
 
 			h = 0.05;
-			ship.object.position.y = h/2*Math.sin(t_ocean) + h/2;
+			ship.object.position.y = ship.baseY + h/2*Math.sin(t_ocean) + h/2;
 
 			var a = 0.1;
 			ship.object.rotation.x = -a*Math.cos(t_ocean);

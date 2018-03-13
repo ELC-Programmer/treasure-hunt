@@ -149,7 +149,7 @@
 				</div>
 			</div>
 			<div id="day">
-				<p id="day-text" class="bottom-text">Day 7</p>
+				<p id="day-text" class="bottom-text">Day <span id="day-number-text">7</span></p>
 			</div>
 		</div>
 		<div id="status-container">
@@ -239,7 +239,7 @@
 		<div id="buy-food">
 			<div class="buy-items-line" style="margin-top:4vh;">
 				<div class="buy-title"><p>Buy Food</p></div>
-				<div class="cost"><p>$25 per unit</p></div>
+				<div class="cost"><p>$<span id="food-price-text">25</span> per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -249,7 +249,7 @@
 		<div id="buy-water">
 			<div class="buy-items-line">
 				<div class="buy-title"><p>Buy Water</p></div>
-				<div class="cost"><p>$25 per unit</p></div>
+				<div class="cost"><p>$<span id="water-price-text">25</span> per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -259,7 +259,7 @@
 		<div id="buy-gas">
 			<div class="buy-items-line">
 				<div class="buy-title"><p>Buy Gas</p></div>
-				<div class="cost"><p>$25 per unit</p></div>
+				<div class="cost"><p>$<span id="gas-price-text">25</span> per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -269,7 +269,7 @@
 		<div id="sell-treasure">
 			<div class="buy-items-line">
 				<div class="buy-title"><p>Sell Treasure</p></div>
-				<div class="cost"><p>$25 per unit</p></div>
+				<div class="cost"><p>$<span id="treasure-value-text">25</span> per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -439,7 +439,7 @@
 
 </div>
 
-<script src="js/Howler/howler.core.js"></script>
+<script src="js/lib/Howler/howler.core.js"></script>
 <script src="js/Sounds.js"></script>
 <script src="js/notify.min.js"></script>
 <script src="js/notifications.js"></script>

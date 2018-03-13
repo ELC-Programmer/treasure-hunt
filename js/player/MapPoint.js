@@ -23,11 +23,12 @@ var MapPoint = function(thmap, id, map, positions, object)
 	this.object.traverseVisible(function(obj) {
 		if (obj.name.startsWith(prefix)) {
 			that.labelObject = obj;
+			that.displayName = obj.name.substr(prefix.length);
 		}
 	});
 	
 	// Initialize Selection Widget:
-	var widgetGeometry = new THREE.IcosahedronGeometry( 0.2, 2 );
+	var widgetGeometry = new THREE.IcosahedronGeometry( 0.2, 1 );
 	var widgetMaterial = new THREE.MeshStandardMaterial();
 
 	this.selectionWidget = new THREE.Mesh( widgetGeometry, widgetMaterial );	
@@ -98,37 +99,20 @@ MapPoint.prototype = {
 		for (i in this.parkingSpaces)
 		{
 			var parkingSpace = this.parkingSpaces[i];
-			if (!parkingSpace.reserved)
+			if (!parkingSpace.occupied)
 			{
-				parkingSpace.reserved = true;
+				this.thmap.UpdatePathfindingMap(parkingSpace.position, "parked");
+				parkingSpace.occupied = true;
+
 				parkingSpace.shipID = shipID;
 				
 				return parkingSpace.position;
 			}
 		}
 	},
-
-	/**
-	 * Marks a previously reserved space as an obstacle on the pathfinding map.
-	 * @param shipID The ID of the ship that reserved the space.
-	 */
-	OccupyParkingSpace: function(shipID)
-	{
-		for (i in this.parkingSpaces)
-		{
-			var parkingSpace = this.parkingSpaces[i];
-			if (parkingSpace.reserved && parkingSpace.shipID == shipID)
-			{
-				this.thmap.UpdatePathfindingMap(parkingSpace.position, "parked");
-				
-				parkingSpace.occupied = true;
-				return;
-			}
-		}
-	},
 	
 	/**
-	 * Release a previously reserved parking space.
+	 * Release a previously occupied parking space.
 	 * @param shipID The ID of the ship that reserved the space.
 	 */
 	ReleaseParkingSpace: function(shipID)
@@ -136,16 +120,24 @@ MapPoint.prototype = {
 		for (i in this.parkingSpaces)
 		{
 			var parkingSpace = this.parkingSpaces[i];
-			if (parkingSpace.reserved && parkingSpace.shipID == shipID)
+			if (parkingSpace.occupied && parkingSpace.shipID == shipID)
 			{
 				this.thmap.UpdatePathfindingMap(parkingSpace.position, "free");
 				
-				parkingSpace.reserved = false;
 				parkingSpace.occupied = false;
 				parkingSpace.shipID = '';
 				return;
 			}
 		}
+	},
+	
+	/**
+	 * Get the representative location of this map point.
+	 * @returns Coords of parking space 0, regardless of whether it is occupied.
+	 */
+	GetLocation: function()
+	{
+		return this.parkingSpaces[0].position;
 	},
 	
 	/**
@@ -206,7 +198,6 @@ var ParkingSpace = function(position)
 	this.x = position.x;
 	this.y = position.y;
 	
-	this.reserved = false;
 	this.occupied = false;
 	this.shipID = '';
 }
