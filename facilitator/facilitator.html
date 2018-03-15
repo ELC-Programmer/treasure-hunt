@@ -1,0 +1,683 @@
+<!-- Page HTML Facilitator UI-->
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta charset="utf-8">
+    <title>ELC Treasure Hunt: Facilitator</title>
+    <meta name="description" content="USC Experiential Learning Center Simulation Game">
+    <link rel="icon" href="assets/favicon.png">
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" type="text/css" href="font-awesome-4.2.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/base/jquery-ui.css"> -->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+        #table-center {
+            text-align: center;
+        }
+
+        #canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+        #wrap {
+            min-width: 300px;
+            white-space: normal;
+        }
+        .scrollable-menu {
+            height: auto;
+            max-height: 400px;
+            overflow-x: hidden;
+        }
+        /* CSS for Footer *************/
+        html {
+            position: relative;
+            min-height: 100%;
+        }
+        body {
+            /* Margin bottom by footer height */
+            /*margin-bottom: 60px;*/
+        }
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            /* Set the fixed height of the footer here */
+            height: 60px;
+            background-color: #f5f5f5;
+        } 
+        body > .container {
+            padding: 60px 15px 0;
+        }
+        .container .text-muted {
+            margin: 20px 0;
+            text-align: right;
+        }
+
+        .footer > .container {
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+        code {
+            font-size: 80%;
+        }
+        #chat-messages > *{
+            font-size:3vh;
+        }
+        .text-size{ font-size:3vh; }
+
+
+        /*#navbar{ height:6vh; }*/
+        /*#contents{ height:76vh; }*/
+        #timeline-container{ height:10vh; display:flex; flex-direction:columns; margin-bottom:10vh;}
+        #chat-container{ width:90vw; margin:auto; }
+        /*#site-footer{ height:8vh; }*/
+        /* CSS for Footer *************/
+    </style>
+</head>
+
+<body>
+    <nav id="navbar" class="navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <!-- Menu Collapses on Small Screens -->
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                <a class="navbar-brand" href="#">
+                    <img alt="Brand" src="assets/ELC_Logo2.png" height="24px" width="300px">
+                </a>
+            </div>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a style="cursor:default">Treasure Hunt Simulation</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a>Logged in as <strong><span id="username"></span></strong></a></li>
+                    <li><a href="multimedia_config.php" target="_blank">Administration Panel</a></li>
+                    <li><a href="../">Logout</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                        </a>
+                        <ul class="dropdown-menu scrollable-menu" role="menu">
+                            <li>
+                                <a>
+                                    <h4>Objective</h4>
+                                    <p id="wrap">
+                                        Make as much money as possible.
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a>
+                                    <h4>Expenses</h4>
+                                    <p id="wrap">You start with a budget of $1200. </p>
+                                    <p id="wrap">Partaking of food and water is free while staying at Trojan Island, but food intended to take on the trip must be purchased. Water is free to fill barrels at all Islands, including Trojan Island.</p>
+                                    <p id="wrap">One Unit (enough for your team for a day) of food costs $25 at Trojan Island and $50 at all other islands.</p>
+                                    <p id="wrap"> One day of gas for travel is $50 at Trojan Island and $100 at all other islands. If you don’t travel on a day, you don’t consume gas.</p>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a>
+                                    <h4>Treasure</h4>
+                                    <p id="wrap">The winning team is the team with the most money at the end (unspent budget + treasure).</p>
+                                    <p id="wrap">One unit of treasure is obtained for each day spent at the Treasure Spot.</p>
+                                    <p id="wrap">Each treasure unit is worth $13,000 on the day the first ship returns to Trojan Island.</p>
+                                    <p id="wrap">Each treasure unit is worth $12,000 one day after the first ship returns to Trojan Island.</p>
+                                    <p id="wrap">Each treasure unit is worth $11,000 2 days after the first ship returns to Trojan Island (the price continues to drop each day later).</p>
+                                    <p id="wrap">Treasure can be sold at all islands. However, each treasure unit is only worth $5000 at all islands other than Trojan Island (price doesn’t fluctuate).</p>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a>
+                                    <h4>Cautions</h4>
+                                    <p id="wrap">If you run out of food or water, you will only be able to move 1/2 your intended distance. If you run out of both food and water, you will move 1/4 the distance.</p>
+                                    <p id="wrap">Absolutely do not run out of gas. If you run out of gas, then you die unless another team saves you within 3 days.</p>
+                                    <p id="wrap">Storage is limited. You only have enough space (available weight) to store 30 units combined (units can be water, food, gas).</p>
+                                    <p id="wrap"><strong>Rain:</strong> If you end up staying the night in open water, you will use up two days worth of water, food, and gas for that one day. (i.e. the only way to avoid penalty is to be headed toward an island).</p>
+                                    <p id="wrap"><strong>Pirates:</strong> Pirates may attack your ship in open water, their base island, but never at the treasure spot. (In other words, direct one day travel from one island to another is perfectly safe). Pirates will take half your gas, all food and all treasure.</p>
+                                    <p id="wrap">You may speak with "CRUSTY OLD SEA CAPTAIN". It's free, but you must stay at the location to speak for the entire day.</p>
+                                    <p id="wrap">The "CRUSTY OLD SEA CAPTAIN" claims to know about weather and pirates, but loves company and will only talk about one issue per day (to encourage you to stick around for an extra day to talk).</p>
+                                    <p id="wrap">The "CRUSTY OLD SEA CAPTAIN" has made dinner reservations at a favorite restaurant on Trojan Island for day 1. Once on Trojan Island, the Captain will stay for 2 days and then head toward Sun Devil Island. The Captain will head back to Trojan Island on day 8.</p>
+                                    <p id="wrap">Trojan Island (home) and Sun Devil Island are the only islands with sophisticated communication capability. Teams have the ability to contact someone at each island.</p>
+                                    <p id="wrap">If two teams are in the same location, they are free to speak to each other.</p>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a>
+                                    <h4>Reporting Procedure</h4>
+                                    <p id="wrap">Each day consists of 3 minutes of real time. (May be adjusted as winter approaches.)</p>
+                                    <p id="wrap">Each day, outcomes are calculated and the decision of where to move for the next day is recorded on the team’s spreadsheet.</p>
+                                    <p id="wrap">Then, once the new day arrives, the weather is announced and calculations can be done and so on.</p>
+                                    <p id="wrap">Please note that supplies can be purchased but not consumed on the same day.</p>
+                                    <p id="wrap">Treasure is acquired on the day when you arrive on the treasure spot, but not on the day that you are leaving the treasure spot.</p>
+                                    <p id="wrap">Teams can merge, but the final results are calculated by taking average net value for the teams.</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Alert Insertion -->
+    <div id="alert-insert"></div>
+
+    <div id="contents" class="container-fluid">
+        <div class="row" >
+            <form action="?" method="POST">
+                <!-- Left Side -->
+                <div class="col-md-8" id="stats">
+                    <H3 align="center" style="padding-bottom:10px;">Player Statistics</H3>
+                    <!-- Scrollable Table -->
+                    <div style="height: 400px; overflow:auto; font-size:2.5vh">
+                        <table class="table table-striped" id="player-table">
+                            <tr>
+                                <th id="table-center">Active?</th>
+                                <th id="table-center">Player</th>
+                                <th id="table-center">Cash</th>
+                                <th id="table-center">Current Location</th>
+                                <th id="table-center">Food</th>
+                                <th id="table-center">Water</th>
+                                <th id="table-center">Gas</th>
+                                <th id="table-center">Cash</th>
+                                <th id="table-center">Ready?</th>
+                            </tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- Right Side -->
+                <div class="col-md-4" id="score">
+                    <!-- Graph -->
+
+                    <h3 align="center" onclick="hideOtherComp()" style="cursor:zoom-in;">Cash per Player</h3>
+
+                    <div class="row" onclick="hideOtherComp()" style="cursor:zoom-in;">
+                        <!-- adjust chart size -->
+                        <div class="col-md-12" id="canvas-container" style="height:400px">
+                            <!-- Load Chart. See JS. -->
+                            <canvas id="canvas" height="auto" width="auto"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                    </div>
+                </div>
+
+                <!-- button group container -->
+                <div id="button-group-container" class="container-fluid">
+                    <div class="col-md-4">
+                        <br>
+                        <button type="button" class="btn btn-primary btn-danger btn-block text-size" onclick="resetAlert()">Reset Player Group</button>
+                    </div>
+                    <div class="col-md-4">
+                        <br>
+                        <button type="button" class="btn btn-primary btn-success btn-block text-size" id="advance-btn" onclick="advSim()">Advance Simulation to Next Day</button>
+                        <br>
+                        <div id="override-btn"></div>
+                        <!-- Insert Override Button for when less rooms are used -->
+                        <div id="trade-in-progress"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <br>
+                        <button id="chatOpenButton" type="button" class="btn btn-info btn-block text-size" data-toggle="collapse" data-target="#chat-container" onclick="changechatbuttontext()">Open Chat</button>
+                    </div>
+                </div>
+
+                <!-- chat now pops up on bottom -->
+                <div  id="chatR">
+                    <!-- chat -->
+                    <div id="chat-container" class="collapse">
+                        <h3 align="center">Chat Room</h3>
+                        <div class="row">
+                            <div class="panel panel-info" id="chat-panel" style="overflow-y: scroll;height:400px;">
+                                <!-- message panel -->
+                                <div id="chat-messages">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-13">
+                                <div class="input-group">
+                                    <input style="font-size:3vh; height:6vh;" type="text" class="form-control" id="chat-message-input" name="chat-message-input" autocomplete="off" placeholder="Say something...">
+                                    <span class="input-group-btn">
+                                        <button style="font-size:3vh;" type="button" class="btn btn-primary btn-block" id="chat-send-button">Send</button>  
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>    
+        <br/>
+    </div>
+    <!-- Timeline -->
+    <div id="timeline-container" class="row" style="width:100%">
+        <div style="width:100%;">
+            <div class="progress" style="align-self:center; height:100%; width:100%">
+                <div class="progress-bar progress-bar-warning" id="timeline-planning" role="progressbar" aria-valuenow="5.26" aria-valuemin="0" aria-valuemax="100" style="width: 5.26%;  font-size:3vh; height:100%; display: table;">
+                    <p style="display: table-cell; vertical-align: middle;">Planning Period</p>
+                </div>
+                <div class="progress-bar progress-bar-danger" id="timeline-day" role="progressbar" aria-valuenow="5.26" aria-valuemin="0" aria-valuemax="100" style="width: 5.26%;  font-size:3vh; height:100%; display: none;">
+                    <p style="display: table-cell; vertical-align: middle;">Day 1</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert Overlay at End of Simulation (called when day = 13) -->
+    <div class="modal fade bs-example-modal-lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">End of Simulation</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Please reset the simulation to start again.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Site Footer -->
+  <footer id="site-footer" class="footer row-md-2">
+  	<div class="container pull-right">
+  		<p class="text-muted"><i class="fa fa-copyright"></i> 2018 University of Southern California Marshall School of Business. All rights reserved. | <span style="cursor:pointer" onclick="showCredits()">Credits</span></p>
+  	</div>
+    <div class="modal fade bs-example-modal-lg" id="credits-modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Credits</h4>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        Original design by Raymond Dam in 2012.
+                        <br/><br \>
+                        Design expanded into 2D game in 2016 by Ford Filer, Henry Liu, Dean Hutkin, Yuan Fu, and Yimin Jia.
+                        <br/><br />
+                        The game experienced a major upgrade in 2018 through work done by James Lee, Phillip Nazarian, and Ahsan Zaman. 3D graphics, a revamped server, and a more user-friendly design along with numerous other novel game elements were introduced.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+  </footer> 
+
+    <script src="../js/lib/jquery-3.3.1.min.js"></script>
+    <script src="../js/lib/bootstrap.min.js"></script>
+    <script src="../js/lib/jquery-ui.min.js"></script>
+    <script src="Chart.js-master/Chart.js"></script>
+    <script src="../js/lib/socket.io.js"></script>
+    <script src="../js/lib/utils.js"></script>
+    <script type="text/javascript">
+    	//Global Variables
+    	var override = 0;
+        var username = "";
+		var trades = [];
+		var deadPlayers = {};
+		var activePlayers = {};
+		var firstLoad = true;
+
+        var players = [];
+        var day = 0;
+        //discourage refreshing the page
+        // window.onbeforeunload = function() {
+            // return "WARNING! Refreshing may result the lost of progress.";
+        // }
+    	//**************************
+        window.onload = function() {
+            // testing_init(); //demo
+            init();
+        };
+        function init(){
+            let token = getUrlParameter("token");
+            if(!token){
+                alert("Invalid token. Please log in again.");
+                window.location.assign("../login.html");
+            }
+            window.socket = io.connect("localhost:3000?token="+token);
+            window.socket.on("error", function(){
+                alert("Invalid token. Please log in again.");
+                window.location.assign("../login.html");                
+            });
+            window.socket.on("server send authentication", function(user){
+                $("#username").html(user["username"]);
+            });
+            window.socket.emit("facilitator fetch players", {}, function(data){
+                clearTable();
+                for(i=0; i<data.length; i++){
+                    newRow( data[i]['display_name'], 
+                            data[i]['cash'], 
+                            data[i]['current_location'], 
+                            data[i]['food'], 
+                            data[i]['water'], 
+                            data[i]['gas'], 
+                            data[i]['active'], //pretty sure that active != ready
+                            data[i]['treasure']
+                            );
+                }
+                genGraph(data.map(x=>x["display_name"]), data.map(x=>x["cash"]));
+                players = data;
+            });
+            window.socket.emit("facilitator fetch day", {}, function(data){
+                //this is mainly necessary in case the facilitator disconnects mid-game and wishes to reconnect without restarting the game
+                day = data;
+                timeline(day);
+            });
+            window.socket.emit("facilitator fetch messages", {}, function(data){
+                $("#chat-messages").empty(); 
+                //this is also necessary in case game is interrupted
+                for(i=0; i<data.length; i++)
+                    addChatMsg(data[i]);
+            });
+        }
+        function addChatMsg(msg){            
+            var msgHTML = "<div class='row-fluid' style='border-bottom:1px solid black; display:flex; margin:0;'>\
+                                <div class='col-md-2 row-eq-height' style=\"text-align:center; font-weight:bold; background-color:#E1EFE6;\">" +
+                                    msg["sender_id"]+
+                                    "&nbsp;<span class=\"glyphicon glyphicon-arrow-right\"></span>&nbsp;"+
+                                    msg["recipient_id"]+
+                                    "&nbsp;\
+                                </div>\
+                                <div class='col-md-10 row-eq-height' style='background-color:#EFCB68;'>" + 
+                                    msg["text"] + 
+                                "</div>\
+                            </div>";
+            $("#chat-messages").append(msgHTML);
+        }
+        function showCredits(){
+            $( "#credits-modal").modal("show");
+        }
+        function changechatbuttontext(){
+            if($('#chatOpenButton').html() == "Open Chat"){
+                $('#chatOpenButton').html("Close Chat");
+                $('html,body').animate({scrollTop: document.body.scrollHeight},"fast");
+            }
+            else{
+                $('#chatOpenButton').html("Open Chat");
+            }
+        }
+		function handleReset(){
+            window.socket.emit("facilitator send resetGame", {}, function(data){
+                init();
+            })
+		}
+        //advance by one day
+        function advSim(){
+            $('#advance-btn').prop('disabled',true);
+            window.socket.emit("facilitator send advance", {}, function(data){
+                if(data['success'] == true){
+                    $('#advance-btn').prop('disabled',false);
+                    day += 1;
+                    timeline(day);
+                }
+                else{
+                    alert("Encountered unknown error advancing day.");
+                    $('#advance-btn').prop('disabled',false);
+                }
+            });
+        }
+        function clearTable(){
+            $("#player-table > tbody").
+            html(" <tr>\
+                    <th id='table-center'>Active?</th>\
+                    <th id='table-center'>Player</th>\
+                    <th id='table-center'>Cash</th>\
+                    <th id='table-center'>Current Location</th>\
+                    <th id='table-center'>Food</th>\
+                    <th id='table-center'>Water</th>\
+                    <th id='table-center'>Gas</th>\
+                    <th id='table-center'>Cash</th>\
+                    <th id='table-center'>Ready?</th>\
+                  </tr>\
+                ");
+        }
+        //helper function that preps table entries
+        function newRow(username, cash, current_loc, food, water, gas, ready, treasure){
+            if(deadPlayers[username]) ready = "<i>Dead</i>";
+            if(!activePlayers[username]) ready = "<i>Inactive</i>";
+            if(activePlayers[username]) 
+                var activeHTML = "<input type=\"checkbox\" checked onclick=\"toggleActive('"+username+"');\">";
+            else
+                var activeHTML = "<input type=\"checkbox\" onclick=\"toggleActive('"+username+"');\">";
+            $('#player-table').append(
+                "<tr>" +
+                    "<td id='table-center'>"+ activeHTML + "</td>" +
+                    "<td id='table-center'>" + username + "</td>" +
+                    "<td id='table-center'>" + cash + "</td>" +
+                    "<td id='table-center'>" + current_loc + "</td>" +
+                    "<td id='table-center'>" + food + "</td>" +
+                    "<td id='table-center'>" + water + "</td>" +
+                    "<td id='table-center'>" + gas + "</td>" +
+                    "<td id='table-center'>" + treasure + "</td>" +
+                    "<td id='table-center'>" + ready + "</td>" +
+                "</tr>"
+            );
+        }
+        //helper function that generates graph
+        function genGraph(username, cash) {
+            var data = {
+                labels: username,
+                datasets: [
+                    {
+                        label: "Cash per Player",
+                        fillColor: "rgba(151,187,205,0.5)",
+                        strokeColor: "rgba(151,187,205,0.8)",
+                        highlightFill: "rgba(151,187,205,0.75)",
+                        highlightStroke: "rgba(151,187,205,1)",
+                        fontSize: 30,
+                        data: cash
+                    }
+                ]
+            };
+            //clear canvas before graphing
+            $('#canvas').remove();
+            $('#canvas-container').append('<canvas id="canvas" height="100%" width="100$"></canvas>');
+
+            var ctx = document.getElementById("canvas").getContext("2d");
+            window.myBar = new Chart(ctx).Bar(data, {
+                responsive : true,
+                fontSize: 40
+            });
+        }
+        //enlargens/minimizes chart
+        function hideOtherComp(){
+            if($('#chatR').is(":visible")){
+
+                $('#chatR').hide();
+                $('#stats').hide();
+                $('#button-group-container').hide();
+                
+                $('#score').removeClass('col-md-4').addClass('col-md-12');
+                window.myBar.resize(window.myBar.render, true);
+                window.myBar.render();
+
+                $('#hide-btn').text("Show Entire Dashboard"); 
+
+            }
+            else 
+            {
+                $('#score').removeClass('col-md-12').addClass('col-md-4');
+                $('#chatR').show();
+                $('#stats').show();
+                $('#button-group-container').show();
+                window.myBar.resize(window.myBar.render, true);
+                window.myBar.render();
+
+                $('#hide-btn').text("Show Only Chart"); 
+
+            }
+        }
+        //helper function for Timeline: takes in day (-3 to 14)
+        //moves progress by increments of 5.26
+        function timeline(day) {
+            var counter = 1;
+            for(i = -3; i <= day; i++) {
+                var temp = 5.26 * counter;
+                //move planning period bar from day -3 to 0
+                if(i <= 0) {
+                    $('#timeline-planning').attr('aria-valuenow', temp);
+                    $('#timeline-planning').css('width', temp+'%');
+                    //reset counter after day 0
+                    if(i == 0) {
+                        counter = 1;
+                    }
+                } 
+                //move day bar after
+                else if(day > 0){
+                    $('#timeline-day').css('display', 'table');
+                    $('#timeline-day').attr('aria-valuenow', temp);
+                    $('#timeline-day').css('width', temp+'%');
+                    $('#timeline-day').html('<p style="display:table-cell; vertical-align:middle;">Day ' + day+"</p>");
+                }
+                counter++;
+            }
+        }  
+        //functionality for reset button
+        function resetAlert() {
+            //display confirmation alert
+            $("#alert-insert").append(
+                '<div class="alert alert-danger alert-dismissible fade in" role="alert" style="text-align:center;">' +
+                     '<H4>Player Reset Confirmation</H4>' +
+                     '<p>Are you sure you want reset all players in your group?</p>' +
+                    '<button type="button" class="btn btn-danger" data-dismiss="alert" aria-label="Close"onClick="handleReset()" style="margin-right:1vw;">Reset</button>' +
+                    '<button type="button" class="btn btn-primary" data-dismiss="alert" aria-label="Close" class="col-md-6" style="margin-left:1vw;">Cancel</button>' +
+                '</div>'
+            );
+        }    
+
+
+
+
+
+
+
+
+
+
+ 
+        function handleNewMessage(messageObj){
+            var data = messageObj.sender + ": " + messageObj.msg;
+            console.log("Got Message: " + data);
+            var msgHTML = "<span class=\"message\">" + data+ "</span><br>";
+            $("#chat-messages").append(msgHTML);
+            $("#chat-panel").scrollTop($("#chat-panel")[0].scrollHeight);
+        }
+		function showTradeInProgress(tradeObj)
+		{
+			if(tradeObj)
+			{
+				trades.push(tradeObj);
+			}
+			$("#trade-in-progress").empty();
+			for(var it in trades)
+			{
+				var trade = trades[it];
+				$("#trade-in-progress").append("<span>Note: There is a trade in progress between " + trade.sender + " and " + trade.receiver + "</span></br>");
+			}
+		}
+		function removeTradeInProgress(tradeObj)
+		{
+			console.log("Remove");
+			console.log(tradeObj);
+			for(var i = 0; i < trades.length; i++)
+			{
+				var curTrade = trades[i];
+				if(tradeObj.partner == curTrade.sender)
+				{
+					trades.splice(i, 1);
+					break;
+				}
+			}
+			showTradeInProgress();
+		}
+        function sendChatMessage(){
+            var chatInput = $("#chat-message-input"); 
+            var message = chatInput.val();
+            var receiver = "All";
+            var messageType = (receiver == "All")? "broadcast":"direct";
+            var messageObj = {msg: message, grouping: userGrouping, sender: username, receiver: receiver, type: messageType};
+            if(chatInput.val() != "")
+            {
+                window.socket.emit("message", messageObj);
+            }
+            
+            chatInput.val("");
+        }
+		function toggleActive(username)
+		{
+			if(activePlayers[username])
+			{
+				activePlayers[username] = false;
+			}
+			else
+			{
+				activePlayers[username] = true;
+			}
+		}
+        function handleSOS(data){
+            //console.log("Got Message2: " + data.msg);
+            var msgHTML = '<font color = \"red\">' + data.msg + '</font></br>';
+            $("#chat-messages").append(msgHTML);
+            $("#chat-panel").scrollTop($("#chat-panel")[0].scrollHeight);
+        }
+        //helper function to manually end polling. For runs that use less than all rooms in group.
+        function overrideButton() {
+        	//change internal text
+        	$('#override-text').html('<i class="fa fa-spinner fa-spin"></i> Please Wait...');
+
+        }
+        //for offline demo purposes only
+        function testing_init(){
+            var users = [   // [username, cash, current_loc, food, water, gas, ready, treasure]
+                            ['Ship B',100,'trojan-island',4,4,4,1,4],
+                            ['Ship C',100,'trojan-island',4,4,4,1,4],
+                            ['Ship D',100,'trojan-island',4,4,4,1,4],
+                            ['Ship E',100,'trojan-island',4,4,4,1,4],
+                            ['Ship F',100,'trojan-island',4,4,4,1,4],
+                            ['Ship G',100,'trojan-island',4,4,4,1,4],
+                            ['Ship H',100,'trojan-island',4,4,4,1,4],
+                            ['Ship I',100,'trojan-island',4,4,4,1,4]
+                        ];
+            var day = 0;
+            genGraph(users.map(x=> x[0]), users.map(x => x[1]));
+            timeline(day);
+            for(i=0; i<8; i++){
+                newRow(users[i][0], users[i][1], users[i][2], users[i][3], users[i][4], users[i][5], users[i][6], users[i][7]); 
+            }
+            
+            var msg1 = "Hello there!"
+        }
+        
+    </script>
+</body>
