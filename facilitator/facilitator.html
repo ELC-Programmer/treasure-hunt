@@ -111,8 +111,8 @@
                 </ul>
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a>Logged in as <strong><span id="username"></span></strong></a></li>
-                    <li><a href="multimedia_config.php" target="_blank">Administration Panel</a></li>
+                    <li><a style="cursor:default;">Logged in as <strong><span id="username"></span></strong></a></li>
+                    <!-- <li><a href="multimedia_config.php" target="_blank">Administration Panel</a></li> -->
                     <li><a href="../">Logout</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -197,7 +197,6 @@
                     <div style="height: 400px; overflow:auto; font-size:2.5vh">
                         <table class="table table-striped" id="player-table">
                             <tr>
-                                <th id="table-center">Active?</th>
                                 <th id="table-center">Player</th>
                                 <th id="table-center">Cash</th>
                                 <th id="table-center">Current Location</th>
@@ -267,7 +266,7 @@
                                 <div class="input-group">
                                     <input style="font-size:3vh; height:6vh;" type="text" class="form-control" id="chat-message-input" name="chat-message-input" autocomplete="off" placeholder="Say something...">
                                     <span class="input-group-btn">
-                                        <button style="font-size:3vh;" type="button" class="btn btn-primary btn-block" id="chat-send-button">Send</button>  
+                                        <button style="font-size:3vh;" type="button" class="btn btn-primary btn-block" id="chat-send-button" onclick="broadcastChatMsg()">Send</button>  
                                     </span>
                                 </div>
                             </div>
@@ -342,10 +341,9 @@
     <script type="text/javascript">
     	//Global Variables
     	var override = 0;
-        var username = "";
+        var myname = "";
 		var trades = [];
 		var deadPlayers = {};
-		var activePlayers = {};
 		var firstLoad = true;
 
         var players = [];
@@ -357,9 +355,10 @@
     	//**************************
         window.onload = function() {
             // testing_init(); //demo
+            connect();
             init();
         };
-        function init(){
+        function connect(){
             let token = getUrlParameter("token");
             if(!token){
                 alert("Invalid token. Please log in again.");
@@ -371,20 +370,42 @@
                 window.location.assign("../login.html");                
             });
             window.socket.on("server send authentication", function(user){
-                $("#username").html(user["username"]);
+                myname = user["username"];
+                $("#username").html(myname);
             });
+            window.socket.on("server send updateChat", function(data){
+                if(data.newMessages = false) return;
+                for(i=0; i<data.messages.length; i++){
+                    addChatMsg(data.messages[i])
+                }
+            });
+        }
+        function init(){
             window.socket.emit("facilitator fetch players", {}, function(data){
                 clearTable();
                 for(i=0; i<data.length; i++){
-                    newRow( data[i]['display_name'], 
+                    if(data[i]['is_dead'] == 1){
+                        newRow( data[i]['display_name'], 
+                            data[i]['cash'], 
+                            'dead', 
+                            'dead', 
+                            'dead', 
+                            'dead', 
+                            'dead',
+                            'dead'
+                            );
+                    }
+                    else{
+                        newRow( data[i]['display_name'], 
                             data[i]['cash'], 
                             data[i]['current_location'], 
                             data[i]['food'], 
                             data[i]['water'], 
                             data[i]['gas'], 
-                            data[i]['active'], //pretty sure that active != ready
+                            data[i]['ready'],
                             data[i]['treasure']
                             );
+                    }
                 }
                 genGraph(data.map(x=>x["display_name"]), data.map(x=>x["cash"]));
                 players = data;
@@ -401,19 +422,35 @@
                     addChatMsg(data[i]);
             });
         }
-        function addChatMsg(msg){            
+        function broadcastChatMsg(){
+            var text = $("#chat-message-input").val().trim();
+            if(text == "") return; //don't send empty strings
+            window.socket.emit("player send chatMessage", {text});
+            $("#chat-message-input").val("");
+        }
+        function addChatMsg(msg){ 
+            var text = msg["text"];
+            var recvr = findID(msg["recipient_id"]);
+            var sender = findID(msg["sender_id"]);
+            if(sender == null) sender = myname;
+            if(recvr == null) recvr = "All";
             var msgHTML = "<div class='row-fluid' style='border-bottom:1px solid black; display:flex; margin:0;'>\
                                 <div class='col-md-2 row-eq-height' style=\"text-align:center; font-weight:bold; background-color:#E1EFE6;\">" +
-                                    msg["sender_id"]+
+                                    sender+
                                     "&nbsp;<span class=\"glyphicon glyphicon-arrow-right\"></span>&nbsp;"+
-                                    msg["recipient_id"]+
+                                    recvr+
                                     "&nbsp;\
                                 </div>\
                                 <div class='col-md-10 row-eq-height' style='background-color:#EFCB68;'>" + 
-                                    msg["text"] + 
+                                    text + 
                                 "</div>\
                             </div>";
             $("#chat-messages").append(msgHTML);
+        }
+        function findID(id){
+            for(k=0; k<players.length; k++)
+                if(players[k].user_id == id) return players[k].display_name;
+            return null
         }
         function showCredits(){
             $( "#credits-modal").modal("show");
@@ -438,8 +475,7 @@
             window.socket.emit("facilitator send advance", {}, function(data){
                 if(data['success'] == true){
                     $('#advance-btn').prop('disabled',false);
-                    day += 1;
-                    timeline(day);
+                    init();
                 }
                 else{
                     alert("Encountered unknown error advancing day.");
@@ -450,29 +486,23 @@
         function clearTable(){
             $("#player-table > tbody").
             html(" <tr>\
-                    <th id='table-center'>Active?</th>\
                     <th id='table-center'>Player</th>\
                     <th id='table-center'>Cash</th>\
                     <th id='table-center'>Current Location</th>\
                     <th id='table-center'>Food</th>\
                     <th id='table-center'>Water</th>\
                     <th id='table-center'>Gas</th>\
-                    <th id='table-center'>Cash</th>\
+                    <th id='table-center'>Treasure</th>\
                     <th id='table-center'>Ready?</th>\
                   </tr>\
                 ");
         }
         //helper function that preps table entries
         function newRow(username, cash, current_loc, food, water, gas, ready, treasure){
-            if(deadPlayers[username]) ready = "<i>Dead</i>";
-            if(!activePlayers[username]) ready = "<i>Inactive</i>";
-            if(activePlayers[username]) 
-                var activeHTML = "<input type=\"checkbox\" checked onclick=\"toggleActive('"+username+"');\">";
-            else
-                var activeHTML = "<input type=\"checkbox\" onclick=\"toggleActive('"+username+"');\">";
+            if(ready == false) ready = "No";
+            if(ready == true) ready = "Yes";
             $('#player-table').append(
                 "<tr>" +
-                    "<td id='table-center'>"+ activeHTML + "</td>" +
                     "<td id='table-center'>" + username + "</td>" +
                     "<td id='table-center'>" + cash + "</td>" +
                     "<td id='table-center'>" + current_loc + "</td>" +
@@ -575,6 +605,12 @@
                 '</div>'
             );
         }    
+        if(typeof(String.prototype.trim) === "undefined"){
+            String.prototype.trim = function() 
+            {
+                return String(this).replace(/^\s+|\s+$/g, '');
+            };
+        }
 
 
 
@@ -585,8 +621,8 @@
 
 
 
- 
-        function handleNewMessage(messageObj){
+ //old code; not used
+       /* function handleNewMessage(messageObj){
             var data = messageObj.sender + ": " + messageObj.msg;
             console.log("Got Message: " + data);
             var msgHTML = "<span class=\"message\">" + data+ "</span><br>";
@@ -621,19 +657,6 @@
 			}
 			showTradeInProgress();
 		}
-        function sendChatMessage(){
-            var chatInput = $("#chat-message-input"); 
-            var message = chatInput.val();
-            var receiver = "All";
-            var messageType = (receiver == "All")? "broadcast":"direct";
-            var messageObj = {msg: message, grouping: userGrouping, sender: username, receiver: receiver, type: messageType};
-            if(chatInput.val() != "")
-            {
-                window.socket.emit("message", messageObj);
-            }
-            
-            chatInput.val("");
-        }
 		function toggleActive(username)
 		{
 			if(activePlayers[username])
@@ -678,6 +701,6 @@
             
             var msg1 = "Hello there!"
         }
-        
+        */
     </script>
 </body>
