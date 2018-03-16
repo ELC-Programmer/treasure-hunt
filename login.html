@@ -5,73 +5,112 @@
 
 	<script src="js/lib/socket.io.js"></script>
 	<script src="js/lib/jquery-3.3.1.min.js"></script>
+    <link href="facilitator/css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/lib/bootstrap.min.js"></script>
+
+	<style type="text/css">
+		body{
+			background:url('assets/img/ttrojan.jpg');
+			background-repeat:no-repeat;
+			background-size:cover;
+		}
+		#container{
+			height:50vh;
+			width:50vw;
+			background:rgba(231,230,247,0.5);
+			margin:auto;
+			position:absolute;
+			top:0; bottom:0; right:0; left:0;
+			text-align:center;
+			font-size:3vh;
+			padding:1vw;
+			display:table;
+			border-radius:4px;
+		}
+		.lg-text{ font-size:3vh; }
+		.glyphicon-refresh-animate {
+		    -animation: spin .7s infinite linear;
+		    -webkit-animation: spin2 .7s infinite linear;
+		}
+
+		@-webkit-keyframes spin2 {
+		    from { -webkit-transform: rotate(0deg);}
+		    to { -webkit-transform: rotate(360deg);}
+		}
+
+		@keyframes spin {
+		    from { transform: scale(1) rotate(0deg);}
+		    to { transform: scale(1) rotate(360deg);}
+		}
+	</style>
 </head>
 
 <body>
-	<p><a href="register.html">Register</a></p>
-
-	<p>Username:</p>
-	<input type="text" id="username" />
-	
-	<p>Password:</p>
-	<input type="password" id="password" />
-	
-	<p>
-		<input type="button" id="submit" value="Login" />
-	</p>
-	
-	<p id="waitMessage" style="color:blue">Authenticating...</p>
-	<p id="errorMessage" style="color:red"></p>
-	
-	<script>
-	
-		// Open socket to server
-		var socket = io("localhost:3000?noAuth");
-		
-		// Handle click
-		$("#waitMessage").hide();
-		$("#submit").click(function() {
-		
-			$("#errorMessage").hide();
-			$("#waitMessage").show();
-			
-			let username = $("#username").val();
-			let password = $("#password").val();
-			
-			socket.emit("client function login",
-			{
-				username: username,
-				password: password
-			},
-			function(response) {
-				
-				if (!response.success)
-				{ // failure
-					$("#errorMessage").text(response.error);
-					$("#errorMessage").show();
-					$("#waitMessage").hide();
-					
-					$("#submit").removeProp("disabled");
-				}
-				else
-				{ // success
-					
-					if (response.user.type == "player")
-					{
-						window.location.assign("player.html?token=" + response.token);
-					}
-					else
-					{
-						window.location.assign("facilitator/facilitator.html?token=" + response.token);
-
-						//alert("Facilitator view not yet made!");
-					}
-				}
-			});
-			$("#submit").prop("disabled");
-			
-		});
-		
-	</script>
-	
+	<form action="javascript:submit()">
+		<div id="container">
+				<h1>Treasure Hunt</h1>
+				<h3 class="page-header">USC Marshall School of Business</h3>
+				<div class="form-group" style="text-align:left">
+					<label for="username">Username</label>
+					<input type="text" class="form-control form-control-lg lg-text" id="username" placeholder="tommy_trojan"/>
+				</div>
+				<div class="form-group" style="text-align:left">
+					<label for="password">Password</label>
+					<input type="password" id="password" class="form-control form-control-lg lg-text" placeholder="Password"/>
+				</div>
+			    <div class="form-group col-md-6" style="padding-left:0;">
+			    	<a href="register.html" class="btn btn-danger btn-block"><span style="font-size:3vh">Register</span></a>
+			    </div>
+			    <div class="form-group col-md-6" style="padding-right:0;">
+					<button type="submit" class="btn btn-success btn-block" id="submit" value="Login" onclick="submit()"><span style="font-size:3vh"><span id='loading-icon' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Login</span></button>
+			    </div>
+				<div id="errorMessage" style="color:red"></div>
+		</div>	
+	</form>
 </body>
+<script>
+	// Open socket to server
+	var socket = io("localhost:3000?noAuth");
+	var waiting = false;
+	
+	// Handle click
+	$("#waitMessage").hide();
+	$("#loading-icon").hide();
+	function submit(){
+		if(waiting) return;
+		else waiting = true;
+		$("#loading-icon").show();
+		$("#errorMessage").hide();
+		
+		let username = $("#username").val();
+		let password = $("#password").val();
+		
+		socket.emit("client function login",
+		{
+			username: username,
+			password: password
+		},
+		function(response) {
+			if (!response.success){ // failure
+				$("#errorMessage").text(response.error);
+				$("#errorMessage").show();
+				$("#waitMessage").hide();
+				
+				$("#submit").removeProp("disabled");
+				waiting = false;
+				$("#loading-icon").hide();
+			}
+			else{ // success
+				if (response.user.type == "player") {
+					window.location.assign("player.html?token=" + response.token);
+				}
+				else {
+					window.location.assign("facilitator/facilitator.html?token=" + response.token);
+				}
+			}
+		});
+		$("#submit").prop("disabled");	
+	}
+	
+</script>
+	

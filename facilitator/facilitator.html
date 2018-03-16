@@ -226,8 +226,6 @@
                     <br>
                     <button type="button" class="btn btn-primary btn-success btn-block text-size" id="advance-btn" onclick="advSim()">Advance Simulation to Next Day</button>
                     <br>
-                    <div id="override-btn"></div>
-                    <!-- Insert Override Button for when less rooms are used -->
                     <div id="trade-in-progress"></div>
                 </div>
                 <div class="col-md-4">
@@ -328,12 +326,7 @@
     <script src="../js/lib/utils.js"></script>
     <script type="text/javascript">
     	//Global Variables
-    	var override = 0;
         var myname = "";
-		var trades = [];
-		var deadPlayers = {};
-		var firstLoad = true;
-
         var players = [];
         var locationDict = {"trojan-island":"Trojan Island",
                                 "bear-island":"Bear Island",
@@ -617,96 +610,5 @@
                 return String(this).replace(/^\s+|\s+$/g, '');
             };
         }
-
-
-
-
-
-
-
-
-
-
- //old code; not used
-       /* function handleNewMessage(messageObj){
-            var data = messageObj.sender + ": " + messageObj.msg;
-            console.log("Got Message: " + data);
-            var msgHTML = "<span class=\"message\">" + data+ "</span><br>";
-            $("#chat-messages").append(msgHTML);
-            $("#chat-panel").scrollTop($("#chat-panel")[0].scrollHeight);
-        }
-		function showTradeInProgress(tradeObj)
-		{
-			if(tradeObj)
-			{
-				trades.push(tradeObj);
-			}
-			$("#trade-in-progress").empty();
-			for(var it in trades)
-			{
-				var trade = trades[it];
-				$("#trade-in-progress").append("<span>Note: There is a trade in progress between " + trade.sender + " and " + trade.receiver + "</span></br>");
-			}
-		}
-		function removeTradeInProgress(tradeObj)
-		{
-			console.log("Remove");
-			console.log(tradeObj);
-			for(var i = 0; i < trades.length; i++)
-			{
-				var curTrade = trades[i];
-				if(tradeObj.partner == curTrade.sender)
-				{
-					trades.splice(i, 1);
-					break;
-				}
-			}
-			showTradeInProgress();
-		}
-		function toggleActive(username)
-		{
-			if(activePlayers[username])
-			{
-				activePlayers[username] = false;
-			}
-			else
-			{
-				activePlayers[username] = true;
-			}
-		}
-        function handleSOS(data){
-            //console.log("Got Message2: " + data.msg);
-            var msgHTML = '<font color = \"red\">' + data.msg + '</font></br>';
-            $("#chat-messages").append(msgHTML);
-            $("#chat-panel").scrollTop($("#chat-panel")[0].scrollHeight);
-        }
-        //helper function to manually end polling. For runs that use less than all rooms in group.
-        function overrideButton() {
-        	//change internal text
-        	$('#override-text').html('<i class="fa fa-spinner fa-spin"></i> Please Wait...');
-
-        }
-        //for offline demo purposes only
-        function testing_init(){
-            var users = [   // [username, cash, current_loc, food, water, gas, ready, treasure]
-                            ['Ship B',100,'trojan-island',4,4,4,1,4],
-                            ['Ship C',100,'trojan-island',4,4,4,1,4],
-                            ['Ship D',100,'trojan-island',4,4,4,1,4],
-                            ['Ship E',100,'trojan-island',4,4,4,1,4],
-                            ['Ship F',100,'trojan-island',4,4,4,1,4],
-                            ['Ship G',100,'trojan-island',4,4,4,1,4],
-                            ['Ship H',100,'trojan-island',4,4,4,1,4],
-                            ['Ship I',100,'trojan-island',4,4,4,1,4]
-                        ];
-            var day = 0;
-            genGraph(users.map(x=> x[0]), users.map(x => x[1]));
-            timeline(day);
-            for(i=0; i<8; i++){
-                newRow(users[i][0], users[i][1], users[i][2], users[i][3], users[i][4], users[i][5], users[i][6], users[i][7]); 
-            }
-            
-            var msg1 = "Hello there!"
-        }
-        */
     </script>
 </body>
