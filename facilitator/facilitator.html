@@ -220,7 +220,7 @@
                 <div id="button-group-container" class="container-fluid">
                     <div class="col-md-4">
                         <br>
-                        <button type="button" class="btn btn-primary btn-danger btn-block text-size" onclick="resetAlert()">Reset Game</button>
+                        <button type="button" class="btn btn-primary btn-danger btn-block text-size" id="resetButton" onclick="resetAlert()">Reset Game</button>
                     </div>
                     <div class="col-md-4">
                         <br>
@@ -449,11 +449,6 @@
                 $('#chatOpenButton').html("Open Chat");
             }
         }
-		function handleReset(){
-            window.socket.emit("facilitator send resetGame", {}, function(data){
-                init();
-            })
-		}
         //advance by one day
         function advSim(){
             $('#advance-btn').prop('disabled',true);
@@ -584,6 +579,7 @@
         //functionality for reset button
         function resetAlert() {
             //display confirmation alert
+            $("#resetButton").prop('disabled',true);
             $("#alert-insert").append(
                 '<div class="alert alert-danger alert-dismissible fade in" role="alert" style="text-align:center;">' +
                      '<H4>Player Reset Confirmation</H4>' +
@@ -593,6 +589,12 @@
                 '</div>'
             );
         }    
+        function handleReset(){
+            window.socket.emit("facilitator send resetGame", {}, function(data){
+                init();
+                $("#resetButton").prop('disabled',false);
+            })
+        }
         if(typeof(String.prototype.trim) === "undefined"){
             String.prototype.trim = function() 
             {
