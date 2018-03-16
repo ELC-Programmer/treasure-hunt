@@ -14,10 +14,14 @@
 			background-repeat:no-repeat;
 			background-size:cover;
 		}
+		#container-container{
+			background:rgba(231,230,247,0.5);
+			height:100vh;
+			width:100vw;
+		}
 		#container{
 			height:50vh;
 			width:50vw;
-			background:rgba(231,230,247,0.5);
 			margin:auto;
 			position:absolute;
 			top:0; bottom:0; right:0; left:0;
@@ -47,9 +51,11 @@
 
 <body>
 	<form action="javascript:submit()">
+		<div id="container-container">
 		<div id="container">
-				<h1>Treasure Hunt</h1>
-				<h3 class="page-header">USC Marshall School of Business</h3>
+				<h1 class="h1 mb-3 font-weight-normal">Treasure Hunt</h1>
+				<h3 class="page-header mb-3 h3">USC Marshall School of Business</h3>
+				<h2 class="h3 mb-2 font-weight-normal">Please sign in</h2>
 				<div class="form-group" style="text-align:left">
 					<label for="username">Username</label>
 					<input type="text" class="form-control form-control-lg lg-text" id="username" placeholder="tommy_trojan"/>
@@ -66,6 +72,7 @@
 			    </div>
 				<div id="errorMessage" style="color:red"></div>
 		</div>	
+		</div>
 	</form>
 </body>
 <script>
@@ -73,7 +80,6 @@
 	var socket = io("localhost:3000?noAuth");
 	var waiting = false;
 	
-	// Handle click
 	$("#waitMessage").hide();
 	$("#loading-icon").hide();
 	function submit(){
