@@ -175,93 +175,93 @@
     <div id="alert-insert"></div>
 
     <div id="contents" class="container-fluid">
-        <div class="row" >
-            <form action="?" method="POST">
-                <!-- Left Side -->
-                <div class="col-md-8" id="stats">
-                    <H3 align="center" style="padding-bottom:10px;">Player Statistics</H3>
-                    <!-- Scrollable Table -->
-                    <div style="height: 400px; overflow:auto; font-size:2.5vh">
-                        <table class="table table-striped" id="player-table">
-                            <tr>
-                                <th id="table-center">Player</th>
-                                <th id="table-center">Cash</th>
-                                <th id="table-center">Current Location</th>
-                                <th id="table-center">Food</th>
-                                <th id="table-center">Water</th>
-                                <th id="table-center">Gas</th>
-                                <th id="table-center">Cash</th>
-                                <th id="table-center">Ready?</th>
-                            </tr>
-                        </table>
-                    </div>
-
+        <div class="row">
+            <!-- Left Side -->
+            <div class="col-md-8" id="stats">
+                <H3 align="center" style="padding-bottom:10px;">Player Statistics</H3>
+                <!-- Scrollable Table -->
+                <div style="height: 400px; overflow:auto; font-size:2.5vh">
+                    <table class="table table-striped" id="player-table">
+                        <tr>
+                            <th id="table-center">Player</th>
+                            <th id="table-center">Cash</th>
+                            <th id="table-center">Current Location</th>
+                            <th id="table-center">Food</th>
+                            <th id="table-center">Water</th>
+                            <th id="table-center">Gas</th>
+                            <th id="table-center">Cash</th>
+                            <th id="table-center">Ready?</th>
+                        </tr>
+                    </table>
                 </div>
 
-                <!-- Right Side -->
-                <div class="col-md-4" id="score">
-                    <!-- Graph -->
+            </div>
 
-                    <h3 align="center" onclick="hideOtherComp()" style="cursor:zoom-in;">Cash per Player</h3>
+            <!-- Right Side -->
+            <div class="col-md-4" id="score">
+                <!-- Graph -->
 
-                    <div class="row" onclick="hideOtherComp()" style="cursor:zoom-in;">
-                        <!-- adjust chart size -->
-                        <div class="col-md-12" id="canvas-container" style="height:400px">
-                            <!-- Load Chart. See JS. -->
-                            <canvas id="canvas" height="auto" width="auto"></canvas>
-                        </div>
+                <h3 align="center" onclick="hideOtherComp()" style="cursor:zoom-in;">Cash per Player</h3>
+
+                <div class="row" onclick="hideOtherComp()" style="cursor:zoom-in;">
+                    <!-- adjust chart size -->
+                    <div class="col-md-12" id="canvas-container" style="height:400px">
+                        <!-- Load Chart. See JS. -->
+                        <canvas id="canvas" height="auto" width="auto"></canvas>
                     </div>
+                </div>
 
+                <div class="row">
+                </div>
+            </div>
+
+            <!-- button group container -->
+            <div id="button-group-container" class="container-fluid">
+                <div class="col-md-4">
+                    <br>
+                    <button type="button" class="btn btn-primary btn-danger btn-block text-size" id="resetButton" onclick="resetAlert()">Reset Game</button>
+                </div>
+                <div class="col-md-4">
+                    <br>
+                    <button type="button" class="btn btn-primary btn-success btn-block text-size" id="advance-btn" onclick="advSim()">Advance Simulation to Next Day</button>
+                    <br>
+                    <div id="override-btn"></div>
+                    <!-- Insert Override Button for when less rooms are used -->
+                    <div id="trade-in-progress"></div>
+                </div>
+                <div class="col-md-4">
+                    <br>
+                    <button id="chatOpenButton" type="button" class="btn btn-info btn-block text-size" data-toggle="collapse" data-target="#chat-container" onclick="changechatbuttontext()">Open Chat</button>
+                </div>
+            </div>
+
+            <!-- chat now pops up on bottom -->
+            <div id="chatR">
+                <!-- chat -->
+                <div id="chat-container" class="collapse">
+                    <h3 align="center">Chat Room</h3>
                     <div class="row">
-                    </div>
-                </div>
-
-                <!-- button group container -->
-                <div id="button-group-container" class="container-fluid">
-                    <div class="col-md-4">
-                        <br>
-                        <button type="button" class="btn btn-primary btn-danger btn-block text-size" id="resetButton" onclick="resetAlert()">Reset Game</button>
-                    </div>
-                    <div class="col-md-4">
-                        <br>
-                        <button type="button" class="btn btn-primary btn-success btn-block text-size" id="advance-btn" onclick="advSim()">Advance Simulation to Next Day</button>
-                        <br>
-                        <div id="override-btn"></div>
-                        <!-- Insert Override Button for when less rooms are used -->
-                        <div id="trade-in-progress"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <br>
-                        <button id="chatOpenButton" type="button" class="btn btn-info btn-block text-size" data-toggle="collapse" data-target="#chat-container" onclick="changechatbuttontext()">Open Chat</button>
-                    </div>
-                </div>
-
-                <!-- chat now pops up on bottom -->
-                <div  id="chatR">
-                    <!-- chat -->
-                    <div id="chat-container" class="collapse">
-                        <h3 align="center">Chat Room</h3>
-                        <div class="row">
-                            <div class="panel panel-info" id="chat-panel" style="overflow-y: scroll;height:400px;">
-                                <!-- message panel -->
-                                <div id="chat-messages">
-                                </div>
+                        <div class="panel panel-info" id="chat-panel" style="overflow-y: scroll;height:400px;">
+                            <!-- message panel -->
+                            <div id="chat-messages">
                             </div>
                         </div>
+                    </div>
+                    <form action="javascript:broadcastChatMsg()">
                         <div class="row">
                             <div class="col-md-13">
                                 <div class="input-group">
                                     <input style="font-size:3vh; height:6vh;" type="text" class="form-control" id="chat-message-input" name="chat-message-input" autocomplete="off" placeholder="Say something...">
                                     <span class="input-group-btn">
-                                        <button style="font-size:3vh;" type="button" class="btn btn-primary btn-block" id="chat-send-button" onclick="broadcastChatMsg()">Send</button>  
-                                    </span>
+                                            <button style="font-size:3vh;" type="button" class="btn btn-primary btn-block" id="chat-send-button" onclick="broadcastChatMsg()">Send to All</button>  
+                                        </span>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
-            </form>
-        </div>    
+            </div>
+        </div>
         <br/>
     </div>
     <!-- Timeline -->
@@ -575,6 +575,7 @@
                 }
                 counter++;
             }
+            if(day == 14) $('#advance-btn').prop("disabled",true);
         }  
         //functionality for reset button
         function resetAlert() {
@@ -593,6 +594,7 @@
             window.socket.emit("facilitator send resetGame", {}, function(data){
                 init();
                 $("#resetButton").prop('disabled',false);
+                $('#advance-btn').prop("disabled",false);
             })
         }
         if(typeof(String.prototype.trim) === "undefined"){
