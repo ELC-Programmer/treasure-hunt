@@ -100,6 +100,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li><a style="cursor:default;">Logged in as <strong><span id="username"></span></strong></a></li>
                     <!-- <li><a href="multimedia_config.php" target="_blank">Administration Panel</a></li> -->
+                    <li onclick="refresh()"><a style="cursor:pointer;">Refresh</a></li>
                     <li><a href="../">Logout</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -334,6 +335,14 @@
 		var firstLoad = true;
 
         var players = [];
+        var locationDict = {"trojan-island":"Trojan Island",
+                                "bear-island":"Bear Island",
+                                "duck-island":"Duck Island",
+                                "beaver-island":"Beaver Island",
+                                "cardinal-island":"Cardinal Island",
+                                "sun-devil-island":"Sun Devil Island",
+                                "bruin-island":"Bruin Island",
+                                "treasure-spot":"Treasure Spot"}
         //discourage refreshing the page
         // window.onbeforeunload = function() {
             // return "WARNING! Refreshing may result the lost of progress.";
@@ -413,6 +422,9 @@
             window.socket.emit("player send chatMessage", {text});
             $("#chat-message-input").val("");
         }
+        function refresh(){
+            init();
+        }
         function addChatMsg(msg){ 
             var text = msg["text"];
             var recvr = findID(msg["recipient_id"]);
@@ -481,6 +493,8 @@
         function newRow(username, cash, current_loc, food, water, gas, ready, treasure){
             if(ready == false) ready = "No";
             if(ready == true) ready = "Yes";
+            if(current_loc == null) current_loc = "trojan-island";
+            if(current_loc.length > 3) current_loc = locationDict[current_loc];
             $('#player-table').append(
                 "<tr>" +
                     "<td id='table-center'>" + username + "</td>" +
