@@ -47,73 +47,12 @@
 			<hr />
 			<div id="chat-content-container">
 				<div id="chat-select">
-					<div class="team-select" id="broadcast-button">
+					<div class="team-select team-select-enabled" id="broadcast-button">
 						<p>Broadcast</p>
-					</div>
-					<div class="team-select">
-						<p>Ship B</p>
-					</div>
-					<div class="team-select">
-						<p>Ship C</p>
-					</div>
-					<div class="team-select">
-						<p>Ship D</p>
-					</div>
-					<div class="team-select">
-						<p>Ship E</p>
-					</div>
-					<div class="team-select">
-						<p>Ship F</p>
-					</div>
-					<div class="team-select">
-						<p>Ship G</p>
-					</div>
-					<div class="team-select">
-						<p>Ship H</p>
-					</div>
-					<div class="team-select">
-						<p>Ship I</p>
-					</div><div class="team-select">
-						<p>Ship J</p>
-					</div><div class="team-select">
-						<p>Ship K</p>
-					</div><div class="team-select">
-						<p>Ship L</p>
-					</div><div class="team-select">
-						<p>Ship M</p>
 					</div>
 				</div>
 				<div id="message-content-container">
-					<div id="messages">
-						<div onclick="expandText(this)" class="messages-local">
-							<div class="message">
-								<p>
-									hey
-								</p>
-							</div>
-						</div>
-						<div onclick="expandText(this)" class="messages-remote">
-							<div class="message">
-								<p>
-								hello
-								</p>
-							</div>
-						</div>
-						<div onclick="expandText(this)" class="messages-local">
-							<div class="message">
-								<p>
-								Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla at ligula facilisis, suscipit elit vel, tincidunt risus. Integer aliquam augue in tortor blandit, ullamcorper egestas dui sodales. Mauris sagittis risus at ex laoreet laoreet. Pellentesque iaculis pulvinar dui, sed ornare lacus vehicula eget
-								</p>
-							</div>
-						</div>
-						<div onclick="expandText(this)" class="messages-remote">
-							<div class="message">
-								<p>
-								hello
-								</p>
-							</div>
-						</div>
-					</div>
+					<div class="messages" chatID="broadcast"></div>
 					<div id="input-box-button">
 						<input type="text" id="message-input-box">
 
@@ -153,7 +92,7 @@
 			</div>
 		</div>
 		<div id="status-container">
-			<div id="status-circle" class="bottom-text" onclick="readyPressed()">
+			<div id="status-circle" class="bottom-text">
 				<p id="status-text">Not Ready</p>
 			</div>
 		</div>
@@ -239,7 +178,7 @@
 		<div id="buy-food">
 			<div class="buy-items-line" style="margin-top:4vh;">
 				<div class="buy-title"><p>Buy Food</p></div>
-				<div class="cost"><p>$<span id="food-price-text">25</span> per unit</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -249,7 +188,7 @@
 		<div id="buy-water">
 			<div class="buy-items-line">
 				<div class="buy-title"><p>Buy Water</p></div>
-				<div class="cost"><p>$<span id="water-price-text">25</span> per unit</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -259,7 +198,7 @@
 		<div id="buy-gas">
 			<div class="buy-items-line">
 				<div class="buy-title"><p>Buy Gas</p></div>
-				<div class="cost"><p>$<span id="gas-price-text">25</span> per unit</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -269,7 +208,7 @@
 		<div id="sell-treasure">
 			<div class="buy-items-line">
 				<div class="buy-title"><p>Sell Treasure</p></div>
-				<div class="cost"><p>$<span id="treasure-value-text">25</span> per unit</p></div>
+				<div class="cost"><p>$25 per unit</p></div>
 				<img src="assets/icons/minus.png" />
 				<div class="how-many-buying"><p>0</p></div>
 				<img src="assets/icons/plus.png" />
@@ -286,38 +225,6 @@
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content" id="trade-window-content">
 		<div id="trade-team-select-container">
-			<div class="team-select trade-team-item">
-				<p>Ship B</p>
-			</div>
-			<div class="team-select trade-team-item">
-				<p>Ship C</p>
-			</div>
-			<div class="team-select trade-team-item">
-				<p>Ship D</p>
-			</div>
-			<div class="team-select trade-team-item">
-				<p>Ship E</p>
-			</div>
-			<div class="team-select trade-team-item">
-				<p>Ship F</p>
-			</div>
-			<div class="team-select trade-team-item">
-				<p>Ship G</p>
-			</div>
-			<div class="team-select trade-team-item">
-				<p>Ship H</p>
-			</div>
-			<div class="team-select trade-team-item">
-				<p>Ship I</p>
-			</div><div class="team-select trade-team-item">
-				<p>Ship J</p>
-			</div><div class="team-select trade-team-item">
-				<p>Ship K</p>
-			</div><div class="team-select trade-team-item">
-				<p>Ship L</p>
-			</div><div class="team-select trade-team-item">
-				<p>Ship M</p>
-			</div>
 		</div>
 		<div id="trade-items-select">
 			<div id="trade-item-select-title">
@@ -453,8 +360,13 @@
 	var buySellWindow = document.getElementById("buy-sell-window");
 	var captainWindow = document.getElementById("captain-window");
 	var tradeWindow = document.getElementById("trade-window");
+	var buySellEnabled = false;
+	var tradeEnabled = false;
+	var seaCaptainEnabled = false;
+	var openChatID = false;
 	window.sounds = new Sounds();
 	//this is how you make a notification
+	/*
 	setTimeout(()=>{
 						window.notifications = new Notifications();
 						window.notifications.newMessage("hey ship a!!");
@@ -462,6 +374,7 @@
 						window.notifications.newMessage("hey ship a!!");
 						window.notifications.newMessage("hey ship a!!");
 					},4000);
+	*/
 	window.sounds.fadeInOut("dockedAmbience", 0, sounds.ambientNoiseVolume, 6000);
 	// respond to user interaction through this script
 	function closeChat(){
@@ -495,6 +408,7 @@
 		sounds.fadeInOut("buoyBells", 0, 0, 0); 
 		alertsFlash(false);
 	}
+	/*
 	function readyPressed(){
 		var readyButton = document.getElementById("status-circle");
 		var readyText = document.getElementById("status-text");
@@ -510,6 +424,7 @@
 			readyButton.style.backgroundColor = "rgba(214, 51, 51, 0.85)";
 		}
 	}
+	*/
 	function alertsFlash(flash){
 		alerts = document.getElementById("alerts-dot");
 		if(flash){
@@ -520,22 +435,31 @@
 		}
 	}
 	function openBuySell(){
-		setWidth();
-		closeOthers();
-		buySellWindow.style.display = "flex";
-		othersAreClosed = false;
+		if (buySellEnabled)
+		{
+			setWidth();
+			closeOthers();
+			buySellWindow.style.display = "flex";
+			othersAreClosed = false;
+		}
 	}
 	function openCaptainWindow(){
-		setWidth();
-		closeOthers();
-		captainWindow.style.display = "flex";
-		othersAreClosed = false;
+		if (seaCaptainEnabled)
+		{
+			setWidth();
+			closeOthers();
+			captainWindow.style.display = "flex";
+			othersAreClosed = false;
+		}
 	}
 	function openTradeWindow(){
-		setWidth();
-		closeOthers();
-		tradeWindow.style.display = "flex";
-		othersAreClosed = false;
+		if (tradeEnabled)
+		{
+			setWidth();
+			closeOthers();
+			tradeWindow.style.display = "flex";
+			othersAreClosed = false;
+		}
 	}
 	function closeExpandedText(){
 		document.getElementById("largeTextDisplay").style.display = "none";

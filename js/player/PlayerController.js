@@ -4,31 +4,46 @@ var PlayerController = function()
 	
 	// Init 2D HUD:
 	this.HUD2D = new HUD(this);
-	this.HUD2D.Load(window, document.getElementById("hud-container"));
-	
-	// Open socket
-	let token = getUrlParameter("token");
-	if (!token)
-		window.location.assign("login.html");
-	
-	let socket = this.socket = io.connect("localhost:3000?token=" + token);
-	socket.on("error", function()
-	{
-		scope.FatalError("Authentication failure!");
+	this.HUD2D.Load(window, document.getElementById("hud-container"), function() {
+		
+		// Open socket
+		let token = getUrlParameter("token");
+		if (!token)
+			window.location.assign("login.html");
+		
+		let socket = scope.socket = io.connect("localhost:3000?token=" + token);
+		socket.on("error", function()
+		{
+			scope.FatalError("Authentication failure!");
+		});
+		socket.on("server send authentication", function(user)
+		{
+			scope.playerID = user.id;
+			scope.HUD2D.SetPlayerName(user.display_name);
+		});
+		
+		// Init 3D map and start game
+		scope.Map3D = new THMap(scope);
+		scope.Map3D.Start(window, document.getElementById("game-container"), function() {
+			scope._RegisterSocketHandlers();
+			
+			// send joinGame
+			socket.emit("player send joinGame", {}, function(data) {
+				if (!data.success)
+				{
+					scope.FatalError(data.error);
+				}
+			});
+		});
 	});
-	socket.on("server send authentication", function(user)
-	{
-		scope.playerID = user.id;
-		scope.HUD2D.SetPlayerName(user.display_name);
-	});
-	
+		
 	// Initialize member variables
 	
 	// this.playerID
 	this.players = {}; // id => display name
 	this.dayNumber = false;
 	this.hasAction = false;
-	// this.colocalPlayers; // array of IDs
+	this.colocalPlayers = []; // array of IDs
 	this.prices = {}; // indices: 'food', 'water', 'gas', 'treasure'
 	this.seaCaptainAccessible = false;
 	this.cash = -1;
@@ -38,20 +53,6 @@ var PlayerController = function()
 	this.treasure = -1;
 	this.storage = -1;
 	this.chatMessages = { "broadcast": [] }; // other user ID (or 'broadcast') => array of message objects (sent and recieved)
-		
-	// Init 3D map and start game
-	this.Map3D = new THMap(this);
-	this.Map3D.Start(window, document.getElementById("game-container"), function() {
-		scope._RegisterSocketHandlers();
-		
-		// send joinGame
-		socket.emit("player send joinGame", {}, function(data) {
-			if (!data.success)
-			{
-				scope.FatalError(data.error);
-			}
-		});
-	});
 };
 
 PlayerController.prototype = {
@@ -248,14 +249,14 @@ PlayerController.prototype = {
 				if (!scope.chatMessages[otherUserID]) scope.chatMessages[otherUserID] = [];
 				let messageObject = {
 					outgoing: outgoing,
-					senderID: message.senderID,
-					urgent: message.urgent,
+					senderName: (scope.players[message.senderID] !== undefined ? scope.players[message.senderID] : "Facilitator"),
+					urgent: (message.urgent != 0),
 					text: message.text,
 					timestamp: message.timestamp
 				};
 				scope.chatMessages[otherUserID].push(messageObject);
 				
-				HUD2D.AddChatMessage(messageObject); // add the chat message to the chat pane, if it is open
+				scope.HUD2D.AddChatMessage(otherUserID, messageObject); // add the chat message to the chat pane, if it is open
 				if (!outgoing && message.newMessage) HUD2D.AlertChatMessage(messageObject); // alert the arrival of a new message
 			}
 		});
@@ -294,20 +295,25 @@ PlayerController.prototype = {
 	 */
 	EndTurn: function()
 	{
+		let scope = this;
+		
 		// status button
-		scope.HUD2D.SetStatusButtonState("waiting");
+		this.HUD2D.SetStatusButtonState("waiting");
 
 		// destination selection
-		scope.Map3D.mapPointSelectionEnabled = false; // selection is locked in
-		socket.emit("player send ready", { destination: scope.Map3D.selectedMapPoint }, function(data) {
+		this.Map3D.mapPointSelectionEnabled = false; // selection is locked in
+		let selectedMapPoint = this.Map3D.selectedMapPoint;
+		
+		
+		this.socket.emit("player send ready", { destination: selectedMapPoint.id }, function(data) {
 			if (!data.success)
 			{
 				scope.FatalError(data.error);
 			}
 		});
-		
+				
 		// if destination chosen, no more talking to sea captain
-		if (scope.Map3D.selectedMapPoint) this.SetSeaCaptainEnabled(false);
+		if (this.Map3D.selectedMapPoint) this.HUD2D.SetSeaCaptainEnabled(false);
 	},
 	
 	/**
@@ -318,6 +324,18 @@ PlayerController.prototype = {
 	{
 		// TODO
 		alert(message);
-	}
+	},
 	
+	/**
+	 * Send a chat message
+	 * @param chatID The user ID of the recipient for unicast, or "broadcast" for broadcast.
+	 * @param text The text of the message
+	 */
+	SendChatMessage: function(chatID, text)
+	{
+		this.socket.emit("player send chatMessage", {
+			recipient: (chatID == "broadcast" ? false : chatID),
+			text: text
+		});
+	}
 };

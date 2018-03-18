@@ -9,12 +9,39 @@ HUD.prototype = {
 	 * Load the 2D HUD
 	 * @param window The window in which to draw the map.
 	 * @param containerElement The HTML element in which to include the HUD.
+	 * @param callback A callback to trigger when the HUD is loaded.
 	 */
-	Load: function(window, containerElement) {
+	Load: function(window, containerElement, callback) {
+		let scope = this;
 		
 		// load hud.html
 		$.get("./hud.html", function(data) {
 			$(containerElement).html(data);
+			
+			// Setup stuff
+			$("#broadcast-button").click(function() {
+				scope.ShowChatMessages("broadcast");
+			});
+			
+			$("#message-input-button").click(function() // sending chat messages:
+			{
+				let chatID = $(".messages:visible").attr("chatID");
+				let text = $("#message-input-box").val();
+				
+				scope.controller.SendChatMessage(chatID, text);
+				$("#message-input-box").val("");
+			});
+			
+			$("#status-circle").click(function() // ready up
+			{
+				if (scope.statusButtonState == "enabled")
+				{
+					scope.controller.EndTurn();
+				}
+			});
+			
+			// Done: callback			
+			callback();
 		}, "text");
 	},
 	
@@ -121,13 +148,16 @@ HUD.prototype = {
 	 */
 	SetFoodPrice: function(price)
 	{
+		// TODO: enable/disable  +/- and submit buttons
 		if (price !== false) // enabled
 		{
-			$("#food-price-text").text(price);
+			$("#buy-food .cost p").text(price == 0 ? "FREE" : ("$" + price + " per unit"));
+			$("#buy-food").removeClass("buy-sell-disabled");
 		}
-		else
+		else // disabled
 		{
-			// TODO!
+			$("#buy-food .cost p").text("unavailable");
+			$("#buy-food").addClass("buy-sell-disabled");
 		}
 	},
 	
@@ -139,11 +169,13 @@ HUD.prototype = {
 	{
 		if (price !== false) // enabled
 		{
-			$("#water-price-text").text(price);
+			$("#buy-water .cost p").text(price == 0 ? "FREE" : ("$" + price + " per unit"));
+			$("#buy-water").removeClass("buy-sell-disabled");
 		}
-		else
+		else // disabled
 		{
-			// TODO!
+			$("#buy-water .cost p").text("unavailable");
+			$("#buy-water").addClass("buy-sell-disabled");
 		}
 	},
 	
@@ -155,11 +187,13 @@ HUD.prototype = {
 	{
 		if (price !== false) // enabled
 		{
-			$("#gas-price-text").text(price);
+			$("#buy-gas .cost p").text(price == 0 ? "FREE" : ("$" + price + " per unit"));
+			$("#buy-gas").removeClass("buy-sell-disabled");
 		}
-		else
+		else // disabled
 		{
-			// TODO!
+			$("#buy-gas .cost p").text("unavailable");
+			$("#buy-gas").addClass("buy-sell-disabled");
 		}
 	},
 	
@@ -171,11 +205,13 @@ HUD.prototype = {
 	{
 		if (value !== false) // enabled
 		{
-			$("#treasure-value-text").text(value);
+			$("#sell-treasure .cost p").text("$" + value + " per unit");
+			$("#sell-treasure").removeClass("buy-sell-disabled");
 		}
-		else
+		else // disabled
 		{
-			// TODO!
+			$("#sell-treasure .cost p").text("unavailable");
+			$("#sell-treasure").addClass("buy-sell-disabled");
 		}
 	},
 	
@@ -185,10 +221,10 @@ HUD.prototype = {
 	 */
 	SetBuySellEnabled: function(enabled)
 	{
-		// TODO: disable/enable button
+		window.buySellEnabled = enabled;
 		if (!enabled)
 		{
-			// TODO: close window if it is open
+			window.closeBuySell();
 		}
 	},
 	
@@ -198,10 +234,10 @@ HUD.prototype = {
 	 */
 	SetTradeEnabled: function(enabled)
 	{
-		// TODO: disable/enable button
+		window.tradeEnabled = enabled;
 		if (!enabled)
 		{
-			// TODO: close window if it is open
+			window.closeTradeWindow();
 		}
 	},
 	
@@ -211,10 +247,10 @@ HUD.prototype = {
 	 */
 	SetSeaCaptainEnabled: function(enabled)
 	{
-		// TODO: disable/enable button
+		window.seaCaptainEnabled = enabled;
 		if (!enabled)
 		{
-			// TODO: close window if it is open
+			window.closeCaptainWindow();
 		}
 	},
 	
@@ -225,8 +261,66 @@ HUD.prototype = {
 	 */
 	AddPlayer: function(id, name)
 	{
-		// TODO: add button for player to chat option list (alphabetically sorted)
-		// TODO: add button for player to trade option list (alphabetically sorted)
+		let scope = this;
+		
+		// Add chat messages div
+		$("<div>").addClass("messages").attr("chatID", id)
+			.css("display", "none")
+			.prependTo("#message-content-container");
+		
+		// Add button for player to chat option list (alphabetically sorted)
+		let p = $("<p>").text(name);
+		let div = $("<div>").addClass("team-select").attr("userID", id).append(p).click(function() {
+			scope.ShowChatMessages(id);
+		});
+		let nextSibling = $("#chat-select div").not("#broadcast-button").filter(function() {
+			return $(this).text().trim().localeCompare(name) > 0;
+		}).first();
+		if (nextSibling.length > 0)
+		{ // there is a next sibling
+			div.insertBefore(nextSibling);
+		}
+		else
+		{ // there is no next sibling
+			div.appendTo("#chat-select");
+		}
+		
+		// Add button for player to trade option list (alphabetically sorted)
+		p = $("<p>").text(name);
+		div = $("<div>").addClass("team-select trade-team-item").attr("userID", id).append(p).click(function() {
+			if ($(this).hasClass("team-select-enabled")) {
+				// TODO: redirect to specific trade page
+			}
+		});
+		nextSibling = $("#trade-team-select-container div").filter(function() {
+			return $(this).text().trim().localeCompare(name) > 0;
+		}).first();
+		if (nextSibling.length > 0)
+		{ // there is a next sibling
+			div.insertBefore(nextSibling);
+		}
+		else
+		{ // there is no next sibling
+			div.appendTo("#trade-team-select-container");
+		}
+	},
+	
+	/**
+	 * Show chat messages for a particular chat group. Called after the user selects a chat group.
+	 * @param chatID The user ID of the selected chat partner, or "broadcast".
+	 */
+	ShowChatMessages: function(chatID)
+	{
+		if (chatID == "broadcast" || this.controller.colocalPlayers.includes(chatID)) // if broadcast or colocal
+		{
+			$("#chat-select").hide(); // hide chat selection screen
+			$("#chat-back").show(); // show the chat back button
+			
+			$(".messages").hide(); // hide all message groups
+			$(".messages[chatID=" + chatID + "]").show(); // show the selected message group
+			
+			$("#message-content-container").show(); // show the chat messages screen
+		}
 	},
 	
 	/**
@@ -253,7 +347,7 @@ HUD.prototype = {
 	 */
 	SetPlayerChatEnabled: function(id, enabled)
 	{
-		// TODO: update chat option button
+		$("#chat-select .team-select[userID=" + id + "]").toggleClass("team-select-enabled", enabled);
 		if (!enabled)
 		{
 			// TODO: kick out of unicast chat if it is currently open
@@ -267,7 +361,7 @@ HUD.prototype = {
 	 */
 	SetPlayerTradeEnabled: function(id, enabled)
 	{
-		// TODO: update trade option button
+		$("#trade-team-select-container .team-select[userID=" + id + "]").toggleClass("team-select-enabled", enabled);
 		if (!enabled)
 		{
 			// TODO: kick out of trade offer window if it is currently open
@@ -275,14 +369,21 @@ HUD.prototype = {
 	},
 	
 	/**
-	 * Add a chat message to the chat pane, if it is open.
+	 * Add a chat message to the relevant chat pane.
 	 * @param otherUserID The ID of the other user in this chat conversation, or "broadcast".
-	 * @param message An object with members: "outgoing", "senderID", "urgent", "text", "timestamp".
+	 * @param message An object with members: "outgoing", "senderName", "urgent", "text", "timestamp".
 	 */
 	AddChatMessage: function(otherUserID, message)
 	{
-		// TODO: if the chat pane corresponding to "otherUserID" is open, add this message to it.
-		// do NOT trigger an alert balloon. See AlertChatMessage()
+		let p = $("<p>").text(message.text);
+		if (otherUserID == "broadcast" && !message.outgoing) { // incoming broadcast message
+			$("<div>").addClass("message-sender-title").text(message.senderName).prependTo(p);
+		}
+		let divInner = $("<div>").addClass("message").toggleClass("urgent-message", message.urgent).append(p);
+		let divOuter = $("<div>").addClass(message.outgoing ? "messages-local" : "messages-remote").append(divInner);
+		
+		$(".messages[chatID=" + otherUserID + "]").append(divOuter);
+		// TODO: auto-scroll to bottom
 	},
 	
 	/**
@@ -301,6 +402,8 @@ HUD.prototype = {
 	 */
 	SetStatusButtonState: function(state)
 	{
+		this.statusButtonState = state;
+		
 		let statusButton = $("#status-circle");
 		let statusText = $("#status-text");
 

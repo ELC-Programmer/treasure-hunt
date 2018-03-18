@@ -231,7 +231,6 @@ Ship.prototype = {
 		
 		if (mapPoint == this.mapPoint && quartersFrom == this.quartersToDestination && otherMapPoint == this.previousMapPoint)
 		{ // no need to move, we're already there!
-			console.log("VISIBLE");
 			this.visible = true;
 			this._OnArrive();
 			return;	

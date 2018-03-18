@@ -72,8 +72,6 @@ THMap.prototype = {
 			that._InitSky();
 			that._InitPathfinding();
 						
-			console.log(that.mapPoints);
-
 			// Callback
 			if (callback) callback();
 			
