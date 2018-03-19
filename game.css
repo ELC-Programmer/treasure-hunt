@@ -198,6 +198,11 @@
 				cursor:pointer;
 			}
 			.right-button > img{ height:10vh; }
+			.right-button-disabled {
+				border-color: darkred;
+				background-color: rgba(100,50,50,0.7);
+			}
+			.right-button-disabled > img { opacity: 0.4; }
 		#bottom-group{ bottom:0; width:100%; left:0; display:flex; flex-direction:column; z-index:3; position:absolute;}
 			#bottom-top-group{
 				width:80vw;
@@ -381,7 +386,7 @@
 				.buy-items-line > img{ height:5vh; cursor:pointer; margin-right:1vw; margin-left:1vw;}
 				.how-many-buying{ flex-grow:300; height:100%; background-color:rgba(256,256,256,0.1); border-radius:5px; margin-right:1vw; margin-left:1vw; text-align:center;}
 				.buy-submit-button, .cost{ margin-left:1vw; margin-right:1vw; height:100%;}
-				.buy-submit-button{ background-color:rgba(222, 84, 30,0.3); margin-right:0; padding-right:1vw; padding-left:1vw; cursor:pointer; border-radius:10px;}
+				.buy-submit-button{ background-color:rgba(10, 10, 10, 0.7); margin:auto; padding-right:1vw; padding-left:1vw; cursor:pointer; border-radius:10px; width:100px; height:40px}
 	#trade-window{ height:90vh; top:5%; transform:translate(-50%,0); }
 		#trade-item-select-title{ font-size:20pt; }
 		#trade-window-content{ width:100%; }

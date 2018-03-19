@@ -45,6 +45,7 @@ var PlayerController = function()
 	this.hasAction = false;
 	this.colocalPlayers = []; // array of IDs
 	this.prices = {}; // indices: 'food', 'water', 'gas', 'treasure'
+	this.buySellQuantities = { food: 0, water: 0, gas: 0, treasure: 0 }; // qtys being considered
 	this.seaCaptainAccessible = false;
 	this.cash = -1;
 	this.food = -1;
@@ -144,6 +145,7 @@ PlayerController.prototype = {
 				scope.HUD2D.SetPlayerChatEnabled(id, colocal);
 				scope.HUD2D.SetPlayerTradeEnabled(id, colocal);
 			}
+			scope.HUD2D.SetTradeEnabled(data.colocalPlayers.length > 0);
 			
 			// Weather (data.weather)
 			scope.HUD2D.SetWeather(data.weather);
@@ -157,6 +159,7 @@ PlayerController.prototype = {
 			scope.HUD2D.SetWaterPrice(scope.prices.water);
 			scope.HUD2D.SetGasPrice(scope.prices.gas);
 			scope.HUD2D.SetTreasureValue(scope.prices.treasure);
+			scope.buySellQuantities = {food: 0, water: 0, gas: 0, treasure: 0}; // reset buy/sell window
 			
 			let enableBuySell = Object.values(scope.prices).reduce((accumulator, currentValue) => accumulator || (currentValue !== false), false);
 			scope.HUD2D.SetBuySellEnabled(enableBuySell);
@@ -232,6 +235,8 @@ PlayerController.prototype = {
 			scope.HUD2D.SetGas(scope.gas);
 			scope.HUD2D.SetTreasure(scope.treasure);
 			scope.HUD2D.SetStorage(scope.GetUsedStorage(), scope.storage);
+			
+			scope.UpdateBuySellQuantity();
 		});
 		
 		/**
@@ -337,5 +342,89 @@ PlayerController.prototype = {
 			recipient: (chatID == "broadcast" ? false : chatID),
 			text: text
 		});
+	},
+	
+	/**
+	 * Update the buy/sell quantities being considered.
+	 * @param item One of "food", "water", "gas", or "treasure".
+	 * @param changeBy The integer amount which to add to the currently considered quantity.
+	 */
+	UpdateBuySellQuantity: function (item, changeBy, resetOnFail)
+	{
+		let scope = this;
+		
+		function allowed()
+		{
+			let prices = scope.prices;
+			let qtys = scope.buySellQuantities;
+				
+			if (qtys.treasure > scope.treasure) return false; // can't sell treasure you don't have!
+			let resources = ["food", "water", "gas", "treasure"];
+			for (let i in resources)
+			{
+				let resource = resources[i];
+				if (qtys[resource] < 0) return false; // no negative quantities
+				if (prices[resource] === false && qtys[resource] != 0) return false; // can't buy something that's not for sale!
+			}
+				
+			let newCash = scope.cash - prices.food*qtys.food - prices.water*qtys.water - prices.gas*qtys.gas + prices.treasure*qtys.treasure;
+			let newUsedStorage = scope.GetUsedStorage() + qtys.food + qtys.water + qtys.gas - qtys.treasure;
+			
+			return (newCash >= 0 && newUsedStorage <= scope.storage);
+		}
+		
+		if (item !== undefined)
+		{
+			this.buySellQuantities[item] += changeBy;
+			
+			if (!allowed()) // disallowed update -- revert it
+				this.buySellQuantities[item] -= changeBy;
+		}
+		
+		if (!allowed()) // still no good -- reset
+			this.buySellQuantities = { food: 0, water: 0, gas: 0, treasure: 0 };
+			
+		// Done updating values, update the HUD
+		this.HUD2D.SetBuySellQuantities(this.buySellQuantities);
+	},
+	
+	/**
+	 * Submit buy/sell deal.
+	 */
+	SubmitBuySell: function()
+	{
+		// Emit
+		let transactions = [];
+		if (this.buySellQuantities.food > 0)
+			transactions.push({
+				resource: "food",
+				price: this.prices.food,
+				quantity: this.buySellQuantities.food
+			});
+		if (this.buySellQuantities.water > 0)
+			transactions.push({
+				resource: "water",
+				price: this.prices.water,
+				quantity: this.buySellQuantities.water
+			});
+		if (this.buySellQuantities.gas > 0)
+			transactions.push({
+				resource: "gas",
+				price: this.prices.gas,
+				quantity: this.buySellQuantities.gas
+			});
+		if (this.buySellQuantities.treasure > 0)
+			transactions.push({
+				resource: "treasure",
+				price: this.prices.treasure,
+				quantity: this.buySellQuantities.treasure
+			});
+		this.socket.emit("player send buySell", { transactions: transactions }, function(response) {
+			console.log(response);
+		});
+		
+		// Update
+		this.buySellQuantities = {food: 0, water: 0, gas: 0, treasure: 0};
+		this.HUD2D.SetBuySellQuantities(this.buySellQuantities);		
 	}
 };

@@ -40,6 +40,23 @@ HUD.prototype = {
 				}
 			});
 			
+			// Buy/Sell Window:
+			$("#buy-food .buy-sell-minus").click(function()	{ scope.controller.UpdateBuySellQuantity("food", -1);	});
+			$("#buy-water .buy-sell-minus").click(function() { scope.controller.UpdateBuySellQuantity("water", -1); });
+			$("#buy-gas .buy-sell-minus").click(function() { scope.controller.UpdateBuySellQuantity("gas", -1); });
+			$("#sell-treasure .buy-sell-minus").click(function() { scope.controller.UpdateBuySellQuantity("treasure", -1); });
+			
+			$("#buy-food .buy-sell-plus").click(function() { scope.controller.UpdateBuySellQuantity("food", 1); });
+			$("#buy-water .buy-sell-plus").click(function() { scope.controller.UpdateBuySellQuantity("water", 1); });
+			$("#buy-gas .buy-sell-plus").click(function() { scope.controller.UpdateBuySellQuantity("gas", 1); });
+			$("#sell-treasure .buy-sell-plus").click(function() { scope.controller.UpdateBuySellQuantity("treasure", 1); });
+			
+			$(".buy-submit-button").click(function()
+			{
+				scope.controller.SubmitBuySell();
+				closeBuySell();
+			});
+			
 			// Done: callback			
 			callback();
 		}, "text");
@@ -148,7 +165,6 @@ HUD.prototype = {
 	 */
 	SetFoodPrice: function(price)
 	{
-		// TODO: enable/disable  +/- and submit buttons
 		if (price !== false) // enabled
 		{
 			$("#buy-food .cost p").text(price == 0 ? "FREE" : ("$" + price + " per unit"));
@@ -222,6 +238,8 @@ HUD.prototype = {
 	SetBuySellEnabled: function(enabled)
 	{
 		window.buySellEnabled = enabled;
+		$("#buy-sell").toggleClass("right-button-disabled", !enabled);
+
 		if (!enabled)
 		{
 			window.closeBuySell();
@@ -235,6 +253,8 @@ HUD.prototype = {
 	SetTradeEnabled: function(enabled)
 	{
 		window.tradeEnabled = enabled;
+		$("#trade").toggleClass("right-button-disabled", !enabled);
+		
 		if (!enabled)
 		{
 			window.closeTradeWindow();
@@ -248,6 +268,8 @@ HUD.prototype = {
 	SetSeaCaptainEnabled: function(enabled)
 	{
 		window.seaCaptainEnabled = enabled;
+		$("#sea-captain").toggleClass("right-button-disabled", !enabled);
+		
 		if (!enabled)
 		{
 			window.closeCaptainWindow();
@@ -348,9 +370,9 @@ HUD.prototype = {
 	SetPlayerChatEnabled: function(id, enabled)
 	{
 		$("#chat-select .team-select[userID=" + id + "]").toggleClass("team-select-enabled", enabled);
-		if (!enabled)
-		{
-			// TODO: kick out of unicast chat if it is currently open
+		if (!enabled && $(".messages[chatID=" + id + "]:visible").length > 0)
+		{ // kick out of unicast chat if it is currently open
+			backChat();
 		}
 	},
 	
@@ -422,5 +444,17 @@ HUD.prototype = {
 			statusText.text("Dead");
 			statusButton.css("backgroundColor", "rgba(110, 110, 110, 0.85)"); // grey			
 		}
+	},
+	
+	/**
+	 * Set the quantities of buy/sell being considered in the buy/sell window.
+	 * @param quantities An object with indicies "food", "water", "gas", and "treasure" pointing to integer quantities.
+	 */
+	SetBuySellQuantities: function(quantities)
+	{
+		$("#buy-food .how-many-buying p").text(quantities.food);
+		$("#buy-water .how-many-buying p").text(quantities.water);
+		$("#buy-gas .how-many-buying p").text(quantities.gas);
+		$("#sell-treasure .how-many-buying p").text(quantities.treasure);
 	}
 }
