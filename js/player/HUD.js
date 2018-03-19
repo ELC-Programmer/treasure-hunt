@@ -57,6 +57,14 @@ HUD.prototype = {
 				closeBuySell();
 			});
 			
+			// Sea Captain Window:
+			$("#sea-captain-weather-button").click(function() {
+				scope.controller.ConsultSeaCaptain("weather");
+			});
+			$("#sea-captain-pirates-button").click(function() {
+				scope.controller.ConsultSeaCaptain("pirates");
+			});
+			
 			// Done: callback			
 			callback();
 		}, "text");
@@ -78,6 +86,9 @@ HUD.prototype = {
 	SetDayNumber: function(dayNumber)
 	{
 		$("#day-number-text").text(dayNumber);
+		
+		let percent = Math.max((dayNumber / 14) * 100, 0);
+		$("#loading-bar").css("width", percent + "%")
 	},
 	
 	/**
@@ -120,6 +131,8 @@ HUD.prototype = {
 	SetFood: function(food)
 	{
 		$("#food-text").text(food);
+		
+		$("#food-alert").toggle(food == 0);
 	},
 	
 	/**
@@ -129,6 +142,8 @@ HUD.prototype = {
 	SetWater: function(water)
 	{
 		$("#water-text").text(water);
+		
+		$("#water-alert").toggle(water == 0);
 	},
 	
 	/**
@@ -404,8 +419,9 @@ HUD.prototype = {
 		let divInner = $("<div>").addClass("message").toggleClass("urgent-message", message.urgent).append(p);
 		let divOuter = $("<div>").addClass(message.outgoing ? "messages-local" : "messages-remote").append(divInner);
 		
-		$(".messages[chatID=" + otherUserID + "]").append(divOuter);
-		// TODO: auto-scroll to bottom
+		let messagesObject = $(".messages[chatID=" + otherUserID + "]");
+		messagesObject.append(divOuter); // add new message
+		messagesObject[0].scrollTop = messagesObject[0].scrollHeight; // auto-scroll to bottom
 	},
 	
 	/**
@@ -456,5 +472,58 @@ HUD.prototype = {
 		$("#buy-water .how-many-buying p").text(quantities.water);
 		$("#buy-gas .how-many-buying p").text(quantities.gas);
 		$("#sell-treasure .how-many-buying p").text(quantities.treasure);
+	},
+	
+	/**
+	 * Add a day divider to the alerts window.
+	 * @param title The string title to use for this day (e.g. "Day 5").
+	 * @param alerts An array of string alerts.
+	 */
+	AddAlertsDay: function(title, alerts)
+	{
+		let div = $("<div>").addClass("day-alert-box");
+		$("<p>").text(title).appendTo(div);
+		$("<hr>").addClass("eighty-percent-hr").appendTo(div);
+		$("#day-alert-box-container").append(div);
+		
+		// Add Alerts
+		for (let i in alerts)
+		{
+			this.AddAlert(alerts[i]);
+		}
+	},
+	
+	/**
+	 * Add an alert to the most recent day. Pop-up the alerts window.
+	 * @param text The text of the alert.
+	 */
+	AddAlert: function(text)
+	{
+		let div = $("<div>").addClass("alert-box");
+		$("<p>").text(text).appendTo(div);
+		
+		$(".day-alert-box:last").append(div);
+		$("#day-alert-box-container")[0].scrollTop = $("#day-alert-box-container")[0].scrollHeight; // auto-scroll to bottom
+		
+		window.showAlerts();
+	},
+	
+	/**
+	 * Set the sea captain's message.
+	 * @param message Either a string message, or boolean false to reset to the question view.
+	 */
+	SetSeaCaptainMessage: function(message)
+	{
+		if (message === false) // revert to question view
+		{
+			$("#captains-buttons-container").show();
+			$("#captains-message").hide();
+		}
+		else // display message
+		{
+			$("#captains-message p").text(message);
+			$("#captains-buttons-container").hide();
+			$("#captains-message").show();
+		}
 	}
 }

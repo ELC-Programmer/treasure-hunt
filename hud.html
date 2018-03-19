@@ -2,37 +2,39 @@
 	<div id="cash" class="sigroups">
 		<image class="status-indicator-image" src="assets/icons/dollar-symbol.png" />
 		<div class="status-indicators" id="cash-text">
-			12
+			-
 		</div>
 	</div>
 	<div id="food" class="sigroups">
 		<image class="status-indicator-image" src="assets/icons/knife-fork.png" />
 		<div class="status-indicators" id="food-text">
-			12
+			-
 		</div>
+		<div class="status-indicators resource-alert" id="food-alert">No Food! Half-Speed!</div>
 	</div>
 	<div id="water" class="sigroups">
 		<image class="status-indicator-image" src="assets/icons/water-droplet.png" />
 		<div class="status-indicators" id="water-text">
-			12
+			-
 		</div>
+		<div class="status-indicators resource-alert" id="water-alert">No Water! Half-Speed!</div>
 	</div>
 	<div id="gas" class="sigroups">
 		<image class="status-indicator-image" src="assets/icons/gas-station.png" />
 		<div class="status-indicators" id="gas-text">
-			12
+			-
 		</div>
 	</div>
 	<div id="treasure" class="sigroups">
 		<image class="status-indicator-image" src="assets/icons/diamond.png" />
 		<div class="status-indicators" id="treasure-text">
-			12
+			-
 		</div>
 	</div>
 	<div id="capacity" class="sigroups">
 		<image class="status-indicator-image" src="assets/icons/barrel.png" />
 		<div class="status-indicators" id="capacity-text">
-			12/30
+			-/-
 		</div>
 	</div>
 	<div id="chat-container">
@@ -125,47 +127,6 @@
 	</div>
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content" id="day-alert-box-container">
-		<div class="day-alert-box">
-			<p>Day 1</p>
-			<hr class="eighty-percent-hr" />
-
-			<div class="alert-box">
-				<p>You're out of food!</p>
-			</div>
-			<div class="alert-box">
-				<p>You're out of food!</p>
-			</div>
-			<div class="alert-box">
-				<p>You're out of food!</p>
-			</div>
-		</div>
-		<div class="day-alert-box">
-			<p>Day 2</p>
-			<hr class="eighty-percent-hr" />
-
-			<div class="alert-box">
-				<p>You're out of food!</p>
-			</div>
-			<div class="alert-box">
-				<p>You're out of food!</p>
-			</div>
-			<div class="alert-box">
-				<p>You're out of food!</p>
-			</div>
-		</div>
-		<div class="day-alert-box">
-			<p>Day 3</p>
-			<hr class="eighty-percent-hr" />
-			<div class="alert-box">
-				<p>You're out of food!</p>
-			</div>
-			<div class="alert-box">
-				<p>You're out of food!</p>
-			</div>
-			<div class="alert-box">
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum. Curabitur vitae semper ligula. Integer lobortis, dolor nec condimentum aliquet, lectus ligula viverra tortor, vitae euismod nibh augue laoreet massa. Quisque tincidunt magna ex, ac dignissim nulla viverra eget. Maecenas sodales, mauris sed iaculis tincidunt, nisl sapien feugiat metus, sit amet ultrices ipsum neque eu mauris. Nam eleifend lobortis enim. In et egestas tellus. Etiam convallis tincidunt dolor pellentesque vestibulum. Cras vitae commodo nibh. Duis a ligula in ligula scelerisque pellentesque a sed leo. Integer quis mauris eget dui hendrerit iaculis. Ut accumsan dui </p>
-			</div>
-		</div>
 	</div>
 </div>
 <div class="full-size-window" id="buy-sell-window">
@@ -319,17 +280,17 @@
 		<div id="buttons-and-message">
 			<div id="captains-buttons-container">
 				<div id="instructions">
-					<p>Arr!! Choose an option, matey!</p>
+					<p>What would you like to ask me about?</p>
 				</div>
-				<div onclick="showCaptainsMessage()" class="captains-buttons">
-					<p>something</p>
+				<div class="captains-buttons" id="sea-captain-weather-button">
+					<p>Weather</p>
 				</div>
-				<div onclick="showCaptainsMessage()" class="captains-buttons">
-					<p>or other</p>
+				<div class="captains-buttons" id="sea-captain-pirates-button">
+					<p>Pirates</p>
 				</div>
 			</div>
 			<div onclick="expandText(this)" id="captains-message">
-				<p>Nulla ut turpis sit amet nisl lacinia ullamcorper gravida nec ex. Sed tincidunt turpis justo, eget pellentesque nisl cursus non. Morbi dapibus lacus sed tempus gravida.</p>
+				<p>SEA CAPTAIN'S MESSAGE HERE</p>
 			</div>
 		</div>
 	</div>
@@ -488,11 +449,13 @@
 		document.getElementById("trade-items-select").style.display = "none";
 		document.getElementById("trade-team-select-container").style.display = "flex";
 	}
+	/*
 	function showCaptainsMessage(){
 		document.getElementById("captains-buttons-container").style.display = "none";
 		document.getElementById("captains-message").style.display = "flex";
 		sounds.fadeInOut(sounds.piratesArrgh, 0, 1, 0);
 	}
+	*/
 	function setWidth(){
 			if(!chatIsClosed){
 				alertsScreen.style.width = windowWidthWhenChatIsOpen[0];

@@ -28,6 +28,11 @@
 				margin-left:15px;
 				font-family:"Berkshire Swash", cursive;
 			}
+			.resource-alert {
+				margin-left: 20px;
+				color: rgba(220, 0, 0, 1);
+				display: none;
+			}
 			#closed-chat{
 				border:3px solid;
 				border-color: rgba(247,239,153,0.9);
@@ -94,7 +99,7 @@
 						overflow:scroll;
 						display:flex;
 						flex-wrap:wrap;
-						display:none;
+						/*display:none;*/
 					}
 						.team-select{
 							width:29.5%;
@@ -119,13 +124,13 @@
 					#message-content-container{
 						height:102%;
 						width:100%;
-						/*display:none;*/
+						display:none;
 					}
 						.messages{
 							height:80%;
 							width:100%;
 							overflow:scroll;
-							display:flex;
+							/*display:flex;*/
 							flex-wrap:wrap;
 						}
 							.messages-local{ text-align:left; margin-right:.5vw; }

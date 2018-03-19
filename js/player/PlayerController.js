@@ -43,6 +43,7 @@ var PlayerController = function()
 	this.players = {}; // id => display name
 	this.dayNumber = false;
 	this.hasAction = false;
+	this.possibleDestinations = []; // array of string map point IDs
 	this.colocalPlayers = []; // array of IDs
 	this.prices = {}; // indices: 'food', 'water', 'gas', 'treasure'
 	this.buySellQuantities = { food: 0, water: 0, gas: 0, treasure: 0 }; // qtys being considered
@@ -77,6 +78,7 @@ PlayerController.prototype = {
 			
 			// Day number (data.day)
 			if (scope.dayNumber !== false) { // this isn't the first day
+				scope.dayNumber = data.day
 				scope.Map3D.PassDay(data.weather, function()
 				{ // upon new day arrival
 					onNewDay();
@@ -84,9 +86,9 @@ PlayerController.prototype = {
 			}
 			else // this is the first day
 			{
+				scope.dayNumber = data.day
 				onNewDay();
 			}
-			scope.dayNumber = data.day;
 			scope.HUD2D.SetDayNumber(scope.dayNumber);	
 			
 			// Ships (data.location, data.quartersToDestination, data.lastLocation, data.colocalPlayers)
@@ -171,6 +173,7 @@ PlayerController.prototype = {
 				{
 					// Actions (data.hasAction, data.possibleDestinations, data.seaCaptainAccessible)			
 					scope.hasAction = data.hasAction;
+					scope.possibleDestinations = data.possibleDestinations;
 					if (scope.hasAction && (data.possibleDestinations.length > 1 || data.quartersToDestination))
 					{ // display destination selection
 						scope.Map3D.SetSelectableMapPoints(data.possibleDestinations);
@@ -185,12 +188,14 @@ PlayerController.prototype = {
 						scope.Map3D.SetSelectableMapPoints(false);
 					}
 					
+					scope.seaCaptainAccessible = data.seaCaptainAccessible;
+					scope.HUD2D.SetSeaCaptainMessage(false); // reset the sea captain window
 					scope.HUD2D.SetSeaCaptainEnabled(scope.hasAction && scope.seaCaptainAccessible);
 					
 					scope.HUD2D.SetStatusButtonState("enabled");
 					
 					// Alerts (data.alerts)
-					// TODO
+					scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);
 								
 					// Pirates (data.pirateAttack)
 					// TODO!
@@ -426,5 +431,36 @@ PlayerController.prototype = {
 		// Update
 		this.buySellQuantities = {food: 0, water: 0, gas: 0, treasure: 0};
 		this.HUD2D.SetBuySellQuantities(this.buySellQuantities);		
+	},
+	
+	/**
+	 * Consult the sea captain.
+	 * @param topic Either "weather" or "pirates".
+	 */
+	ConsultSeaCaptain: function(topic)
+	{
+		let scope = this;
+		
+		if (topic != "weather" && topic != "pirates") return; // invalid topic
+		
+		if (this.seaCaptainAccessible && this.hasAction)
+		{
+			// expend the player's action
+			this.hasAction = false;
+			this.Map3D.SetSelectableMapPoints(false);
+			
+			// emit!
+			this.socket.emit("player function consultSeaCaptain", { topic: topic }, function(response) {
+				if (response.success)
+				{
+					scope.HUD2D.SetSeaCaptainMessage(response.message);
+				}
+				else // failure!
+				{
+					scope.hasAction = true;
+					scope.Map3D.SetSelectableMapPoints(scope.possibleDestinations);
+				}
+			});
+		}
 	}
 };
