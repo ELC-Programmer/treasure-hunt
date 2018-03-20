@@ -230,7 +230,7 @@
                 </div>
                 <div class="col-md-4">
                     <br>
-                    <button id="chatOpenButton" type="button" class="btn btn-info btn-block text-size" data-toggle="collapse" data-target="#chat-container" onclick="changechatbuttontext()">Open Chat</button>
+                    <button id="chatOpenButton" type="button" class="btn btn-info btn-block text-size" data-toggle="collapse" data-target="" onclick="changechatbuttontext()">Open Chat</button>
                 </div>
             </div>
 
@@ -399,12 +399,10 @@
                 players = data;
             });
             window.socket.emit("facilitator fetch day", {}, function(data){
-                //this is mainly necessary in case the facilitator disconnects mid-game and wishes to reconnect without restarting the game
                 timeline(data);
             });
             window.socket.emit("facilitator fetch messages", {}, function(data){
                 $("#chat-messages").empty(); 
-                //this is also necessary in case game is interrupted
                 for(i=0; i<data.length; i++)
                     addChatMsg(data[i]);
             });
@@ -558,7 +556,7 @@
         //helper function for Timeline: takes in day (-3 to 14)
         //moves progress by increments of 5.26
         function timeline(day) {
-            if(day > 14) day = 14;
+            if(day > 15) day = 15;
             if(day < 0) day = 0;
             if(day <= 0) $('#timeline-day').css('display', 'none');
             var counter = 1;
@@ -582,7 +580,7 @@
                 }
                 counter++;
             }
-            if(day == 14) $('#advance-btn').prop("disabled",true);
+            if(day == 15) $('#advance-btn').prop("disabled",true);
         }  
         //functionality for reset button
         function resetAlert() {

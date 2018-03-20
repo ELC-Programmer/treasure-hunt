@@ -38,9 +38,9 @@
 		</div>
 	</div>
 	<div id="chat-container">
-		<div onclick="openChat()" id="closed-chat" class="container-fluid" style="padding-left:25px; width:8vw; cursor:pointer;">
-			<span class="row-fluid span8"><image src="assets/icons/speech-bubble.png" style="height:7vh;"/></span>
-			<span class="row-fluid span4"><image src="assets/icons/right-arrow.png" style="height:5vh;"/></span>
+		<div onclick="openChat()" id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
+			<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; "/>
+			<image src="assets/icons/right-arrow.png" style="height:5vh; position:absolute; right:0.3vw; bottom:1.6vh; cursor:pointer;"/>
 		</div>
 		<div id="open-chat-container">
 			<img id="chat-back" onclick="backChat()" src="./assets/icons/left-arrow.png" />
@@ -59,7 +59,7 @@
 						<input type="text" id="message-input-box">
 
 						</input	>
-						<div id="message-input-button">
+						<div id="message-input-button" style="cursor:pointer;">
 							<img src="./assets/icons/send.png" />
 						</div>
 					</div>
