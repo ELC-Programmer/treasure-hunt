@@ -98,6 +98,9 @@ HUD.prototype = {
 	SetWeather: function(weather)
 	{
 		$("#weather-text").text(weather == "sunny" ? "Sunny" : "Raining");
+		
+		$(".weather-image").hide();
+		$(weather == "sunny" ? "#sunny-image" : "#rain-image").show();
 	},
 	
 	/**

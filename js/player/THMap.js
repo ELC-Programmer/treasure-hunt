@@ -132,6 +132,11 @@ THMap.prototype = {
 	},
 
 	/**
+	 * An object with keys "sunny" and "rain" pointing to materials.
+	 */
+	skyMaterials: {},
+	
+	/**
 	 * Initialize the skybox.
 	 */
 	_InitSky: function()
@@ -170,21 +175,32 @@ THMap.prototype = {
 		// this.scene.fog = new THREE.Fog( 0xffffff, 10, 1000 );
 
 		// Init SKYBOX
-		var imagePrefix = "assets/Textures/SkyboxSet1/ThickCloudsWater/ThickCloudsWater";
+		var imagePrefixSunny = "assets/Textures/SkyboxSet1/TropicalSunnyDay/TropicalSunnyDay";
+		var imagePrefixRain = "assets/Textures/SkyboxSet1/DarkStormy/DarkStormy";
 		var directions = ["Left2048","Right2048","Up2048","Down2048","Front2048","Back2048"];
 		var imageSuffix = ".png";
 		var skyGeometry = new THREE.CubeGeometry(10000,10000,10000);
 		
-		var materialArray = [];
+		var materialArraySunny = [];
+		var materialArrayRain = [];
 		for (var i=0; i<6; i++)
-		  materialArray.push(new THREE.MeshBasicMaterial({
-			map: THREE.ImageUtils.loadTexture(imagePrefix + directions[i] + imageSuffix),
-			side: THREE.BackSide,
-			transparent: true,
-			opacity: 0.5
-		  }));
-		var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
-		var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+		{
+			materialArraySunny.push(new THREE.MeshBasicMaterial({
+				map: THREE.ImageUtils.loadTexture(imagePrefixSunny + directions[i] + imageSuffix),
+				side: THREE.BackSide,
+				transparent: true,
+				opacity: 0.5
+			}));
+			materialArrayRain.push(new THREE.MeshBasicMaterial({
+				map: THREE.ImageUtils.loadTexture(imagePrefixRain + directions[i] + imageSuffix),
+				side: THREE.BackSide,
+				transparent: true,
+				opacity: 0.5
+			}));
+		}
+		this.skyMaterials.sunny = new THREE.MeshFaceMaterial(materialArraySunny);
+		this.skyMaterials.rain = new THREE.MeshFaceMaterial(materialArrayRain);
+		var skyBox = new THREE.Mesh(skyGeometry, this.skyMaterials.sunny);
 
 		this.skyBox = skyBox;
 		
@@ -213,8 +229,8 @@ THMap.prototype = {
 		
 		//extend ocean floor to horizon:
 		var floor = this.scene.getObjectByName("floor");
-		floor.scale.x = size/4;
-		floor.scale.y = size/4;
+		floor.scale.x = size*3/8;
+		floor.scale.y = size*3/8;
 		floor.material.color = new THREE.Color(waterColor);
 		this.oceanFloor = floor;
 		
@@ -618,6 +634,21 @@ THMap.prototype = {
 		this.newDayWeather = weather;
 		this.onNewDay = callback;
 	},
+	
+	/**
+	 * The weather state, either "sunny" or "rain".
+	 */
+	weather: "sunny",
+	
+	/**
+	 * Set the weather state immediately.
+	 * @param weather Either "sunny" or "rain".
+	 */
+	SetWeather: function(weather)
+	{
+		this.skyBox.material = this.skyMaterials[weather];
+		this.weather = weather;
+	},
 
 	/**
 	 * The time at which the day/night cycle should pause for gameplay.
@@ -643,7 +674,8 @@ THMap.prototype = {
 			
 			if (this.dayCycleTime >= this.dayCycleStopTime / 2 && this.newDayWeather) // it's midnight, update the weather
 			{
-				// TODO
+				this.skyBox.material = this.skyMaterials[this.newDayWeather];
+				this.weather = this.newDayWeather;
 				this.newDayWeather = false;
 			}
 		}
@@ -681,7 +713,7 @@ THMap.prototype = {
 		// this.counter_light.position.z = -this.sunlight.position.z;
 
 		
-		this.sunlight.intensity = 1.2*Math.sin(-theta);
+		this.sunlight.intensity = Math.sin(-theta) * (this.weather == "sunny" ? 1.2 : 0.6);
 		// this.counter_light.intensity = 0.2*this.sunlight.intensity;
 		//this.sunlight.intensity = 0;
 		
@@ -692,7 +724,7 @@ THMap.prototype = {
 		{
 			this.skyBox.material[i].opacity = Math.min(1, THREE.Math.mapLinear(Math.sin(-theta),
 				-1, 1,
-				-0.5, 1
+				-0.5, (this.weather == "sunny" ? 0.5 : 1.0)
 			));
 		}
 		

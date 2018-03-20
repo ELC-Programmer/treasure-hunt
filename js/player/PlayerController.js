@@ -76,7 +76,7 @@ PlayerController.prototype = {
 			scope.HUD2D.SetStatusButtonState("waiting");
 			scope.Map3D.SetSelectableMapPoints(false);
 			
-			// Day number (data.day)
+			// Day number (data.day, data.weather)
 			if (scope.dayNumber !== false) { // this isn't the first day
 				scope.dayNumber = data.day
 				scope.Map3D.PassDay(data.weather, function()
@@ -86,6 +86,7 @@ PlayerController.prototype = {
 			}
 			else // this is the first day
 			{
+				scope.Map3D.SetWeather(data.weather);
 				scope.dayNumber = data.day
 				onNewDay();
 			}
