@@ -216,7 +216,7 @@ PlayerController.prototype = {
 				let id = data.players[i].id;
 				let name = data.players[i].name;
 				
-				if (!Object.keys(scope.players).includes(id)) // we don't already know about this player
+				if (!Object.keys(scope.players).includes(id.toString())) // we don't already know about this player
 				{
 					scope.players[id] = name; // add to this.players
 					scope.Map3D.AddShip(id, name, (id == scope.playerID)); // add ship to map
