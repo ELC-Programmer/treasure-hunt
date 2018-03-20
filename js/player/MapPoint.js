@@ -6,18 +6,20 @@
 /**
  * @param thmap The parent THMap.
  * @param id A unique string ID for this map point.
+ * @param isIsland A boolean indicating if the map point is an island.
  * @param map The map as a string.
  * @param positions One or more coords of parking spaces. Adjacent parking spaces will be explored automatically.
  * @param object The THREE.Object3D representing this map point in the scene.
  * @param bgColor A color in CSS notation.
  * @param fgColor A color in CSS notation.
  */
-var MapPoint = function(thmap, id, map, positions, object, bgColor, fgColor)
+var MapPoint = function(thmap, id, isIsland, map, positions, object, bgColor, fgColor)
 {
 	var that = this;
 	
 	this.id = id;
 	this.thmap = thmap;
+	this.isIsland = isIsland;
 	this.object = object;
 	this.bgColor = bgColor;
 	this.fgColor = fgColor;

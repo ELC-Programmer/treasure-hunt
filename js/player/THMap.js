@@ -344,33 +344,33 @@ THMap.prototype = {
 		that.pathfinder = new Pathfinder(that.pathfinding_map); // init Pathfinder
 
 		// Init map points
-		function addMapPoint(id, positions, bgColor, fgColor)
+		function addMapPoint(id, isIsland, positions, bgColor, fgColor)
 		{
 			var object = that.scene.getObjectByName(id);
 			if (object === undefined) {
 				object = that.scene.getObjectByName("Label:" + id);
 			}
 			
-			that.mapPoints[id] = new MapPoint(that, id, that.pathfinding_map, positions, object, bgColor, fgColor);
+			that.mapPoints[id] = new MapPoint(that, id, isIsland, that.pathfinding_map, positions, object, bgColor, fgColor);
 		}
-		addMapPoint("trojan-island", [new Coords(8, 37)], "rgb(130, 0, 0)", "gold");
-		addMapPoint("bear-island", [new Coords(5, 15)], "rgb(0, 0, 70)", "gold");
-		addMapPoint("duck-island", [new Coords(12, 7)], "rgb(0, 80, 0)", "gold");
-		addMapPoint("beaver-island", [new Coords(28, 9), new Coords(32, 9)], "black", "#FF6424");
-		addMapPoint("cardinal-island", [new Coords(38, 18), new Coords(40, 13)], "rgb(100, 0, 0)", "white");
-		addMapPoint("bruin-island", [new Coords(26, 39)], "darkblue", "gold");
-		addMapPoint("sun-devil-island", [new Coords(19, 20), new Coords(16, 21)], "rgb(100, 0, 0)", "gold");
-		addMapPoint("treasure-spot", [new Coords(39, 25)]);
-		addMapPoint("SD1", [new Coords(10, 20)]);
-		addMapPoint("SD2", [new Coords(13, 27)]);
-		addMapPoint("SD3", [new Coords(21, 27)]);
-		addMapPoint("SD4", [new Coords(26, 26)]);
-		addMapPoint("SD5", [new Coords(31, 22)]);
-		addMapPoint("SD6", [new Coords(30, 17)]);
-		addMapPoint("T1", [new Coords(18, 32)]);
-		addMapPoint("T2", [new Coords(30, 30)]);
-		addMapPoint("B1", [new Coords(18, 37)]);
-		addMapPoint("B2", [new Coords(38, 37)]);
+		addMapPoint("trojan-island", true, [new Coords(8, 37)], "rgb(130, 0, 0)", "gold");
+		addMapPoint("bear-island", true, [new Coords(5, 15)], "rgb(0, 0, 70)", "gold");
+		addMapPoint("duck-island", true, [new Coords(12, 7)], "rgb(0, 80, 0)", "gold");
+		addMapPoint("beaver-island", true, [new Coords(28, 9), new Coords(32, 9)], "black", "#FF6424");
+		addMapPoint("cardinal-island", true, [new Coords(38, 18), new Coords(40, 13)], "rgb(100, 0, 0)", "white");
+		addMapPoint("bruin-island", true, [new Coords(26, 39)], "darkblue", "gold");
+		addMapPoint("sun-devil-island", true, [new Coords(19, 20), new Coords(16, 21)], "rgb(100, 0, 0)", "gold");
+		addMapPoint("treasure-spot", true, [new Coords(39, 25)]);
+		addMapPoint("SD1", false, [new Coords(10, 20)]);
+		addMapPoint("SD2", false, [new Coords(13, 27)]);
+		addMapPoint("SD3", false, [new Coords(21, 27)]);
+		addMapPoint("SD4", false, [new Coords(26, 26)]);
+		addMapPoint("SD5", false, [new Coords(31, 22)]);
+		addMapPoint("SD6", false, [new Coords(30, 17)]);
+		addMapPoint("T1", false, [new Coords(18, 32)]);
+		addMapPoint("T2", false, [new Coords(30, 30)]);
+		addMapPoint("B1", false, [new Coords(18, 37)]);
+		addMapPoint("B2", false, [new Coords(38, 37)]);
 	},
 
 	/**
@@ -641,13 +641,23 @@ THMap.prototype = {
 	weather: "sunny",
 	
 	/**
-	 * Set the weather state immediately.
+	 * Set the weather state immediately (abruptly).
 	 * @param weather Either "sunny" or "rain".
 	 */
 	SetWeather: function(weather)
 	{
 		this.skyBox.material = this.skyMaterials[weather];
 		this.weather = weather;
+		
+		// SOUNDS:
+		if (this.weatherSound) // fade out old sound
+			window.sounds.fadeInOut(this.weatherSound, window.sounds.ambientNoiseVolume, 0, 6000);
+		
+		let atIsland = (this.localShip.mapPoint.isIsland && !this.localShip.quartersToDestination);
+		let newSound = (weather == "rain" ? "stormyAmbience" : (atIsland ? "dockedAmbience" : "sunnyAmbience"));
+		window.sounds.fadeInOut(newSound, 0, window.sounds.ambientNoiseVolume, 6000);
+		
+		this.weatherSound = newSound;
 	},
 
 	/**
@@ -672,11 +682,26 @@ THMap.prototype = {
 		{
 			this.dayCycleTime = this.dayCycleStopTime + Date.now() - this.dayCycleClockStartTime;
 			
-			if (this.dayCycleTime >= this.dayCycleStopTime / 2 && this.newDayWeather) // it's midnight, update the weather
+			if ((this.dayCycleTime / cycleLength > 1.25) && this.newDayWeather) // it's midnight, update the weather (1.25 is a magic number...)
 			{
+				console.log("Midnight!");
+				
 				this.skyBox.material = this.skyMaterials[this.newDayWeather];
 				this.weather = this.newDayWeather;
 				this.newDayWeather = false;
+				
+				// SOUNDS:				
+				let atIsland = (this.localShip.mapPoint.isIsland && !this.localShip.quartersToDestination);
+				let newSound = (this.weather == "rain" ? "stormyAmbience" : (atIsland ? "dockedAmbience" : "sunnyAmbience"));
+				
+				if (this.weatherSound != newSound)
+				{
+					if (this.weatherSound) // fade out old sound
+						window.sounds.fadeInOut(this.weatherSound, window.sounds.ambientNoiseVolume, 0, 6000);
+					window.sounds.fadeInOut(newSound, 0, window.sounds.ambientNoiseVolume, 6000);
+				}
+				
+				this.weatherSound = newSound;
 			}
 		}
 		else if (this.onNewDay) // callback
@@ -702,7 +727,7 @@ THMap.prototype = {
 		this.sun.position.y = distance * Math.sin(theta) * Math.sin(phi);
 		this.sun.position.z = distance * Math.cos(theta); // height
 		this.sky.material.uniforms.sunPosition.value.copy(this.sun.position);
-
+		
 		// Update the lighting
 		this.sunlight.position.x = this.sun.position.x;
 		this.sunlight.position.y = this.sun.position.y;

@@ -335,7 +335,7 @@
 						window.notifications.newMessage("hey ship a!!");
 					},4000);
 	*/
-	window.sounds.fadeInOut("dockedAmbience", 0, sounds.ambientNoiseVolume, 6000);
+	// window.sounds.fadeInOut("dockedAmbience", 0, sounds.ambientNoiseVolume, 6000);
 	// respond to user interaction through this script
 	function closeChat(){
 		document.getElementById("open-chat-container").style.display = "none";
@@ -365,7 +365,7 @@
 		othersAreClosed = false;
 		var alertContainer = document.getElementById("day-alert-box-container");
 		alertContainer.scrollTop = alertContainer.scrollHeight;
-		sounds.fadeInOut("buoyBells", 0, 0, 0); 
+		//sounds.fadeInOut("buoyBells", 0, 0, 0); 
 		alertsFlash(false);
 	}
 	/*
