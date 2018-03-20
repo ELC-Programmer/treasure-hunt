@@ -230,14 +230,14 @@
                 </div>
                 <div class="col-md-4">
                     <br>
-                    <button id="chatOpenButton" type="button" class="btn btn-info btn-block text-size" data-toggle="collapse" data-target="" onclick="changechatbuttontext()">Open Chat</button>
+                    <button id="chatOpenButton" type="button" class="btn btn-info btn-block text-size" onclick="toggleChat()">Open Chat</button>
                 </div>
             </div>
 
             <!-- chat now pops up on bottom -->
             <div id="chatR">
                 <!-- chat -->
-                <div id="chat-container" class="collapse">
+                <div id="chat-container" style="display:none">
                     <h3 align="center">Chat Room</h3>
                     <div class="row">
                         <div class="panel panel-info" id="chat-panel" style="overflow-y: scroll;height:400px;">
@@ -344,8 +344,11 @@
         window.onload = function() {
             // testing_init(); //demo
             connect();
-            init();
+            initHandlers();
+			
+			window.socket.emit("facilitator send joinGame");
         };
+		
         function connect(){
             let token = getUrlParameter("token");
             if(!token){
@@ -361,14 +364,53 @@
                 myname = user["username"];
                 $("#username").html(myname);
             });
+        }
+		
+        function initHandlers(){
+			
             window.socket.on("server send updateChat", function(data){
                 if(data.newMessages = false) return;
                 for(i=0; i<data.messages.length; i++){
                     addChatMsg(data.messages[i])
                 }
             });
-        }
-        function init(){
+			
+			window.socket.on("server send updateFacilitator", function(data) {
+				// data.players:
+				clearTable();
+                for(i=0; i<data.players.length; i++){
+					let player = data.players[i];
+                    if(player['is_dead'] == 1){
+                        newRow( player['display_name'], 
+                            player['cash'], 
+                            'dead', 
+                            'dead', 
+                            'dead', 
+                            'dead', 
+                            'dead',
+                            'dead'
+                            );
+                    }
+                    else{
+                        newRow( player['display_name'], 
+                            player['cash'], 
+                            player['current_location'], 
+                            player['food'], 
+                            player['water'], 
+                            player['gas'], 
+                            player['ready'],
+                            player['treasure']
+                        );
+                    }
+                }
+				genGraph(data.players.map(x=>x["display_name"]), data.players.map(x=>x["cash"]));
+                players = data.players;
+				
+				// data.day:
+				timeline(parseInt(data.day));
+			});
+			
+			/*
             window.socket.emit("facilitator fetch players", {}, function(data){
                 clearTable();
                 for(i=0; i<data.length; i++){
@@ -406,7 +448,9 @@
                 for(i=0; i<data.length; i++)
                     addChatMsg(data[i]);
             });
+			*/
         }
+		
         function broadcastChatMsg(){
             var text = $("#chat-message-input").val().trim();
             if(text == "") return; //don't send empty strings
@@ -414,12 +458,12 @@
             $("#chat-message-input").val("");
         }
         function refresh(){
-            init();
+            //init();
         }
         function addChatMsg(msg){ 
             var text = msg["text"];
-            var recvr = findID(msg["recipient_id"]);
-            var sender = findID(msg["sender_id"]);
+            var recvr = findID(msg.recipientID);
+            var sender = findID(msg.senderID);
             if(sender == null) sender = myname;
             if(recvr == null) recvr = "All";
             var msgHTML = "<div class='row-fluid' style='border-bottom:1px solid black; display:flex; margin:0;'>\
@@ -443,7 +487,10 @@
         function showCredits(){
             $( "#credits-modal").modal("show");
         }
-        function changechatbuttontext(){
+        function toggleChat(){
+		
+			$("#chat-container").toggle();
+		
             if($('#chatOpenButton').html() == "Open Chat"){
                 $('#chatOpenButton').html("Close Chat");
                 $('html,body').animate({scrollTop: document.body.scrollHeight},"fast");
@@ -458,7 +505,7 @@
             window.socket.emit("facilitator send advance", {}, function(data){
                 if(data['success'] == true){
                     $('#advance-btn').prop('disabled',false);
-                    init();
+                    //init();
                 }
                 else{
                     alert("Encountered unknown error advancing day.");
@@ -482,8 +529,7 @@
         }
         //helper function that preps table entries
         function newRow(username, cash, current_loc, food, water, gas, ready, treasure){
-            if(ready == false) ready = "No";
-            if(ready == true) ready = "Yes";
+			ready = (ready ? "Yes" : "No");
             if(current_loc == null) current_loc = "trojan-island";
             if(current_loc.length > 3) current_loc = locationDict[current_loc];
             $('#player-table').append(
@@ -598,9 +644,10 @@
         }    
         function handleReset(){
             window.socket.emit("facilitator send resetGame", {}, function(data){
-                init();
+                //init();
                 $("#resetButton").prop('disabled',false);
                 $('#advance-btn').prop("disabled",false);
+				$("#chat-messages").html("");
             })
         }
         if(typeof(String.prototype.trim) === "undefined"){
