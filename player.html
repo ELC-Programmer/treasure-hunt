@@ -3,6 +3,7 @@
 	<head>
 		<meta charset=utf-8>
 		<title>Treasure Hunt!</title>
+		<script src="js/lib/jquery-3.3.1.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="game.css">
 		<link rel="stylesheet" type="text/css" href="fonts.css">
 		<!-- <link rel="stylesheet" type="text/css" href="facilitator/css/bootstrap.min.css"> -->
@@ -10,7 +11,6 @@
 		<script src="js/lib/utils.js"></script>
 		
 		<script src="js/lib/webfont.js"></script>
-		<script src="js/lib/jquery-3.3.1.min.js"></script>
 		<script src="js/lib/socket.io.js"></script>
 		<script src="js/lib/Howler/howler.core.js"></script>
 		
@@ -33,9 +33,14 @@
 		<script>
 		// Init 3D Map:
 			window.onload = function () {
+				setInterval(()=>{
+					$("#loading-page-bar").animate({ width:'100%' }, 3900, "swing");
+				}, 1);
+				setInterval(()=>{
+					$("#loading-page-div").animate({ opacity: 0 }, 2000, ()=>{ $("#loading-page-div").remove(); }) 
+				}, 4000);
 				window.controller = new PlayerController();
 			}
-			
 			// Load Fonts before continuing! (neccesary??? effective???)
 			WebFont.load({
 				custom: {
@@ -48,6 +53,18 @@
 
 	</head>
 	<body>
+		<div id="loading-page-div" style='z-index:10000; position:absolute; height:100vh; width:100vw; background-color:black; color:white;'>
+			<div class="center-inside" style="text-align:center;">
+				<h2>Welcome to</h2>
+				<h1>Treasure Hunt</h1>
+				<h3>An Experiential Learning Game</h3>
+			</div>
+			<div style="position:absolute; bottom:5%; width:90vw; left:5vw; right:5vw; border-radius:10px; height:5vh; background-color:#F1BF98;">
+				<div class="center-inside" style="height:75%; width:99%; border-radius:10px; margin:auto; background-color:white;">
+					<div id="loading-page-bar" style="position:absolute; left:0; height:100%; top:0; border-radius:10px; background-color:#6B818C; width:0;"></div>
+				</div>
+			</div>
+		</div>
 		<div id="hud-container"> </div>
 		<div id="game-container"> </div>
 	</body>

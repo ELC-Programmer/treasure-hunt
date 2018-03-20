@@ -21,7 +21,7 @@ class Sounds{
 		this.queue = Array();
 		this.soundsDict = { };
 		var that = this;
-		setTimeout(() => { that.loadSounds(); }, 5000); //asynchronously load other sounds
+		setTimeout(() => { that.loadSounds(); }, 6000); //asynchronously load other sounds
 
 	}
 	loadSounds(){
