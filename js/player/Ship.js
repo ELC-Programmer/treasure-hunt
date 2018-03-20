@@ -88,8 +88,8 @@ Ship.prototype = {
 				
 		if (this.traveling)
 		{				
-			if (this.path.length == 0 || !this.GetGridPosition().equals(this.path[0].cellPos))
-			{ // There is a path, and we're not at the front of it: recalculate!
+			if (this.path === undefined || this.path.length == 0 || !this.GetGridPosition().equals(this.path[0].cellPos))
+			{ // There is no path, or there is but we're not at the front of it: recalculate!
 					
 				var pathfinder = this.thmap.pathfinder;
 				this.path = pathfinder.findPath(
