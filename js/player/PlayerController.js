@@ -220,7 +220,13 @@ PlayerController.prototype = {
 				{
 					scope.players[id] = name; // add to this.players
 					scope.Map3D.AddShip(id, name, (id == scope.playerID)); // add ship to map
-					if (!id == scope.playerID) scope.HUD2D.AddPlayer(id, name); // add to chat/trade options
+					if (!id == scope.playerID) {
+						scope.HUD2D.AddPlayer(id, name); // add to chat/trade options
+
+						let colocal = scope.colocalPlayers.includes(id);
+						scope.HUD2D.SetPlayerChatEnabled(id, colocal);
+						scope.HUD2D.SetPlayerTradeEnabled(id, colocal);
+					}
 				}
 			}
 		});
