@@ -514,6 +514,7 @@ HUD.prototype = {
 		$("#day-alert-box-container")[0].scrollTop = $("#day-alert-box-container")[0].scrollHeight; // auto-scroll to bottom
 		
 		window.showAlerts();
+		window.sounds.playOnce("notificationBell");
 	},
 	
 	/**
@@ -532,6 +533,8 @@ HUD.prototype = {
 			$("#captains-message p").text(message);
 			$("#captains-buttons-container").hide();
 			$("#captains-message").show();
+			
+			window.sounds.playOnce("piratesArrgh");
 		}
 	}
 }
