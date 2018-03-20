@@ -108,14 +108,19 @@ HUD.prototype = {
 	 * @param location The name of the location
 	 * @param quarters How many quarters of the way to the location we are. Optional.
 	 * @param lastLocation The name of the location from which we are 'quarters' quarters to 'location'. Optional.
+	 * @param bgColor A color in CSS notation.
+	 * @param fgColor A color in CSS notation.
 	 */
-	SetLocation: function(location, quarters, lastLocation)
+	SetLocation: function(location, quarters, lastLocation, bgColor, fgColor)
 	{
 		let suffix = "";
 		if (quarters && lastLocation)
 			suffix = " (" + (quarters == 2 ? 1 : quarters) + "/" + (quarters == 2 ? 2 : 4) + ")";
 		
 		$("#location-text").text(location + suffix);
+		
+		$("#location").css("background-color", ((!bgColor || (quarters && lastLocation)) ? "" : bgColor));
+		$("#location-text").css("color", ((!fgColor || (quarters && lastLocation)) ? "" : fgColor));
 	},
 	
 	/**

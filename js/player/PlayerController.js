@@ -97,7 +97,9 @@ PlayerController.prototype = {
 			scope.HUD2D.SetLocation(
 				scope.Map3D.mapPoints[data.location].displayName,
 				data.quartersToDestination,
-				scope.Map3D.mapPoints[data.lastLocation].displayName
+				scope.Map3D.mapPoints[data.lastLocation].displayName,
+				scope.Map3D.mapPoints[data.location].bgColor,
+				scope.Map3D.mapPoints[data.location].fgColor
 			);
 			
 			scope.Map3D.localShip.MoveTo(

@@ -9,14 +9,18 @@
  * @param map The map as a string.
  * @param positions One or more coords of parking spaces. Adjacent parking spaces will be explored automatically.
  * @param object The THREE.Object3D representing this map point in the scene.
+ * @param bgColor A color in CSS notation.
+ * @param fgColor A color in CSS notation.
  */
-var MapPoint = function(thmap, id, map, positions, object)
+var MapPoint = function(thmap, id, map, positions, object, bgColor, fgColor)
 {
 	var that = this;
 	
 	this.id = id;
 	this.thmap = thmap;
 	this.object = object;
+	this.bgColor = bgColor;
+	this.fgColor = fgColor;
 	
 	// Find the label object
 	var prefix = "Label:";

@@ -344,22 +344,22 @@ THMap.prototype = {
 		that.pathfinder = new Pathfinder(that.pathfinding_map); // init Pathfinder
 
 		// Init map points
-		function addMapPoint(id, positions)
+		function addMapPoint(id, positions, bgColor, fgColor)
 		{
 			var object = that.scene.getObjectByName(id);
 			if (object === undefined) {
 				object = that.scene.getObjectByName("Label:" + id);
 			}
 			
-			that.mapPoints[id] = new MapPoint(that, id, that.pathfinding_map, positions, object);
+			that.mapPoints[id] = new MapPoint(that, id, that.pathfinding_map, positions, object, bgColor, fgColor);
 		}
-		addMapPoint("trojan-island", [new Coords(8, 37)]);
-		addMapPoint("bear-island", [new Coords(5, 15)]);
-		addMapPoint("duck-island", [new Coords(12, 7)]);
-		addMapPoint("beaver-island", [new Coords(28, 9), new Coords(32, 9)]);
-		addMapPoint("cardinal-island", [new Coords(38, 18), new Coords(40, 13)]);
-		addMapPoint("bruin-island", [new Coords(26, 39)]);
-		addMapPoint("sun-devil-island", [new Coords(19, 20), new Coords(16, 21)]);
+		addMapPoint("trojan-island", [new Coords(8, 37)], "rgb(130, 0, 0)", "gold");
+		addMapPoint("bear-island", [new Coords(5, 15)], "rgb(0, 0, 70)", "gold");
+		addMapPoint("duck-island", [new Coords(12, 7)], "rgb(0, 80, 0)", "gold");
+		addMapPoint("beaver-island", [new Coords(28, 9), new Coords(32, 9)], "black", "#FF6424");
+		addMapPoint("cardinal-island", [new Coords(38, 18), new Coords(40, 13)], "rgb(100, 0, 0)", "white");
+		addMapPoint("bruin-island", [new Coords(26, 39)], "darkblue", "gold");
+		addMapPoint("sun-devil-island", [new Coords(19, 20), new Coords(16, 21)], "rgb(100, 0, 0)", "gold");
 		addMapPoint("treasure-spot", [new Coords(39, 25)]);
 		addMapPoint("SD1", [new Coords(10, 20)]);
 		addMapPoint("SD2", [new Coords(13, 27)]);
