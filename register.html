@@ -107,7 +107,7 @@
 </body>
 <script>
 	// Open socket to server
-	var socket = io("localhost:3000?noAuth");
+	var socket = io(document.location.hostname + ":3000?noAuth");
 	
 	// Fill room select
 	socket.emit("client fetch rooms", {}, function(response) {
