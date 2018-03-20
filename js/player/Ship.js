@@ -180,6 +180,7 @@ Ship.prototype = {
 
 				if (displacement.length() <= movement && this.path.length == 1)
 				{
+					console.log(nextPoint.x + ", " + nextPoint.y); // DEBUG
 					this.position = nextPoint;
 					
 					this.traveling = false;
