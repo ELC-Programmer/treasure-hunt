@@ -77,7 +77,7 @@
 </body>
 <script>
 	// Open socket to server
-	var socket = io("localhost:3000?noAuth");
+	var socket = io(document.location.hostname + ":3000?noAuth");
 	var waiting = false;
 	
 	$("#waitMessage").hide();

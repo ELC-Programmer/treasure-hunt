@@ -11,7 +11,7 @@ var PlayerController = function()
 		if (!token)
 			window.location.assign("login.html");
 		
-		let socket = scope.socket = io.connect("localhost:3000?token=" + token);
+		let socket = scope.socket = io.connect(document.location.hostname + ":3000?token=" + token);
 		socket.on("error", function()
 		{
 			scope.FatalError("Authentication failure!");
