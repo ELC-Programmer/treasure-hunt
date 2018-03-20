@@ -109,7 +109,7 @@ PlayerController.prototype = {
 			for (let i in data.colocalPlayers)
 			{
 				let id = data.colocalPlayers[i];
-				if (scope.colocalPlayers.includes(id)) // continuing to be colocal
+				if (scope.colocalPlayers.includes(parseInt(id))) // continuing to be colocal
 				{
 					scope.Map3D.ships[id].MoveTo( // the ship should move alongside us!
 						scope.Map3D.mapPoints[data.location],
@@ -123,14 +123,14 @@ PlayerController.prototype = {
 			// // disappear all non-colocal ships
 			for (let id in scope.players)
 			{
-				if (id != scope.playerID && !data.colocalPlayers.includes(id))
+				if (id != scope.playerID && !data.colocalPlayers.includes(parseInt(id)))
 					scope.Map3D.ships[id].Disappear();
 			}
 			
 			// // update chat/trade options
 			for (let id in scope.players)
 			{
-				let colocal = data.colocalPlayers.includes(id);
+				let colocal = data.colocalPlayers.includes(parseInt(id));
 				scope.HUD2D.SetPlayerChatEnabled(id, colocal);
 				scope.HUD2D.SetPlayerTradeEnabled(id, colocal);
 			}
