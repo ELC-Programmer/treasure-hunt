@@ -135,23 +135,25 @@ HUD.prototype = {
 	/**
 	 * Set amount of food, as displayed in the sidebar.
 	 * @param food
+	 * @param noWarning If true, do not warn of 0 food.
 	 */
-	SetFood: function(food)
+	SetFood: function(food, noWarning)
 	{
 		$("#food-text").text(food);
 		
-		$("#food-alert").toggle(food == 0);
+		$("#food-alert").toggle(!noWarning && food == 0);
 	},
 	
 	/**
 	 * Set amount of water, as displayed in the sidebar.
 	 * @param water
+	 * @param noWarning If true, do not warn of 0 water.
 	 */
-	SetWater: function(water)
+	SetWater: function(water, noWarning)
 	{
 		$("#water-text").text(water);
 		
-		$("#water-alert").toggle(water == 0);
+		$("#water-alert").toggle(!noWarning && water == 0);
 	},
 	
 	/**
