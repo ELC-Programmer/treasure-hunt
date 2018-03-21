@@ -43,6 +43,9 @@ var PlayerController = function()
 	this.players = {}; // id => display name
 	this.dayNumber = false;
 	this.hasAction = false;
+	this.location = false;
+	this.quartersToDestination = false;
+	this.lastLocation = false;
 	this.possibleDestinations = []; // array of string map point IDs
 	this.colocalPlayers = []; // array of IDs
 	this.prices = {}; // indices: 'food', 'water', 'gas', 'treasure'
@@ -85,6 +88,10 @@ PlayerController.prototype = {
 				scope.Map3D.mapPoints[data.location].bgColor,
 				scope.Map3D.mapPoints[data.location].fgColor
 			);
+			
+			scope.location = data.location;
+			scope.quartersToDestination = data.quartersToDestination;
+			scope.lastLocation = data.lastLocation;
 			
 			scope.Map3D.localShip.MoveTo(
 				scope.Map3D.mapPoints[data.location],
@@ -215,6 +222,7 @@ PlayerController.prototype = {
 			{
 				let id = data.players[i].id;
 				let name = data.players[i].name;
+				let colocal = data.players[i].colocal;
 				
 				if (!Object.keys(scope.players).includes(id.toString())) // we don't already know about this player
 				{
@@ -223,7 +231,14 @@ PlayerController.prototype = {
 					if (id != scope.playerID) {
 						scope.HUD2D.AddPlayer(id, name); // add to chat/trade options
 
-						let colocal = scope.colocalPlayers.includes(id);
+						if (colocal && !scope.colocalPlayers.includes(id) && scope.location) {
+							scope.Map3D.ships[id].MoveTo(
+								scope.Map3D.mapPoints[scope.location],
+								scope.quartersToDestination,
+								scope.Map3D.mapPoints[scope.lastLocation]
+							);
+							scope.colocalPlayers.push(id);
+						}
 						scope.HUD2D.SetPlayerChatEnabled(id, colocal);
 						scope.HUD2D.SetPlayerTradeEnabled(id, colocal);
 					}
