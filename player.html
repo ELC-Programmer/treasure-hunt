@@ -33,12 +33,10 @@
 		<script>
 		// Init 3D Map:
 			window.onload = function () {
-				setInterval(()=>{
-					$("#loading-page-bar").animate({ width:'100%' }, 3900, "swing");
-				}, 1);
-				setInterval(()=>{
-					$("#loading-page-div").animate({ opacity: 0 }, 2000, ()=>{ $("#loading-page-div").remove(); }) 
-				}, 4000);
+				$("#loading-page-bar").animate({ width:'100%' }, 0, "swing", 
+					function(){
+						$("#loading-page-div").animate({ opacity: 0 }, 0, ()=>{ $("#loading-page-div").remove();  })  
+					})
 				window.controller = new PlayerController();
 			}
 			// Load Fonts before continuing! (neccesary??? effective???)
@@ -50,13 +48,23 @@
 					
 			
 		</script>
+		<style>
+		.navbar-text {
+	    	position: absolute;
+	    	width: 100%;
+	    	left: 0;
+	    	text-align: center;
+	    	margin: auto;
+	    	padding-top: 10px;
+		}
+		</style>
 	</head>
 	<body>
 		<div id="loading-page-div" style='z-index:10000; position:absolute; height:100vh; width:100vw; background-color:#38576B; color:black;'>
 			<nav class="navbar navbar-inverse">
 			  <div class="container-fluid">
 			    <div class="navbar-header">
-		            <a style="cursor:default" class="navbar-brand" href="#">
+		            <a style="cursor:default" class="navbar-brand">
 		                <img alt="Brand" src="facilitator/assets/ELC_Logo2.png" height="24px" width="300px">
 		            </a>
 		            <h2 class="navbar-text" float="center">
@@ -68,9 +76,13 @@
 			  </div>
 			</nav>
 			<div class="center-inside" style="text-align:center;">
-				<h2>Welcome to</h2>
-				<h1>Treasure Hunt</h1>
-				<h3>An Experiential Learning Game</h3>
+				<div class="container">
+				  <div class="jumbotron">
+				  	<h3>Welcome to</h3>
+				    <h1>Treasure Hunt</h1> 
+				    <h3>An Experiential Learning Game</h3>
+				  </div>
+				</div>
 			</div>
 			<div style="position:absolute; bottom:5%; width:90vw; left:5vw; right:5vw; border-radius:10px; height:5vh; background-color:#F1BF98;">
 				<div class="center-inside" style="height:75%; width:99%; border-radius:10px; margin:auto; background-color:white;">

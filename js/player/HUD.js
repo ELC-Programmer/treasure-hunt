@@ -317,10 +317,10 @@ HUD.prototype = {
 		
 		// Add button for player to chat option list (alphabetically sorted)
 		let p = $("<p>").text(name);
-		let div = $("<div>").addClass("team-select").attr("userID", id).append(p).click(function() {
+		let div = $("<btn>").addClass("team-select col btn btn-danger btn-block").attr("userID", id).append(p).click(function() {
 			scope.ShowChatMessages(id);
 		});
-		let nextSibling = $("#chat-select div").not("#broadcast-button").filter(function() {
+		let nextSibling = $("#chat-select btn").not("#broadcast-button").filter(function() {
 			return $(this).text().trim().localeCompare(name) > 0;
 		}).first();
 		if (nextSibling.length > 0)
