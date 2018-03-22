@@ -24,6 +24,18 @@ HUD.prototype = {
 				scope.ShowChatMessages("broadcast");
 			});
 
+			$(function(){
+		    $('.messages').slimScroll({
+	        height: "25vh"
+		    });
+			});
+
+			$(function(){
+		    $('.full-size-window-content').slimScroll({
+	        height: "70vh"
+		    });
+			});
+
 			function sendChatMessage()
 			{
 				let chatID = $(".messages:visible").attr("chatID");

@@ -37,9 +37,10 @@ var MapPoint = function(thmap, id, isIsland, map, positions, object, bgColor, fg
 	var widgetGeometry = new THREE.IcosahedronGeometry( 0.2, 1 );
 	var widgetMaterial = new THREE.MeshStandardMaterial();
 
-	this.selectionWidget = new THREE.Mesh( widgetGeometry, widgetMaterial );	
-	this.selectionWidget.position.z = this.labelObject.getWorldPosition().z - this.object.getWorldPosition().z + 0.5;
-	this.object.add( this.selectionWidget );
+	this.selectionWidget = new THREE.Mesh( widgetGeometry, widgetMaterial );
+	
+	this.selectionWidget.position.z = 0.5;
+	this.labelObject.add( this.selectionWidget );
 	//this.selectionWidget.material.transparent = true;
 	
 	// Initialize Parking:
