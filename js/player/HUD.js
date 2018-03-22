@@ -442,9 +442,9 @@ HUD.prototype = {
 	 */
 	AddChatMessage: function(otherUserID, message)
 	{
-		let p = $("<p>").text(message.text);
+		let p = $("<p style='margin-right:15px'>").text(message.text);
 		if (otherUserID == "broadcast" && !message.outgoing) { // incoming broadcast message
-			$("<div>").addClass("message-sender-title").text(message.senderName).prependTo(p);
+			$("<span>").addClass("message-sender-title").text(message.senderName+': ').prependTo(p);
 		}
 		let divInner = $("<div>").addClass("message").toggleClass("urgent-message", message.urgent).append(p);
 		let divOuter = $("<div>").addClass(message.outgoing ? "messages-local" : "messages-remote").append(divInner);
