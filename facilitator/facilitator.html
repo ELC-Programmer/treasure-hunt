@@ -378,8 +378,13 @@
 			window.socket.on("server send updateFacilitator", function(data) {
 				// data.players:
 				clearTable();
-                for(i=0; i<data.players.length; i++){
-					let player = data.players[i];
+				
+				var players = window.players = data.players.sort(function(a, b) { // sort players by display name
+					return a.display_name.localeCompare(b.display_name);
+				});
+				
+                for(i=0; i<players.length; i++){
+					let player = players[i];
                     if(player['is_dead'] == 1){
                         newRow( player['display_name'], 
                             player['cash'], 
@@ -403,8 +408,7 @@
                         );
                     }
                 }
-				genGraph(data.players.map(x=>x["display_name"]), data.players.map(x=>x["cash"]));
-                players = data.players;
+				genGraph(players.map(x=>x["display_name"]), players.map(x=>x["cash"]));
 				
 				// data.day:
 				timeline(parseInt(data.day));
