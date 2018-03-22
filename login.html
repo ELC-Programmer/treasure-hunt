@@ -13,11 +13,11 @@
 			background:url('assets/img/ttrojan.jpg');
 			background-repeat:no-repeat;
 			background-size:cover;
+			position:relative;
 		}
 		#container{
-			min-height:94vh;
 			width:50vw;
-			background:rgba(231,230,247,0.7);
+			background:#2F4858;/*rgba(231,230,247,0.7);*/
 			margin:auto;
 			text-align:center;
 			font-size:3vh;
@@ -25,6 +25,22 @@
 			border-radius:4px;    
 			margin-top:3vh;
 			margin-bottom:3vh;	
+			z-index:10;
+			position:absolute;
+			position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%);	
+			color:white;	
+		}
+		.outline{
+			text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+		}
+		#cover{
+			z-index:5;
+			background-color:#38576B;
+			height:100vh;
+			width:100vw;
+			position:absolute;
+			bottom:50;
+			left:0;
 		}
 		.lg-text{ font-size:3vh; }
 		.glyphicon-refresh-animate {
@@ -42,39 +58,65 @@
 		    to { transform: scale(1) rotate(360deg);}
 		}
 		form{
-			height:100vh;
+			overflow:scroll;
+			height:80vh;
 			width:100vw;
-			overflow:scroll;			
+		}
+		.navbar{ z-index:10; }
+		.navbar-text {
+		    position: absolute;
+		    width: 100%;
+		    left: 0;
+		    text-align: center;
+		    margin: auto;
+		    padding-top: 10px;
 		}
 	</style>
+	<script>
+		setInterval(()=>{
+			$("#cover").animate({ opacity: 0 }, 500, ()=>{ $("#cover").remove(); }) 
+		}, 500);
+	</script>
 </head>
 
 <body>
+	<div id="cover">
+	</div>
+	<nav class="navbar navbar-inverse">
+	  <div class="container-fluid">
+	    <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+                <img alt="Brand" src="facilitator/assets/ELC_Logo2.png" height="24px" width="300px">
+            </a>
+            <h2 class="navbar-text" float="center">
+            	Treasure Hunt Simulation
+            </h2>
+	    </div>
+	    <ul class="nav navbar-nav">
+	    </ul>
+	  </div>
+	</nav>
 	<form action="javascript:submit()">
-		<div id="container-container">
 		<div id="container">
-			<div>
-				<h1 class="h1 mb-3 font-weight-normal">Treasure Hunt</h1>
-				<h3 class="page-header mb-3 h3">USC Marshall School of Business</h3>
+			<h2 class="h3 mb-2 font-weight-normal outline">Please sign in</h2>
+			<div class="form-group" style="text-align:left">
+				<label class="outline" for="username">Username</label>
+				<input type="text" class="form-control form-control-lg lg-text" id="username" placeholder="tommy_trojan"/>
 			</div>
-				<h2 class="h3 mb-2 font-weight-normal">Please sign in</h2>
-				<div class="form-group" style="text-align:left">
-					<label for="username">Username</label>
-					<input type="text" class="form-control form-control-lg lg-text" id="username" placeholder="tommy_trojan"/>
-				</div>
-				<div class="form-group" style="text-align:left">
-					<label for="password">Password</label>
-					<input type="password" id="password" class="form-control form-control-lg lg-text" placeholder="Password"/>
-				</div>
-			    <div class="form-group col-md-6" style="padding-left:0;">
-			    	<a href="register.html" class="btn btn-danger btn-block"><span style="font-size:3vh">Register</span></a>
-			    </div>
-			    <div class="form-group col-md-6" style="padding-right:0;">
-					<button type="submit" class="btn btn-success btn-block" id="submit" value="Login" onclick="submit()"><span style="font-size:3vh"><span id='loading-icon' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Login</span></button>
-			    </div>
-				<div id="errorMessage" style="color:red"></div>
+			<div class="form-group" style="text-align:left">
+				<label class="outline" for="password">Password</label>
+				<input type="password" id="password" class="form-control form-control-lg lg-text" placeholder="Password"/>
+			</div>
+		    <div class="form-group col-md-6" style="padding-left:0;">
+		    	<a href="register.html" class="btn btn-danger btn-block"><span style="font-size:3vh">Register</span></a>
+		    </div>
+		    <div class="form-group col-md-6" style="padding-right:0;">
+				<button type="submit" class="btn btn-success btn-block" id="submit" value="Login" onclick="submit()"><span style="font-size:3vh"><span id='loading-icon' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Login</span></button>
+		    </div>
+			<div id="errorMessage" style="color:red">
+				
+			</div>
 		</div>	
-		</div>
 	</form>
 </body>
 <script>
