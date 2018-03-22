@@ -24,6 +24,7 @@
 		<div class="status-indicators" id="gas-text">
 			-
 		</div>
+		<div class="status-indicators resource-alert" id="gas-alert">No Gas! Can't Move!</div>
 	</div>
 	<div id="treasure" class="sigroups">
 		<image class="status-indicator-image" src="assets/icons/diamond.png" />
@@ -175,7 +176,7 @@
 				<img class="buy-sell-plus" src="assets/icons/plus.png" />
 			</div>
 		</div>
-		<div class="buy-submit-button"><p>Submit</p></div>
+		<div class="buy-submit-button"><p>Submit</p></div><br/>
 	</div>
 </div>
 <div class="full-size-window" id="trade-window">
@@ -366,7 +367,7 @@
 		othersAreClosed = false;
 		var alertContainer = document.getElementById("day-alert-box-container");
 		alertContainer.scrollTop = alertContainer.scrollHeight;
-		//sounds.fadeInOut("buoyBells", 0, 0, 0); 
+		//sounds.fadeInOut("buoyBells", 0, 0, 0);
 		alertsFlash(false);
 	}
 	/*
