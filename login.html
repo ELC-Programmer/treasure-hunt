@@ -1,12 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Treasure Hunt - Login</title>
+  <title>Treasure Hunt - Login</title>
 
 	<script src="js/lib/socket.io.js"></script>
 	<script src="js/lib/jquery-3.3.1.min.js"></script>
-    <link href="facilitator/css/bootstrap.min.css" rel="stylesheet">
-    <script src="js/lib/bootstrap.min.js"></script>
+  <link href="facilitator/css/bootstrap.min.css" rel="stylesheet">
+  <script src="js/lib/bootstrap.min.js"></script>
+
+	<script src="js/lib/slimscroll/jquery.slimscroll.min.js"></script>
 
 	<style type="text/css">
 		body{
@@ -24,11 +26,11 @@
 			text-align:center;
 			font-size:3vh;
 			padding:1vw;
-			border-radius:4px;    
+			border-radius:4px;
 			margin-top:3vh;
-			margin-bottom:3vh;	
+			margin-bottom:3vh;
 			z-index:10;
-			color:white;	
+			color:white;
 		}
 		.outline{
 			text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
@@ -81,7 +83,7 @@
 	</style>
 	<script>
 		setInterval(()=>{
-			$("#cover").animate({ opacity: 0 }, 500, ()=>{ $("#cover").remove(); }) 
+			$("#cover").animate({ opacity: 0 }, 500, ()=>{ $("#cover").remove(); })
 		}, 500);
 	</script>
 </head>
@@ -92,7 +94,7 @@
 	<nav class="navbar navbar-inverse">
 	  <div class="container-fluid">
 	    <div class="navbar-header">
-            <a style="cursor:default" class="navbar-brand" href="#">
+            <a style="cursor:default" class="navbar-brand">
                 <img alt="Brand" src="facilitator/assets/ELC_Logo2.png" height="24px" width="300px">
             </a>
             <h2 class="navbar-text" float="center">
@@ -122,9 +124,9 @@
 				<button type="submit" class="btn btn-success btn-block btn-primary" id="submitLoginButton" value="Login" onclick="submitLogin()"><span style="font-size:3vh"><span id='loading-icon' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Login</span></button>
 		    </div>
 			<div id="errorMessage" style="color:red">
-				
+
 			</div>
-		</div>	
+		</div>
 	</form>
 
 
@@ -133,19 +135,19 @@
 		<h2 class="h3 mb-2 font-weight-normal outline">Create an account</h2>
 
 		<!-- Username -->
-		<div class="form-group" style="text-align:left">	
+		<div class="form-group" style="text-align:left">
 			<label class="outline" for="username-registration">Username</label>
 			<input type="text" class="form-control form-control-lg lg-text" id="username-registration" placeholder="tommy_trojan"/>
 		</div>
 
 		<!-- Display Name -->
-		<div class="form-group" style="text-align:left">	
+		<div class="form-group" style="text-align:left">
 			<label class="outline" for="displayName">Display Name</label>
 			<input type="text" class="form-control form-control-lg lg-text" id="displayName" placeholder="Tommy Trojan"/>
 		</div>
-		
+
 		<!-- Password -->
-		<div class="form-group" style="text-align:left">	
+		<div class="form-group" style="text-align:left">
 			<label class="outline" for="password-registration">Password</label>
 			<input type="password" id="password-registration" class="form-control form-control-lg lg-text" placeholder="Password"/>
 		</div>
@@ -158,7 +160,7 @@
 		</div>
 
 		<!-- Radio Buttons -->
-		<fieldset class="form-group" style="text-align:left">	
+		<fieldset class="form-group" style="text-align:left">
 			<legend class="outline" style="color:white;">User type</legend>
 			<div class="form-check">
 		      <label class="form-check-label outline">
@@ -190,7 +192,7 @@
 	var socket = io(document.location.hostname + ":3000?noAuth");
 	var waiting = false;
 	var initLeft = $("#login").css('left');
-	
+
 	$("#waitMessage").hide();
 	$("#loading-icon").hide();
 	var slideTime = 2000;
@@ -202,10 +204,10 @@
 		$("#loading-icon").show();
 		$("#errorMessage").hide();
 		disableButtons();
-		
+
 		let username = $("#username").val();
 		let password = $("#password").val();
-		
+
 		socket.emit("client function login",
 		{
 			username: username,
@@ -230,7 +232,7 @@
 			}
 		});
 	}
-	
+
 	function slideToRegister(){
 		if($("#login").css('left') != initLeft) return;
 		$("#login").animate({left:"-=100%"}, slideTime, function(){initLeft = $("#login").css('left');});
@@ -246,7 +248,7 @@
 //registration code
 	// Fill room select
 	socket.emit("client fetch rooms", {}, function(response) {
-	
+
 		for (var i in response.rooms)
 		{
 			let room = response.rooms[i];
@@ -259,13 +261,13 @@
 	function submitRegistration(){
 		$("#errorMessageRegistration").hide();
 		$("#loading-icon-registration").show();
-		
+
 		let username = $("#username-registration").val().trim();
 		let password = $("#password-registration").val();
 		let roomID = $("#room").val();
 		let type = $("input[name=type]:checked").val();
 		let displayName = $("#displayName").val().trim();
-		
+
 		if(username=="" || password=="" || roomID==null || displayName==""){
 			$("#errorMessageRegistration").show();
 			$("#loading-icon-registration").hide();
@@ -309,10 +311,9 @@
 		$("#registerScreen").prop("disabled", false);
 	}
     if(typeof(String.prototype.trim) === "undefined"){
-        String.prototype.trim = function() 
+        String.prototype.trim = function()
         {
             return String(this).replace(/^\s+|\s+$/g, '');
         };
     }
 </script>
-	
