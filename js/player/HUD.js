@@ -25,15 +25,11 @@ HUD.prototype = {
 			});
 
 			$(function(){
-		    $('.messages').slimScroll({
-	        height: "25vh"
-		    });
+		    // $('.messages').slimScroll();
 			});
 
 			$(function(){
-		    $('.full-size-window-content').slimScroll({
-	        height: "70vh"
-		    });
+		    // $('.full-size-window-content').slimScroll();
 			});
 
 			function sendChatMessage()
@@ -349,10 +345,10 @@ HUD.prototype = {
 
 		// Add button for player to chat option list (alphabetically sorted)
 		let p = $("<p>").text(name);
-		let div = $("<btn>").addClass("team-select col btn btn-danger btn-block").attr("userID", id).append(p).click(function() {
+		let div = $("<button>").addClass("team-select col btn btn-primary btn-block").attr("userID", id).append(p).click(function() {
 			scope.ShowChatMessages(id);
 		});
-		let nextSibling = $("#chat-select btn").not("#broadcast-button").filter(function() {
+		let nextSibling = $("#chat-select button").not("#broadcast-button").filter(function() {
 			return $(this).text().trim().localeCompare(name) > 0;
 		}).first();
 		if (nextSibling.length > 0)
@@ -365,8 +361,9 @@ HUD.prototype = {
 		}
 
 		// Add button for player to trade option list (alphabetically sorted)
-		p = $("<p>").text(name);
-		div = $("<div>").addClass("team-select trade-team-item").attr("userID", id).append(p).click(function() {
+		// <button class="btn btn-info col-sm-4"><p style="font-size:3vh;">Ship A</p></button>
+		p = $("<p style='font-size:3vh;'>").text("Ship "+name);
+		div = $("<button>").addClass("team-select trade-team-item btn btn-info").attr("userID", id).append(p).click(function() {
 			if ($(this).hasClass("team-select-enabled")) {
 				// TODO: redirect to specific trade page
 			}

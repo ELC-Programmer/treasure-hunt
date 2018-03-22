@@ -49,7 +49,7 @@
 			<div id="chat-title"><p>Chat</p></div>
 			<div id="chat-content-container">
 				<div id="chat-select" class="container">
-					<button class="team-select col btn btn-danger btn-block" id="broadcast-button">
+					<button class="team-select col btn btn-primary btn-block" id="broadcast-button">
 						<p>Broadcast</p>
 					</button>
 				</div>
@@ -124,7 +124,7 @@
 
 <div class="full-size-window" id="alerts-screen">
 	<div class="full-size-window-top-bar">
-		<p>Alerts</p>
+		<h1>Alerts</h1>
 		<img onclick="closeAlerts()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
@@ -133,138 +133,143 @@
 </div>
 <div class="full-size-window" id="buy-sell-window">
 	<div class="full-size-window-top-bar">
-		<p>Purchase Resources and Sell Treasure</p>
+		<h1>Purchase Resources and Sell Treasure</h1>
 		<img onclick="closeBuySell()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
-	<div class="full-size-window-content" id="buy-sell-window-content">
-		<div id="buy-food">
+	<div class="full-size-window-content container" id="buy-sell-window-content">
+		<div id="buy-food" class="row">
 			<div class="buy-items-line" style="margin-top:4vh;">
-				<div class="buy-title"><p>Buy Food</p></div>
-				<div class="cost"><p>$25 per unit</p></div>
+				<div class="buy-title col-sm-3"><p>Buy Food</p></div>
+				<div class="cost col-sm-4"><p>$25 per unit</p></div>
 				<img class="buy-sell-minus" src="assets/icons/minus.png" />
-				<div class="how-many-buying"><p>0</p></div>
+				<div class="how-many-buying col-sm-3"><p>0</p></div>
 				<img class="buy-sell-plus" src="assets/icons/plus.png" />
 			</div>
 		</div>
-		<div id="buy-water">
+		<div id="buy-water" class="row">
 			<div class="buy-items-line">
-				<div class="buy-title"><p>Buy Water</p></div>
-				<div class="cost"><p>$25 per unit</p></div>
+				<div class="buy-title col-sm-3"><p>Buy Water</p></div>
+				<div class="cost col-sm-4"><p>$25 per unit</p></div>
 				<img class="buy-sell-minus" src="assets/icons/minus.png" />
-				<div class="how-many-buying"><p>0</p></div>
+				<div class="how-many-buying col-sm-3"><p>0</p></div>
 				<img class="buy-sell-plus" src="assets/icons/plus.png" />
 			</div>
 		</div>
-		<div id="buy-gas">
+		<div id="buy-gas" class="row">
 			<div class="buy-items-line">
-				<div class="buy-title"><p>Buy Gas</p></div>
-				<div class="cost"><p>$25 per unit</p></div>
+				<div class="buy-title col-sm-3"><p>Buy Gas</p></div>
+				<div class="cost col-sm-4"><p>$25 per unit</p></div>
 				<img class="buy-sell-minus" src="assets/icons/minus.png" />
-				<div class="how-many-buying"><p>0</p></div>
+				<div class="how-many-buying col-sm-3"><p>0</p></div>
 				<img class="buy-sell-plus" src="assets/icons/plus.png" />
 			</div>
 		</div>
-		<div id="sell-treasure">
+		<div id="sell-treasure" class="row">
 			<div class="buy-items-line">
-				<div class="buy-title"><p>Sell Treasure</p></div>
-				<div class="cost"><p>$25 per unit</p></div>
+				<div class="buy-title col-sm-3"><p>Sell Treasure</p></div>
+				<div class="cost col-sm-4"><p>$25 per unit</p></div>
 				<img class="buy-sell-minus" src="assets/icons/minus.png" />
-				<div class="how-many-buying"><p>0</p></div>
+				<div class="how-many-buying col-sm-3"><p>0</p></div>
 				<img class="buy-sell-plus" src="assets/icons/plus.png" />
 			</div>
 		</div>
-		<div class="buy-submit-button"><p>Submit</p></div><br/>
+		<div class="row">
+			<button class="btn btn-block center-block btn-danger buy-submit-button"><p>Submit</p></button>
+		</div>
+		<br/>
 	</div>
 </div>
 <div class="full-size-window" id="trade-window">
 	<div class="full-size-window-top-bar">
-		<p>Trade</p>
+		<img id="backTradeButton" onclick="backTrade()" style="margin-left:10px; margin-right:0px;" src="./assets/icons/left-arrow.png" />
+		<h1>Trade</h1>
 		<img onclick="closeTradeWindow()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
-	<div class="full-size-window-content" id="trade-window-content">
-		<div id="trade-team-select-container">
+	<div class="full-size-window-content" id="trade-window-content" >
+		<div id="trade-team-select-container" class="container-fluid" hidden="true">
+			<!-- todo does not properly tile -->
 		</div>
 		<div id="trade-items-select">
 			<div id="trade-item-select-title">
-				<p style="margin:0">Trading with Ship-B</p>
+				<h1 style="margin:0">Trading with Ship-B</h1>
 			</div>
-			<div id="trade-receive-container">
-				<div id="trade-in">
-					<p id="trade-in-title">Trade in</p>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Cash</p></div>
+			<div id="trade-receive-container container">
+				<div id="trade-in" class="col-sm-6">
+					<h2 id="trade-in-title" class="row">Trade in</h2>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Cash</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Food</p></div>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Food</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Water</p></div>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Water</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Gas</p></div>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Gas</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Treasure</p></div>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Treasure</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
 				</div>
-				<div id="to-receive">
-					<p id="to-receive-title">To Receive</p>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Cash</p></div>
+				<div id="to-receive" class="col-sm-6">
+					<h2 id="to-receive-title" class="row">To Receive</h2>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Cash</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Food</p></div>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Food</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Water</p></div>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Water</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Gas</p></div>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Gas</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
-					<div class="buy-items-line trade-item-line">
-						<div class="buy-title trade-item-title"><p>Treasure</p></div>
+					<div class="buy-items-line trade-item-line row">
+						<div class="buy-title trade-item-title col-sm-4"><p>Treasure</p></div>
 						<img src="assets/icons/minus.png" />
-						<div class="how-many-buying"><p>0</p></div>
+						<div class="how-many-buying col-sm-4"><p>0</p></div>
 						<img src="assets/icons/plus.png" />
 					</div>
 				</div>
 			</div>
 			<div id="trade-button-container">
-				<div onclick="backTrade()" id="choose-another-team">
+				<!-- <button onclick="backTrade()" id="choose-another-team" class="btn btn-block btn-danger col-sm-6">
 					<p>Choose another team</p>
-				</div>
-				<div id="send-offer">
+				</button> -->
+				<button id="send-offer" class="btn btn-block center-block btn-danger">
 					<p>Send offer</p>
-				</div>
+				</button>
 			</div>
 		</div>
 	</div>
@@ -311,7 +316,6 @@
 <script src="js/lib/notify.min.js"></script>
 <script src="js/player/notifications.js"></script>
 <script src="js/lib/jquery-ui.min.js"></script>
-<script src="js/lib/slimscroll/jquery.slimscroll.min.js"></script>
 <script>
 	var chatIsClosed = true;
 	var windowWidthWhenChatIsClosed = ["80vw","50%"] //[width,left]
@@ -451,6 +455,8 @@
 	function backTrade(){
 		document.getElementById("trade-items-select").style.display = "none";
 		document.getElementById("trade-team-select-container").style.display = "flex";
+		$("#trade-team-select-container").show();
+		$("#backTradeButton").hide();
 	}
 	/*
 	function showCaptainsMessage(){

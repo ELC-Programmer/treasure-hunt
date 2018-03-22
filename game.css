@@ -109,14 +109,6 @@
 							margin-left:5px;
 							width:100% !important;
 							margin:auto;
-							/*width:29.5%;*/
-							/*background-color:rgba(150,150,150,.7);*/
-							/*margin:1vh;*/
-							/*display:flex;*/
-							/*justify-content:center;*/
-							/*border-radius:25px;*/
-							font-family:Cousine;
-							/*transition: all .2s ease-in-out;*/
 							cursor:pointer;
 						}
 						/*.team-select.team-select-enabled { background-color:rgba(239,200,139,.7); }*/
@@ -334,7 +326,7 @@
 		}
 	.full-size-window{
 		width:80vw;
-		height:70vh;
+		max-height:80vh;
 		margin:auto;
 		margin-left: auto;
 		top:40%;
@@ -343,7 +335,7 @@
 		border-color: rgba(247,239,153,0.7);
 		transform:translate(-50%,-50%);
 		color:white;
-		background-color:rgba(247,142,105,0.9);
+		background-color: rgba(247,142,105,0.9);
 		display:flex;
 		flex-direction:column;
 		display:none;
@@ -356,11 +348,10 @@
 			flex-direction:row;
 			flex-grow:1;
 		}
-			.full-size-window-top-bar > p{
+			.full-size-window-top-bar > h1{
 				margin:0;
 				flex-grow:2;
 				font-family:"Berkshire Swash",cursive;
-				font-size:3vh;
 				margin-top:1vh;
 			}
 			.full-size-window-top-bar > img{
@@ -368,8 +359,8 @@
 				width:4vh;
 				cursor:pointer;
 				transition: all .1s ease-in-out;
-				margin-top:1vh;
-				margin-right:1vh;
+				margin-top:10px;
+				margin-right:10px;
 			}
 			.eighty-percent-hr{ width:75%; background-color:black;  }
 		.full-size-window-content{ width:90%; flex-grow:200; overflow-y:scroll; margin:auto;}
@@ -381,11 +372,11 @@
 				border-bottom:1px solid black;
 				margin-bottom:2vh;
 			}
-				.day-alert-box > p{
+				.day-alert-box > h1{
 					margin:0;
-					margin-left:1vw;
-					font-family:"Ubuntu";
-					font-size:3vh;
+					flex-grow:2;
+					font-family:"Berkshire Swash",cursive;
+					margin-top:1vh;
 				}
 				.day-alert-box > hr{ margin-left:1vw; }
 				.alert-box{
@@ -400,26 +391,35 @@
 					.alert-box > p{ margin: 1vh; }
 	#buy-sell-window{  }
 		.buy-food{ text-align:left; }
-		#buy-sell-window-content{ width:94%; text-align:center; font-size:20pt; margin:auto; }
-			.buy-items-line{ width:100%; display:flex; flex-direction:row; margin:auto; background-color:rgba(0,0,0,0.7); border-radius:10px; margin-bottom:2.5vh;}
-			.buy-sell-disabled .buy-items-line { background-color: rgba(100, 0, 0, 255); }
-				.buy-items-line > *{ display:inline; flex-grow:1; height:1vh; align-self:center; margin:0; }
-				.buy-title{ text-align:left; height:100%; flex-grow:0; margin-left:0; background-color:rgba(256,256,256,0.1); border-radius:5px; }
-				.buy-title > p{ margin-left:1vw; flex-grow:10; margin-right:1vw; width:10vw;}
-				.buy-items-line > img{ height:5vh; flex-grow:0; cursor:pointer; margin-right:1vw; margin-left:1vw;}
-				.how-many-buying{ width:30vw; height:100%; flex-grow:0; background-color:rgba(256,256,256,0.1); border-radius:5px; margin-right:1vw; margin-left:1vw; text-align:center;}
-				.buy-submit-button, .cost{ margin-left:1vw; margin-right:1vw; height:100%;}
-				.buy-submit-button{ background-color:rgba(10, 10, 10, 0.7); margin:auto; padding-right:1vw; padding-left:1vw; cursor:pointer; border-radius:10px; width:100px; height:40px}
-	#trade-window{ height:90vh; top:5%; transform:translate(-50%,0); }
-		#trade-item-select-title{ font-size:20pt; }
+		#buy-sell-window-content{ width:100%; padding-left:5%; padding-right:5%; text-align:center; font-size:20pt; margin:auto; }
+			.buy-items-line{ width:100%; margin:auto; margin-bottom:2.5vh; border:1px solid black; padding:10px; border-radius:5px;}
+			.buy-sell-disabled .buy-items-line { }
+				.buy-items-line > *{ }
+				.buy-title{ text-align:left;  }
+				.buy-title > p{  }
+				.buy-items-line > img{ height:5vh; cursor:pointer; }
+				.how-many-buying{ text-align:center; }
+				.buy-submit-button, .cost{ }
+				.buy-submit-button{ 
+					text-align:center;
+					margin:auto;
+					width:80% !important;
+					margin-top:10px;
+					margin-bottom:10px;
+				}
+				.buy-submit-button p{ font-size:3vh; }
+	#trade-window{ margin-top:20px;}
+		#trade-item-select-title{  }
 		#trade-window-content{ width:100%; }
+			#trade-window-content .row{ margin-left:0 !important; margin-right:0 !important; }
 			#trade-team-select-container{
-				/*display:flex;*/
-				flex-wrap:wrap;
 				width:100%;
+				padding-bottom:20px;
 				justify-content:center;
 				display:none;
+				min-height:20vh;
 			}
+				#trade-team-select-container > button{ margin:10px; }
 				.trade-team-item{ height:10vh; width:30%; }
 				.trade-team-item.team-select-enabled:hover{ transform:scale(1.05); }
 				.trade-team-item > p{ font-size:8vh; margin-top:1vh; }
@@ -432,27 +432,22 @@
 			}
 				#trade-item-select-title{ text-align:center; }
 				#trade-receive-container{ display:flex; flex-direction:row; align-items:stretch; margin:auto; width:98%; }
-					#trade-in{ width:50%; margin-right:0.5vw; }
-						#trade-in-title{ text-align:center; font-size:20pt; }
-					#to-receive{ width:50%; margin-right:0.5vw; }
-						#to-receive-title{ text-align:center; font-size:20pt; }
+					#trade-in{  }
+						#trade-in-title{ text-align:center; }
+					#to-receive{  }
+						#to-receive-title{ text-align:center; }
 				.trade-item-line{ margin-bottom:0.5vh; }
 				#trade-button-container{
-					display:flex;
-					flex-direction:column;
-					width:100%;
-					align-content:stretch;
+					
 				}
-					#trade-button-container > div{
-						border:1px solid black;
-						border-radius:20px;
-						background-color:rgba(0,0,0,0.7);
+					#send-offer{
 						text-align:center;
 						margin:auto;
-						margin-bottom:.5vh;
-						width:98%;
-						cursor:pointer;
+						width:80%;
+						margin-top:10px;
+						margin-bottom:20px;
 					}
+					#send-offer{font-size:3vh;}
 					#trade-button-container p{ margin-top:0.5vh; margin-bottom:0.5vh; }
 	}
 	#captain-window{ font-size:8vh; }
