@@ -1,16 +1,16 @@
 var PlayerController = function()
 {
 	let scope = this;
-	
+
 	// Init 2D HUD:
 	this.HUD2D = new HUD(this);
 	this.HUD2D.Load(window, document.getElementById("hud-container"), function() {
-		
+
 		// Open socket
 		let token = getUrlParameter("token");
 		if (!token)
 			window.location.assign("login.html");
-		
+
 		let socket = scope.socket = io.connect(document.location.hostname + ":3000?token=" + token);
 		socket.on("error", function()
 		{
@@ -21,12 +21,12 @@ var PlayerController = function()
 			scope.playerID = user.id;
 			scope.HUD2D.SetPlayerName(user.display_name);
 		});
-		
+
 		// Init 3D map and start game
 		scope.Map3D = new THMap(scope);
 		scope.Map3D.Start(window, document.getElementById("game-container"), function() {
 			scope._RegisterSocketHandlers();
-			
+
 			// send joinGame
 			socket.emit("player send joinGame", {}, function(data) {
 				if (!data.success)
@@ -36,9 +36,9 @@ var PlayerController = function()
 			});
 		});
 	});
-		
+
 	// Initialize member variables
-	
+
 	// this.playerID
 	this.players = {}; // id => display name
 	this.dayNumber = false;
@@ -61,7 +61,7 @@ var PlayerController = function()
 };
 
 PlayerController.prototype = {
-	
+
 	/**
 	 * Register handlers for incoming events sent by the server.
 	 */
@@ -69,7 +69,7 @@ PlayerController.prototype = {
 	{
 		let scope = this;
 		let socket = this.socket;
-		
+
 		/**
 		 * Handle Update Day
 		 */
@@ -78,9 +78,9 @@ PlayerController.prototype = {
 			// Pre-day cycle: status button and selectable map points
 			scope.HUD2D.SetStatusButtonState("waiting");
 			scope.Map3D.SetSelectableMapPoints(false);
-			
+
 			// Ships (data.location, data.quartersToDestination, data.lastLocation, data.colocalPlayers)
-			
+
 			scope.HUD2D.SetLocation(
 				scope.Map3D.mapPoints[data.location].displayName,
 				data.quartersToDestination,
@@ -88,11 +88,11 @@ PlayerController.prototype = {
 				scope.Map3D.mapPoints[data.location].bgColor,
 				scope.Map3D.mapPoints[data.location].fgColor
 			);
-			
+
 			scope.location = data.location;
 			scope.quartersToDestination = data.quartersToDestination;
 			scope.lastLocation = data.lastLocation;
-			
+
 			scope.Map3D.localShip.MoveTo(
 				scope.Map3D.mapPoints[data.location],
 				data.quartersToDestination,
@@ -111,7 +111,7 @@ PlayerController.prototype = {
 					}
 				}
 			);
-			
+
 			// // move continuing colocal ships
 			for (let i in data.colocalPlayers)
 			{
@@ -122,18 +122,18 @@ PlayerController.prototype = {
 						scope.Map3D.mapPoints[data.location],
 						data.quartersToDestination,
 						scope.Map3D.mapPoints[data.lastLocation]
-					);					
+					);
 				}
 			}
 			scope.colocalPlayers = data.colocalPlayers; // record the new set of colocal players
-			
+
 			// // disappear all non-colocal ships
 			for (let id in scope.players)
 			{
 				if (id != scope.playerID && !data.colocalPlayers.includes(parseInt(id)))
 					scope.Map3D.ships[id].Disappear();
 			}
-			
+
 			// // update chat/trade options
 			for (let id in scope.players)
 			{
@@ -142,13 +142,13 @@ PlayerController.prototype = {
 				scope.HUD2D.SetPlayerTradeEnabled(id, colocal);
 			}
 			scope.HUD2D.SetTradeEnabled(data.colocalPlayers.length > 0);
-						
+
 			// Weather (data.weather)
 			scope.HUD2D.SetWeather(data.weather);
-			
+
 			// Death (data.isDead)
 			scope.HUD2D.SetDead(data.isDead);
-			
+
 			// Buying and Selling (data.prices)
 			scope.prices = data.prices;
 			scope.HUD2D.SetFoodPrice(scope.prices.food);
@@ -156,10 +156,10 @@ PlayerController.prototype = {
 			scope.HUD2D.SetGasPrice(scope.prices.gas);
 			scope.HUD2D.SetTreasureValue(scope.prices.treasure);
 			scope.buySellQuantities = {food: 0, water: 0, gas: 0, treasure: 0}; // reset buy/sell window
-			
+
 			let enableBuySell = Object.values(scope.prices).reduce((accumulator, currentValue) => accumulator || (currentValue !== false), false);
 			scope.HUD2D.SetBuySellEnabled(enableBuySell);
-			
+
 			// Day number (data.day, data.weather)
 			if (scope.dayNumber !== false) { // this isn't the first day
 				scope.dayNumber = data.day
@@ -174,14 +174,14 @@ PlayerController.prototype = {
 				scope.dayNumber = data.day
 				onNewDay();
 			}
-			scope.HUD2D.SetDayNumber(scope.dayNumber);	
-			
+			scope.HUD2D.SetDayNumber(scope.dayNumber);
+
 			// things to be done when the new day arrives
 			function onNewDay()
 			{
 				if (!data.isDead)
 				{
-					// Actions (data.hasAction, data.possibleDestinations, data.seaCaptainAccessible)			
+					// Actions (data.hasAction, data.possibleDestinations, data.seaCaptainAccessible)
 					scope.hasAction = data.hasAction;
 					scope.possibleDestinations = data.possibleDestinations;
 					if (scope.hasAction && (data.possibleDestinations.length > 1 || data.quartersToDestination))
@@ -197,25 +197,25 @@ PlayerController.prototype = {
 					{
 						scope.Map3D.SetSelectableMapPoints(false);
 					}
-					
+
 					scope.seaCaptainAccessible = data.seaCaptainAccessible;
 					scope.HUD2D.SetSeaCaptainMessage(false); // reset the sea captain window
 					scope.HUD2D.SetSeaCaptainEnabled(scope.hasAction && scope.seaCaptainAccessible);
-					
+
 					scope.HUD2D.SetStatusButtonState("enabled");
-					
+
 					// Alerts (data.alerts)
 					scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);
-								
+
 					// Pirates (data.pirateAttack)
 					// TODO!
-					
+
 					// callback!
 					if (response) response();
-				}			
+				}
 			}
 		});
-		
+
 		/**
 		 * Handle Update Players
 		 */
@@ -226,7 +226,7 @@ PlayerController.prototype = {
 				let id = data.players[i].id;
 				let name = data.players[i].name;
 				let colocal = data.players[i].colocal;
-				
+
 				if (!Object.keys(scope.players).includes(id.toString())) // we don't already know about this player
 				{
 					scope.players[id] = name; // add to this.players
@@ -248,7 +248,7 @@ PlayerController.prototype = {
 				}
 			}
 		});
-		
+
 		/**
 		 * Handle Update Resources
 		 */
@@ -260,17 +260,17 @@ PlayerController.prototype = {
 			scope.gas = data.gas;
 			scope.treasure = data.treasure;
 			scope.storage = data.storage;
-			
+
 			scope.HUD2D.SetCash(scope.cash);
 			scope.HUD2D.SetFood(scope.food, scope.dayNumber <= 0);
 			scope.HUD2D.SetWater(scope.water, scope.dayNumber <= 0);
-			scope.HUD2D.SetGas(scope.gas);
+			scope.HUD2D.SetGas(scope.gas, scope.dayNumber <= 0);
 			scope.HUD2D.SetTreasure(scope.treasure);
 			scope.HUD2D.SetStorage(scope.GetUsedStorage(), scope.storage);
-			
+
 			scope.UpdateBuySellQuantity();
 		});
-		
+
 		/**
 		 * Handle Update Chat
 		 */
@@ -278,11 +278,11 @@ PlayerController.prototype = {
 			for (let i in data.messages) // for each message
 			{
 				let message = data.messages[i];
-				
+
 				let outgoing = (message.senderID == scope.playerID);
 				let otherUserID = (outgoing ? message.recipientID : message.senderID);
 				if (message.broadcast) otherUserID = "broadcast";
-				
+
 				if (!scope.chatMessages[otherUserID]) scope.chatMessages[otherUserID] = [];
 				let messageObject = {
 					outgoing: outgoing,
@@ -292,12 +292,12 @@ PlayerController.prototype = {
 					timestamp: message.timestamp
 				};
 				scope.chatMessages[otherUserID].push(messageObject);
-				
+
 				scope.HUD2D.AddChatMessage(otherUserID, messageObject); // add the chat message to the chat pane, if it is open
 				if (!outgoing && message.newMessage) HUD2D.AlertChatMessage(messageObject); // alert the arrival of a new message
 			}
 		});
-		
+
 		/**
 		 * Handle End Game
 		 */
@@ -305,7 +305,7 @@ PlayerController.prototype = {
 			console.log("END GAME"); // TODO
 		});
 	},
-	
+
 	/**
 	 * Get amount of currently used storage. (i.e. food + water + gas + treasure)
 	 * @returns Used storage
@@ -314,7 +314,7 @@ PlayerController.prototype = {
 	{
 		return this.food + this.water + this.gas + this.treasure;
 	},
-	
+
 	/**
 	 * Get all the chat messages needed for a chat pane.
 	 * @param otherUserID The ID of the other user, or "broadcast".
@@ -326,33 +326,33 @@ PlayerController.prototype = {
 		// TODO: sort messages by timestamp?
 		return messages;
 	},
-	
+
 	/**
 	 * Ready up. Send destination selection to server.
 	 */
 	EndTurn: function()
 	{
 		let scope = this;
-		
+
 		// status button
 		this.HUD2D.SetStatusButtonState("waiting");
 
 		// destination selection
 		this.Map3D.mapPointSelectionEnabled = false; // selection is locked in
 		let selectedMapPoint = this.Map3D.selectedMapPoint;
-		
-		
+
+
 		this.socket.emit("player send ready", { destination: selectedMapPoint.id }, function(data) {
 			if (!data.success)
 			{
 				scope.FatalError(data.error);
 			}
 		});
-				
+
 		// if destination chosen, no more talking to sea captain
 		if (this.Map3D.selectedMapPoint) this.HUD2D.SetSeaCaptainEnabled(false);
 	},
-	
+
 	/**
 	 * Trigger a fatal error. Display an error message, then redirect back to login.html.
 	 * @param message A description of the error.
@@ -362,7 +362,7 @@ PlayerController.prototype = {
 		// TODO
 		alert(message);
 	},
-	
+
 	/**
 	 * Send a chat message
 	 * @param chatID The user ID of the recipient for unicast, or "broadcast" for broadcast.
@@ -375,7 +375,7 @@ PlayerController.prototype = {
 			text: text
 		});
 	},
-	
+
 	/**
 	 * Update the buy/sell quantities being considered.
 	 * @param item One of "food", "water", "gas", or "treasure".
@@ -384,12 +384,12 @@ PlayerController.prototype = {
 	UpdateBuySellQuantity: function (item, changeBy, resetOnFail)
 	{
 		let scope = this;
-		
+
 		function allowed()
 		{
 			let prices = scope.prices;
 			let qtys = scope.buySellQuantities;
-				
+
 			if (qtys.treasure > scope.treasure) return false; // can't sell treasure you don't have!
 			let resources = ["food", "water", "gas", "treasure"];
 			for (let i in resources)
@@ -398,28 +398,28 @@ PlayerController.prototype = {
 				if (qtys[resource] < 0) return false; // no negative quantities
 				if (prices[resource] === false && qtys[resource] != 0) return false; // can't buy something that's not for sale!
 			}
-				
+
 			let newCash = scope.cash - prices.food*qtys.food - prices.water*qtys.water - prices.gas*qtys.gas + prices.treasure*qtys.treasure;
 			let newUsedStorage = scope.GetUsedStorage() + qtys.food + qtys.water + qtys.gas - qtys.treasure;
-			
+
 			return (newCash >= 0 && newUsedStorage <= scope.storage);
 		}
-		
+
 		if (item !== undefined)
 		{
 			this.buySellQuantities[item] += changeBy;
-			
+
 			if (!allowed()) // disallowed update -- revert it
 				this.buySellQuantities[item] -= changeBy;
 		}
-		
+
 		if (!allowed()) // still no good -- reset
 			this.buySellQuantities = { food: 0, water: 0, gas: 0, treasure: 0 };
-			
+
 		// Done updating values, update the HUD
 		this.HUD2D.SetBuySellQuantities(this.buySellQuantities);
 	},
-	
+
 	/**
 	 * Submit buy/sell deal.
 	 */
@@ -454,12 +454,12 @@ PlayerController.prototype = {
 		this.socket.emit("player send buySell", { transactions: transactions }, function(response) {
 			console.log(response);
 		});
-		
+
 		// Update
 		this.buySellQuantities = {food: 0, water: 0, gas: 0, treasure: 0};
-		this.HUD2D.SetBuySellQuantities(this.buySellQuantities);		
+		this.HUD2D.SetBuySellQuantities(this.buySellQuantities);
 	},
-	
+
 	/**
 	 * Consult the sea captain.
 	 * @param topic Either "weather" or "pirates".
@@ -467,15 +467,15 @@ PlayerController.prototype = {
 	ConsultSeaCaptain: function(topic)
 	{
 		let scope = this;
-		
+
 		if (topic != "weather" && topic != "pirates") return; // invalid topic
-		
+
 		if (this.seaCaptainAccessible && this.hasAction)
 		{
 			// expend the player's action
 			this.hasAction = false;
 			this.Map3D.SetSelectableMapPoints(false);
-			
+
 			// emit!
 			this.socket.emit("player function consultSeaCaptain", { topic: topic }, function(response) {
 				if (response.success)

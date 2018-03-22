@@ -9,11 +9,11 @@
 		<!-- <link rel="stylesheet" type="text/css" href="facilitator/css/bootstrap.min.css"> -->
 
 		<script src="js/lib/utils.js"></script>
-		
+
 		<script src="js/lib/webfont.js"></script>
 		<script src="js/lib/socket.io.js"></script>
 		<script src="js/lib/Howler/howler.core.js"></script>
-		
+
 		<script src="js/lib/three/three.js"></script>
 		<script src="js/lib/three/reflector.js"></script>
 		<script src="js/lib/three/refractor.js"></script>
@@ -21,24 +21,22 @@
 		<script src="js/lib/three/orbiter.js"></script>
 		<script src="js/lib/three/sky.js"></script>
 		<!-- <script src="js/lib/bootstrap.min.js"></script> -->
-				
+
 		<script src="js/player/PlayerController.js"></script>
 		<script src="js/player/THMap.js"></script>
 		<script src="js/player/Ship.js"></script>
 		<script src="js/player/Pathfinder.js"></script>
 		<script src="js/player/MapPoint.js"></script>
-		
+
 		<script src="js/player/HUD.js"></script>
-	
+
 		<script>
 		// Init 3D Map:
 			window.onload = function () {
-				setInterval(()=>{
-					$("#loading-page-bar").animate({ width:'100%' }, 3900, "swing");
-				}, 1);
-				setInterval(()=>{
-					$("#loading-page-div").animate({ opacity: 0 }, 2000, ()=>{ $("#loading-page-div").remove(); }) 
-				}, 4000);
+					$("#loading-page-bar").animate({ width:'100%' }, 2000, "swing",
+					function(){
+						$("#loading-page-div").animate({ opacity: 0 }, 1000, ()=>{ $("#loading-page-div").remove(); })
+				});
 				window.controller = new PlayerController();
 			}
 			// Load Fonts before continuing! (neccesary??? effective???)
@@ -47,8 +45,8 @@
 					families: ["Cousine"]
 				}
 			});
-					
-			
+
+
 		</script>
 
 	</head>

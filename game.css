@@ -1,16 +1,16 @@
  body { margin: 0; position:relative; height:100vh; overflow:hidden; }
  	.center-inside{position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%);}
- 	body *{ 
- 		-webkit-user-drag: none; 
- 		-khtml-user-drag: none; 
- 		-moz-user-drag: none; 
- 		-o-user-drag: none; 
- 		user-drag: none; 
+ 	body *{
+ 		-webkit-user-drag: none;
+ 		-khtml-user-drag: none;
+ 		-moz-user-drag: none;
+ 		-o-user-drag: none;
+ 		user-drag: none;
  		-webkit-user-select: none;
 		-khtml-user-select: none;
 		-moz-user-select: none;
 		-o-user-select: none;
-		user-select: none; 
+		user-select: none;
 	}
 	#game-container{ z-index:1; }
 	#hud-container{ width:100vw; height:100vh; display:inline;}
@@ -18,7 +18,7 @@
 		#status-indicators-group{
 			top:2vh;
 			position:absolute;
-			pointer-events: none; 
+			pointer-events: none;
 		}
 			#status-indicators-group > div{ margin-top:1.5vh; }
 			.sigroups{ display:flex; flex-direction:row; margin-left:5px;}
@@ -47,11 +47,11 @@
 				align-items:center;
 				min-height:1px;
 				cursor:pointer;
-				pointer-events: all; 
+				pointer-events: all;
 			}
 				#closed-chat > img{ align-self:center; }
 			#open-chat-container{
-				pointer-events: all; 
+				pointer-events: all;
 				border:3px solid;
 				border-color: rgba(247,239,153,0.9);
 				background-color:rgba(247,142,105,0.7);
@@ -465,7 +465,7 @@
 				flex-direction:column;
 				align-items:center;
 				justify-content:center;
-				font-size:4vh; 
+				font-size:4vh;
 			}
 				#captains-buttons-container{
 					width:90%;
@@ -489,5 +489,5 @@
 						margin:0;
 						padding:2vh;
 						text-align:justify;
-						font-size:4vh; 
+						font-size:4vh;
 					}
