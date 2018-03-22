@@ -10,12 +10,14 @@
 
 	<style type="text/css">
 		body{
-			background:url('assets/img/ttrojan.jpg');
+			background:url('assets/img/infinity-pool.jpg'); /*url('assets/img/ttrojan.jpg');*/
 			background-repeat:no-repeat;
 			background-size:cover;
 			position:relative;
+			width:100vw;
+			overflow:hidden;
 		}
-		#container{
+		.container{
 			width:50vw;
 			background:#2F4858;/*rgba(231,230,247,0.7);*/
 			margin:auto;
@@ -26,8 +28,6 @@
 			margin-top:3vh;
 			margin-bottom:3vh;	
 			z-index:10;
-			position:absolute;
-			position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%);	
 			color:white;	
 		}
 		.outline{
@@ -58,11 +58,15 @@
 		    to { transform: scale(1) rotate(360deg);}
 		}
 		form{
-			overflow:scroll;
-			height:80vh;
+			position:absolute;
+			top:0;
+			padding-top:70px;
+			height:100vh;
 			width:100vw;
+			overflow:scroll;
+			z-index:5;
 		}
-		.navbar{ z-index:10; }
+		.navbar{ z-index:12; }
 		.navbar-text {
 		    position: absolute;
 		    width: 100%;
@@ -70,6 +74,9 @@
 		    text-align: center;
 		    margin: auto;
 		    padding-top: 10px;
+		}
+		#registration{
+			left:100%;
 		}
 	</style>
 	<script>
@@ -85,7 +92,7 @@
 	<nav class="navbar navbar-inverse">
 	  <div class="container-fluid">
 	    <div class="navbar-header">
-            <a class="navbar-brand" href="#">
+            <a style="cursor:default" class="navbar-brand" href="#">
                 <img alt="Brand" src="facilitator/assets/ELC_Logo2.png" height="24px" width="300px">
             </a>
             <h2 class="navbar-text" float="center">
@@ -96,8 +103,9 @@
 	    </ul>
 	  </div>
 	</nav>
-	<form action="javascript:submit()">
-		<div id="container">
+
+	<form id="login" action="javascript:submitLogin()">
+		<div class="container">
 			<h2 class="h3 mb-2 font-weight-normal outline">Please sign in</h2>
 			<div class="form-group" style="text-align:left">
 				<label class="outline" for="username">Username</label>
@@ -108,29 +116,92 @@
 				<input type="password" id="password" class="form-control form-control-lg lg-text" placeholder="Password"/>
 			</div>
 		    <div class="form-group col-md-6" style="padding-left:0;">
-		    	<a href="register.html" class="btn btn-danger btn-block"><span style="font-size:3vh">Register</span></a>
+		    	<button type="button" class="btn btn-danger btn-block" id="registerScreen" value="registerScreen" onclick="slideToRegister()"><span style="font-size:3vh">Register</span></button>
 		    </div>
 		    <div class="form-group col-md-6" style="padding-right:0;">
-				<button type="submit" class="btn btn-success btn-block" id="submit" value="Login" onclick="submit()"><span style="font-size:3vh"><span id='loading-icon' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Login</span></button>
+				<button type="submit" class="btn btn-success btn-block btn-primary" id="submitLoginButton" value="Login" onclick="submitLogin()"><span style="font-size:3vh"><span id='loading-icon' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Login</span></button>
 		    </div>
 			<div id="errorMessage" style="color:red">
 				
 			</div>
 		</div>	
 	</form>
+
+
+	<form id="registration" action="javascript:submitRegistration()">
+	<div class="container">
+		<h2 class="h3 mb-2 font-weight-normal outline">Create an account</h2>
+
+		<!-- Username -->
+		<div class="form-group" style="text-align:left">	
+			<label class="outline" for="username-registration">Username</label>
+			<input type="text" class="form-control form-control-lg lg-text" id="username-registration" placeholder="tommy_trojan"/>
+		</div>
+
+		<!-- Display Name -->
+		<div class="form-group" style="text-align:left">	
+			<label class="outline" for="displayName">Display Name</label>
+			<input type="text" class="form-control form-control-lg lg-text" id="displayName" placeholder="Tommy Trojan"/>
+		</div>
+		
+		<!-- Password -->
+		<div class="form-group" style="text-align:left">	
+			<label class="outline" for="password-registration">Password</label>
+			<input type="password" id="password-registration" class="form-control form-control-lg lg-text" placeholder="Password"/>
+		</div>
+
+		<!-- Room -->
+		<div class="form-group" style="text-align:left">
+		    <label class="outline" for="room">Room</label>
+		    <select class="form-control" id="room">
+		    </select>
+		</div>
+
+		<!-- Radio Buttons -->
+		<fieldset class="form-group" style="text-align:left">	
+			<legend class="outline" style="color:white;">User type</legend>
+			<div class="form-check">
+		      <label class="form-check-label outline">
+		        <input type="radio" class="form-check-input" name="type" value="player" checked>
+		        Player
+		      </label>
+		    </div>
+		    <div class="form-check">
+		      <label class="form-check-label outline">
+		        <input type="radio" class="form-check-input" name="type" value="facilitator">
+		        Facilitator
+		      </label>
+		    </div>
+		</fieldset>
+		<div class="form-group col-md-6" style="padding-left:0;">
+	    	<button type="button" class="btn btn-danger btn-block" id="backToLogin" value="Back" onclick="slideToLogin()"><span style="font-size:3vh">Back</span></button>
+	    </div>
+	    <div class="form-group col-md-6" style="padding-right:0;">
+			<button type="submit" class="btn btn-success btn-block btn-primary" id="submitButtonRegistration" value="Register" onclick="submitRegistration()"><span style="font-size:3vh"><span id='loading-icon-registration' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Register</span></button>
+	    </div>
+		<p id="errorMessageRegistration" style="color:red"></p>
+	</div>
+	</form>
+
+
 </body>
 <script>
 	// Open socket to server
 	var socket = io(document.location.hostname + ":3000?noAuth");
 	var waiting = false;
+	var initLeft = $("#login").css('left');
 	
 	$("#waitMessage").hide();
 	$("#loading-icon").hide();
-	function submit(){
+	var slideTime = 2000;
+	// $("#registration").hide();
+
+	function submitLogin(){
 		if(waiting) return;
 		else waiting = true;
 		$("#loading-icon").show();
 		$("#errorMessage").hide();
+		disableButtons();
 		
 		let username = $("#username").val();
 		let password = $("#password").val();
@@ -145,10 +216,9 @@
 				$("#errorMessage").text(response.error);
 				$("#errorMessage").show();
 				$("#waitMessage").hide();
-				
-				$("#submit").removeProp("disabled");
 				waiting = false;
 				$("#loading-icon").hide();
+				enableButtons();
 			}
 			else{ // success
 				if (response.user.type == "player") {
@@ -159,8 +229,90 @@
 				}
 			}
 		});
-		$("#submit").prop("disabled");	
 	}
 	
+	function slideToRegister(){
+		if($("#login").css('left') != initLeft) return;
+		$("#login").animate({left:"-=100%"}, slideTime, function(){initLeft = $("#login").css('left');});
+		$("#registration").animate({left:"-=100%"}, slideTime);
+	}
+
+	function slideToLogin(){
+		if($("#login").css('left') != initLeft) return;
+		$("#login").animate({left:"+=100%"}, slideTime, function(){initLeft = $("#login").css('left');});
+		$("#registration").animate({left:"+=100%"}, slideTime);
+	}
+
+//registration code
+	// Fill room select
+	socket.emit("client fetch rooms", {}, function(response) {
+	
+		for (var i in response.rooms)
+		{
+			let room = response.rooms[i];
+			$("<option>").text(room.name).attr("value", room.id).appendTo($("#room"));
+		}
+	});
+	$("#loading-icon-registration").hide();
+	$("#errorMessageRegistration").hide();
+
+	function submitRegistration(){
+		$("#errorMessageRegistration").hide();
+		$("#loading-icon-registration").show();
+		
+		let username = $("#username-registration").val().trim();
+		let password = $("#password-registration").val();
+		let roomID = $("#room").val();
+		let type = $("input[name=type]:checked").val();
+		let displayName = $("#displayName").val().trim();
+		
+		if(username=="" || password=="" || roomID==null || displayName==""){
+			$("#errorMessageRegistration").show();
+			$("#loading-icon-registration").hide();
+			$("#errorMessageRegistration").text("Please complete all fields.");
+			return;
+		}
+
+		disableButtons();
+		socket.emit("client function registerUser",
+		{
+			username: username,
+			password: password,
+			roomID: roomID,
+			type: type,
+			displayName: displayName
+		},
+		function(response) {
+			enableButtons();
+			if (!response.success)
+			{ // failure
+				$("#errorMessageRegistration").text(response.error);
+				$("#errorMessageRegistration").show();
+				$("#loading-icon-registration").hide();
+			}
+			else
+			{ // success
+				$('registration').find("input[type=text], input[type=password]").val("");
+				slideToLogin();
+			}
+		});
+	};
+	function disableButtons(){
+		$("#backToLogin").prop("disabled", true);
+		$("#submitLoginButton").prop("disabled", true);
+		$("#registerScreen").prop("disabled", true);
+	}
+	function enableButtons(){
+		$("#submitButtonRegistration").prop("disabled", false);
+		$("#backToLogin").prop("disabled", false);
+		$("#submitLoginButton").prop("disabled", false);
+		$("#registerScreen").prop("disabled", false);
+	}
+    if(typeof(String.prototype.trim) === "undefined"){
+        String.prototype.trim = function() 
+        {
+            return String(this).replace(/^\s+|\s+$/g, '');
+        };
+    }
 </script>
 	

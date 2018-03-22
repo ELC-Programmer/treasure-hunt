@@ -15,6 +15,7 @@ var PlayerController = function()
 		socket.on("error", function()
 		{
 			scope.FatalError("Authentication failure!");
+			window.location.assign("login.html");			
 		});
 		socket.on("server send authentication", function(user)
 		{
