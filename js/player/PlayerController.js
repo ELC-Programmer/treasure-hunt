@@ -43,6 +43,9 @@ var PlayerController = function()
 	this.players = {}; // id => display name
 	this.dayNumber = false;
 	this.hasAction = false;
+	this.location = false;
+	this.quartersToDestination = false;
+	this.lastLocation = false;
 	this.possibleDestinations = []; // array of string map point IDs
 	this.colocalPlayers = []; // array of IDs
 	this.prices = {}; // indices: 'food', 'water', 'gas', 'treasure'
@@ -70,7 +73,7 @@ PlayerController.prototype = {
 		/**
 		 * Handle Update Day
 		 */
-		socket.on("server send updateDay", function(data)
+		socket.on("server send updateDay", function(data, response)
 		{
 			// Pre-day cycle: status button and selectable map points
 			scope.HUD2D.SetStatusButtonState("waiting");
@@ -85,6 +88,10 @@ PlayerController.prototype = {
 				scope.Map3D.mapPoints[data.location].bgColor,
 				scope.Map3D.mapPoints[data.location].fgColor
 			);
+			
+			scope.location = data.location;
+			scope.quartersToDestination = data.quartersToDestination;
+			scope.lastLocation = data.lastLocation;
 			
 			scope.Map3D.localShip.MoveTo(
 				scope.Map3D.mapPoints[data.location],
@@ -135,22 +142,6 @@ PlayerController.prototype = {
 				scope.HUD2D.SetPlayerTradeEnabled(id, colocal);
 			}
 			scope.HUD2D.SetTradeEnabled(data.colocalPlayers.length > 0);
-			
-			// Day number (data.day, data.weather)
-			if (scope.dayNumber !== false) { // this isn't the first day
-				scope.dayNumber = data.day
-				scope.Map3D.PassDay(data.weather, function()
-				{ // upon new day arrival
-					onNewDay();
-				});
-			}
-			else // this is the first day
-			{
-				scope.Map3D.SetWeather(data.weather);
-				scope.dayNumber = data.day
-				onNewDay();
-			}
-			scope.HUD2D.SetDayNumber(scope.dayNumber);	
 						
 			// Weather (data.weather)
 			scope.HUD2D.SetWeather(data.weather);
@@ -168,6 +159,22 @@ PlayerController.prototype = {
 			
 			let enableBuySell = Object.values(scope.prices).reduce((accumulator, currentValue) => accumulator || (currentValue !== false), false);
 			scope.HUD2D.SetBuySellEnabled(enableBuySell);
+			
+			// Day number (data.day, data.weather)
+			if (scope.dayNumber !== false) { // this isn't the first day
+				scope.dayNumber = data.day
+				scope.Map3D.PassDay(data.weather, function()
+				{ // upon new day arrival
+					onNewDay();
+				});
+			}
+			else // this is the first day
+			{
+				scope.Map3D.SetWeather(data.weather);
+				scope.dayNumber = data.day
+				onNewDay();
+			}
+			scope.HUD2D.SetDayNumber(scope.dayNumber);	
 			
 			// things to be done when the new day arrives
 			function onNewDay()
@@ -202,6 +209,9 @@ PlayerController.prototype = {
 								
 					// Pirates (data.pirateAttack)
 					// TODO!
+					
+					// callback!
+					if (response) response();
 				}			
 			}
 		});
@@ -215,6 +225,7 @@ PlayerController.prototype = {
 			{
 				let id = data.players[i].id;
 				let name = data.players[i].name;
+				let colocal = data.players[i].colocal;
 				
 				if (!Object.keys(scope.players).includes(id.toString())) // we don't already know about this player
 				{
@@ -223,7 +234,14 @@ PlayerController.prototype = {
 					if (id != scope.playerID) {
 						scope.HUD2D.AddPlayer(id, name); // add to chat/trade options
 
-						let colocal = scope.colocalPlayers.includes(id);
+						if (colocal && !scope.colocalPlayers.includes(id) && scope.location) {
+							scope.Map3D.ships[id].MoveTo(
+								scope.Map3D.mapPoints[scope.location],
+								scope.quartersToDestination,
+								scope.Map3D.mapPoints[scope.lastLocation]
+							);
+							scope.colocalPlayers.push(id);
+						}
 						scope.HUD2D.SetPlayerChatEnabled(id, colocal);
 						scope.HUD2D.SetPlayerTradeEnabled(id, colocal);
 					}
@@ -244,8 +262,8 @@ PlayerController.prototype = {
 			scope.storage = data.storage;
 			
 			scope.HUD2D.SetCash(scope.cash);
-			scope.HUD2D.SetFood(scope.food);
-			scope.HUD2D.SetWater(scope.water);
+			scope.HUD2D.SetFood(scope.food, scope.dayNumber <= 0);
+			scope.HUD2D.SetWater(scope.water, scope.dayNumber <= 0);
 			scope.HUD2D.SetGas(scope.gas);
 			scope.HUD2D.SetTreasure(scope.treasure);
 			scope.HUD2D.SetStorage(scope.GetUsedStorage(), scope.storage);
