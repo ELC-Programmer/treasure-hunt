@@ -206,7 +206,7 @@ PlayerController.prototype = {
 					scope.HUD2D.SetStatusButtonState("enabled");
 
 					// Alerts (data.alerts)
-					scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);
+					setTimeout(()=>{scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);}, 10000);
 
 					// Pirates (data.pirateAttack)
 					// TODO!
