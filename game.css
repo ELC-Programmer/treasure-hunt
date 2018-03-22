@@ -1,13 +1,5 @@
 	/*stuff for the cover*/
 	.center-inside{position: absolute; top: 50%; left: 50%; margin-right: -50%; transform: translate(-50%, -50%);}
-	.navbar-text {
-	    position: absolute;
-	    width: 100%;
-	    left: 0;
-	    text-align: center;
-	    margin: auto;
-	    padding-top: 10px;
-	}
 
  body { margin: 0; position:relative; height:100vh; overflow:hidden; }
  	body *{
@@ -47,19 +39,17 @@
 			}
 			#closed-chat{
 				border:3px solid;
-				border-color: rgba(247,239,153,0.9);
+				border-color:rgba(247,239,153,0.9);
 				border-radius:25px;
 				margin-top:4.5vh;
 				margin-left:-25px;
 				background-color:rgba(247,142,105,0.7);
-				display:flex;
-				flex-direction:row;
-				align-items:center;
 				min-height:1px;
 				cursor:pointer;
 				pointer-events: all;
+				width:10vw;
 			}
-				#closed-chat > img{ align-self:center; }
+				/*#closed-chat > img{ align-self:center; }*/
 			#open-chat-container{
 				pointer-events: all;
 				border:3px solid;
@@ -97,42 +87,46 @@
 					width: 100%;
 					font-size:3vh;
 					margin-top:1vh;
+					padding-bottom:1px;
 				}
 				#chat-title > p{ margin:0; color:white; text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black; }
 				#open-chat-container > hr{ width:55%; margin-top:0; }
 				#chat-content-container{
 					width:100%;
-					height:34.5vh;
+					padding:0;
+					height:34vh;
 					overflow:clip;
 					color:black;
 				}
 					#chat-select{
+						float:right;
 						width:100%;
+						margin-right:5px;
 						height:100%;
-						overflow:scroll;
-						display:flex;
-						flex-wrap:wrap;
-						/*display:none;*/
+						overflow:scroll !important;
 					}
 						.team-select{
-							width:29.5%;
-							background-color:rgba(150,150,150,.7);
-							margin:1vh;
-							display:flex;
-							justify-content:center;
-							border-radius:25px;
+							margin-left:5px;
+							width:100% !important;
+							margin:auto;
+							/*width:29.5%;*/
+							/*background-color:rgba(150,150,150,.7);*/
+							/*margin:1vh;*/
+							/*display:flex;*/
+							/*justify-content:center;*/
+							/*border-radius:25px;*/
 							font-family:Cousine;
-							transition: all .2s ease-in-out;
+							/*transition: all .2s ease-in-out;*/
 							cursor:pointer;
 						}
-						.team-select.team-select-enabled { background-color:rgba(239,200,139,.7); }
-						.team-select.team-select-enabled:hover{ transform: scale(1.1); }
+						/*.team-select.team-select-enabled { background-color:rgba(239,200,139,.7); }*/
+						/*.team-select.team-select-enabled:hover{ transform: scale(1.1); }*/
 						.team-select > p {
 							margin:0;
 							align-self:center;
 							font-size:4vh;
 						}
-						#broadcast-button{ min-width:28.5vw; }
+						#broadcast-button{ }
 					#message-content-container{
 						height:102%;
 						width:100%;
@@ -179,8 +173,8 @@
 							width:100%;
 						} /*ERROR: BOTTOM GROUP DIV OVERLAPS WITH BOTTOM HALF OF THIS DIV*/
 							#message-input-box{
-								height:95%;
-								width:76.4%;
+								height:100%;
+								width:79.9%;
 								background-color:rgba(238,229,233,0.7);
 								float:left;
 								margin:0;

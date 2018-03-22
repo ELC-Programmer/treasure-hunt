@@ -39,20 +39,21 @@
 		</div>
 	</div>
 	<div id="chat-container">
-		<div onclick="openChat()" id="closed-chat" style="padding-left:25px; width:13vh;position:relative;">
-			<image src="assets/icons/speech-bubble.png" style="height:7vh;padding-top:5px;padding-bottom:5px;padding-left:5px; "/>
-			<image src="assets/icons/right-arrow.png" style="height:5vh; position:absolute; right:0.3vw; bottom:1.6vh; cursor:pointer;"/>
+		<div onclick="openChat()" id="closed-chat">
+			<image src="assets/icons/speech-bubble.png" style="height:3vh; height:8vh; padding-top:5px;padding-bottom:5px;padding-left:5px;"/>
+			<!-- <i class="fa fa-chevron-right"></i> -->
+
+			<image src="assets/icons/right-arrow.png" style="height:2vh; height:6vh; position:absolute; right:0.3vw; bottom:1.6vh; cursor:pointer;"/>
 		</div>
 		<div id="open-chat-container">
 			<img id="chat-back" onclick="backChat()" src="./assets/icons/left-arrow.png" />
 			<img id="chat-exit" onclick="closeChat()" src="./assets/icons/close-button.png" />
 			<div id="chat-title"><p>Chat</p></div>
-			<hr />
 			<div id="chat-content-container">
-				<div id="chat-select">
-					<div class="team-select team-select-enabled" id="broadcast-button">
+				<div id="chat-select" class="container">
+					<button class="team-select col btn btn-danger btn-block" id="broadcast-button">
 						<p>Broadcast</p>
-					</div>
+					</button>
 				</div>
 				<div id="message-content-container">
 					<div class="messages" chatID="broadcast"></div>
@@ -353,7 +354,7 @@
 	}
 	function backChat(){ /*function that allows user to select team to chat with*/
 		document.getElementById("message-content-container").style.display = "none";
-		document.getElementById("chat-select").style.display = "flex";
+		document.getElementById("chat-select").style.display = "initial";
 		document.getElementById("chat-back").style.display = "none";
 	}
 	function expandText(element){
