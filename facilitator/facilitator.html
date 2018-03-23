@@ -64,6 +64,14 @@
             font-size:3vh;
         }
         .text-size{ font-size:3vh; }
+        .navbar-text {
+            position: absolute;
+            width: 100%;
+            left: 0;
+            text-align: center;
+            margin: auto;
+            padding-top: 10px;
+        }
 
 
         /*#navbar{ height:6vh; }*/
@@ -93,15 +101,12 @@
             </div>
 
             <div id="navbar" class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a style="cursor:default">Treasure Hunt Simulation</a></li>
-                </ul>
+                <h2 style="cursor:default" class="navbar-text">Treasure Hunt Simulation</h2>
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a style="cursor:default;">Logged in as <strong><span id="username"></span></strong></a></li>
+                    <li><a style="cursor:default; font-size:20px;">Logged in as <strong><span id="username"></span></strong></a></li>
                     <!-- <li><a href="multimedia_config.php" target="_blank">Administration Panel</a></li> -->
-                    <li onclick="refresh()"><a style="cursor:pointer;">Refresh</a></li>
-                    <li><a href="../">Logout</a></li>
+                    <li><a href="../" style="font-size:20px;">Logout</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>

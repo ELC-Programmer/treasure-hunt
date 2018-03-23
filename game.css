@@ -47,7 +47,7 @@
 				min-height:1px;
 				cursor:pointer;
 				pointer-events: all;
-				/*width:8vw;*/
+				width:10vw;
 			}
 				/*#closed-chat > img{ align-self:center; }*/
 			#open-chat-container{
@@ -82,7 +82,7 @@
 					transition: all .2s ease-in-out;
 					display:none;
 				}
-				#chat-back:hover{ transform: scale(1.5); }
+				#chat-back:hover{ /*transform: scale(1.5);*/ }
 				#chat-title{
 					width: 100%;
 					font-size:3vh;
@@ -335,7 +335,7 @@
 		border-color: rgba(247,239,153,0.7);
 		transform:translate(-50%,-50%);
 		color:white;
-		background-color: rgba(247,142,105,0.9);
+		background-color: rgba(247,142,105,0.95);
 		display:flex;
 		flex-direction:column;
 		display:none;
@@ -450,8 +450,8 @@
 					#send-offer{font-size:3vh;}
 					#trade-button-container p{ margin-top:0.5vh; margin-bottom:0.5vh; }
 	}
-	#captain-window{ font-size:8vh; }
-		#captain-window-content{ display:flex; flex-direction:row; overflow-y: auto;}
+	#captain-window{   }
+		#captain-window-content{ display:flex; margin-flex-direction:row; overflow-y: auto; }
 			#captain-face{
 				width:48%;
 				margin-right:1%;
@@ -475,7 +475,10 @@
 						border:1px solid black;
 						cursor:pointer;
 						margin-bottom:1vh;
+						border-radius:3px;
+						background-color:#f0ad4e;
 					}
+					.captains-buttons:hover{background-color:#ef9b26;}
 				#captains-message{
 					/*-webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 0 100%, 50% 75%, 0% 75%);
 					clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 75% 75%, 0 100%, 50% 75%, 0% 75%);*/
@@ -483,6 +486,8 @@
 					border-radius:20px;
 					display:none;
 					cursor:pointer;
+					margin-bottom:10px;
+					overflow:scroll;
 				}
 					#captains-message > p{
 						margin:0;

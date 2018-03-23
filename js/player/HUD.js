@@ -362,8 +362,8 @@ HUD.prototype = {
 
 		// Add button for player to trade option list (alphabetically sorted)
 		// <button class="btn btn-info col-sm-4"><p style="font-size:3vh;">Ship A</p></button>
-		p = $("<p style='font-size:3vh;'>").text("Ship "+name);
-		div = $("<button>").addClass("team-select trade-team-item btn btn-info").attr("userID", id).append(p).click(function() {
+		p = $("<p style='font-size:3vh;'>").text(name);
+		div = $("<button>").addClass("team-select trade-team-item btn btn-primary btn-block").attr("userID", id).append(p).click(function() {
 			if ($(this).hasClass("team-select-enabled")) {
 				// TODO: redirect to specific trade page
 			}
@@ -413,6 +413,9 @@ HUD.prototype = {
 			this.SetSeaCaptainEnabled(false);
 
 			this.SetStatusButtonState("dead");
+			$("#death-overlay").css('background-image',"url('assets/icons/skull-crossbones-icon.png')");
+
+			this.showGameOverScreen();
 		}
 	},
 
@@ -543,7 +546,6 @@ HUD.prototype = {
 
 		$(".day-alert-box:last").append(div);
 		$("#day-alert-box-container")[0].scrollTop = $("#day-alert-box-container")[0].scrollHeight; // auto-scroll to bottom
-
 		window.showAlerts();
 		window.sounds.playOnce("notificationBell");
 	},
@@ -567,5 +569,17 @@ HUD.prototype = {
 
 			window.sounds.playOnce("piratesArrgh");
 		}
-	}
+	},
+
+	/**
+	 * A screen for letting the player know they are dead.
+	 * @param none
+	 */
+	 showGameOverScreen: function(){
+			window.sounds.stopAllSounds();
+			$("#death-overlay").show();
+			$("#death-overlay").animate({opacity:1}, 2000);
+			setTimeout(()=>{$('#hud-container, #game-container, canvas').remove();},3000);
+	 }
+
 }

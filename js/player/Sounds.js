@@ -38,7 +38,7 @@ class Sounds{
 								}),
 								"piratesArrgh" : new Howl({src: ['assets/Sounds/pirate-arrgh.mp3']}),
 								"buoyBells" : new Howl({src: ['assets/Sounds/buoy-bells.mp3'], loop: true}),
-								"lightningSound" : new Howl({src: ['assets/Sounds/lightning.mp3']}),
+								"lightningSound" : new Howl({src: ['assets/Sounds/lightning.mp3'], volume:.8}),
 								"stormyAmbience" : new Howl({
 								  src: ['assets/Sounds/storm-ambient-noise.mp3'],
 								  loop: true,
@@ -68,7 +68,6 @@ class Sounds{
 		}
 		if(toVolume != 0) this.soundsDict[soundKey].play();
 		this.soundsDict[soundKey].fade(fromVolume, toVolume, duration);
-		// if(toVolume == 0) this.soundsDict[soundKey].stop();
 	}
 	playOnce(key){
 		if(this.soundsDict[key] == null){
@@ -80,5 +79,11 @@ class Sounds{
 	executeQueue(){
 		if(!this.loadFinished) return; 
 		while(this.queue.length > 0) this.queue.pop()();
+	}
+	stopAllSounds(){
+		for(var i in this.soundsDict){
+			this.fadeInOut(i, .5, 0, 1000);
+		}
+		// this.playingSounds = [];
 	}
 }

@@ -274,30 +274,30 @@
 		</div>
 	</div>
 </div>
-<div class="full-size-window" id="captain-window">
+<div class="full-size-window" id="captain-window" style="min-height:70vh; margin-top:20px;">
 	<div class="full-size-window-top-bar">
-		<p>Crusty Old Sea Captain</p>
+		<h1>Crusty Old Sea Captain</h1>
 		<img onclick="closeCaptainWindow()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content" id="captain-window-content" >
 		<div id="captain-face">
-			<!-- image inserted as background div -->
+			<!-- image inserted as background on div -->
 		</div>
 		<div id="buttons-and-message">
 			<div id="captains-buttons-container">
 				<div id="instructions">
 					<p>What would you like to ask me about?</p>
 				</div>
-				<div class="captains-buttons" id="sea-captain-weather-button">
+				<button class="captains-buttons" id="sea-captain-weather-button">
 					<p>Weather</p>
-				</div>
-				<div class="captains-buttons" id="sea-captain-pirates-button">
+				</button>
+				<button class="captains-buttons" id="sea-captain-pirates-button">
 					<p>Pirates</p>
-				</div>
+				</button>
 			</div>
 			<div onclick="expandText(this)" id="captains-message">
-				<p>SEA CAPTAIN'S MESSAGE HERE</p>
+				<p>Encountered Error.</p>
 			</div>
 		</div>
 	</div>
@@ -306,7 +306,6 @@
 <div id="largeTextDisplay">
 	<img id="chat-exit" onclick="closeExpandedText()" src="./assets/icons/close-button.png" />
 	<p>
-		Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas eu augue imperdiet nisi porttitor ultrices sed sed ipsum.
 	</p>
 
 </div>
@@ -487,4 +486,11 @@
 				tradeWindow.style.left = windowWidthWhenChatIsClosed[1];
 			}
 	}
+	$(document).keyup(function(e) {
+	     if (e.keyCode == 27) { // escape key maps to keycode `27`
+	        // <DO YOUR WORK HERE>
+	        closeOthers();
+	        closeChat();
+	    }
+	});
 </script>

@@ -206,7 +206,10 @@ PlayerController.prototype = {
 					scope.HUD2D.SetStatusButtonState("enabled");
 
 					// Alerts (data.alerts)
-					setTimeout(()=>{scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);}, 10000);
+					if(scope.dayNumber == 0) 
+						setTimeout(()=>{scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);}, 10000);
+					else
+						scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);
 
 					// Pirates (data.pirateAttack)
 					// TODO!
@@ -303,7 +306,7 @@ PlayerController.prototype = {
 		 * Handle End Game
 		 */
 		socket.on("server send endGame", function(data) {
-			console.log("END GAME"); // TODO
+			setTimeout(()=>{scope.HUD2D.showGameOverScreen();}, 4000);
 		});
 	},
 
