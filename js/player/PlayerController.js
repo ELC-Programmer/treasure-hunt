@@ -50,14 +50,28 @@ var PlayerController = function()
 	this.possibleDestinations = []; // array of string map point IDs
 	this.colocalPlayers = []; // array of IDs
 	this.prices = {}; // indices: 'food', 'water', 'gas', 'treasure'
+	this.trades = {}; // [partner ID]["get" or "receive"][resource names] => qtys being considered
 	this.buySellQuantities = { food: 0, water: 0, gas: 0, treasure: 0 }; // qtys being considered
 	this.seaCaptainAccessible = false;
+	this.buySellEnabled = false;
+	this.tradeEnabled = false;
+	this.seaCaptainEnabled = false;
+	
 	this.cash = -1;
 	this.food = -1;
 	this.water = -1;
 	this.gas = -1;
 	this.treasure = -1;
 	this.storage = -1;
+	
+	this.tradeOffers = [];
+	this.cashInEscrow = 0;
+	this.foodInEscrow = 0;
+	this.waterInEscrow = 0;
+	this.gasInEscrow = 0;
+	this.treasureInEscrow = 0;
+	this.storageSpaceInEscrow = 0;
+	
 	this.chatMessages = { "broadcast": [] }; // other user ID (or 'broadcast') => array of message objects (sent and recieved)
 };
 
@@ -76,9 +90,10 @@ PlayerController.prototype = {
 		 */
 		socket.on("server send updateDay", function(data, response)
 		{
-			// Pre-day cycle: status button and selectable map points
+			// Pre-day cycle: status button and selectable map points and close all windows
 			scope.HUD2D.SetStatusButtonState("waiting");
 			scope.Map3D.SetSelectableMapPoints(false);
+			scope.HUD2D.CloseWindows();
 
 			// Ships (data.location, data.quartersToDestination, data.lastLocation, data.colocalPlayers)
 
@@ -142,7 +157,8 @@ PlayerController.prototype = {
 				scope.HUD2D.SetPlayerChatEnabled(id, colocal);
 				scope.HUD2D.SetPlayerTradeEnabled(id, colocal);
 			}
-			scope.HUD2D.SetTradeEnabled(data.colocalPlayers.length > 0);
+			scope.tradeEnabled = data.colocalPlayers.length > 0;
+			scope.HUD2D.SetTradeEnabled(scope.tradeEnabled);
 
 			// Weather (data.weather)
 			scope.HUD2D.SetWeather(data.weather);
@@ -158,8 +174,8 @@ PlayerController.prototype = {
 			scope.HUD2D.SetTreasureValue(scope.prices.treasure);
 			scope.buySellQuantities = {food: 0, water: 0, gas: 0, treasure: 0}; // reset buy/sell window
 
-			let enableBuySell = Object.values(scope.prices).reduce((accumulator, currentValue) => accumulator || (currentValue !== false), false);
-			scope.HUD2D.SetBuySellEnabled(enableBuySell);
+			scope.buySellEnabled = Object.values(scope.prices).reduce((accumulator, currentValue) => accumulator || (currentValue !== false), false);
+			scope.HUD2D.SetBuySellEnabled(scope.buySellEnabled);
 
 			// Day number (data.day, data.weather)
 			if (scope.dayNumber !== false) { // this isn't the first day
@@ -176,7 +192,17 @@ PlayerController.prototype = {
 				onNewDay();
 			}
 			scope.HUD2D.SetDayNumber(scope.dayNumber);
-
+			
+			// Trading:
+			scope.trades = {};
+			scope.cashInEscrow = 0;
+			scope.foodInEscrow = 0;
+			scope.waterInEscrow = 0;
+			scope.gasInEscrow = 0;
+			scope.treasureInEscrow = 0;
+			scope.storageSpaceInEscrow = 0;
+			scope.UpdateResources();
+			
 			// things to be done when the new day arrives
 			function onNewDay()
 			{
@@ -201,7 +227,10 @@ PlayerController.prototype = {
 
 					scope.seaCaptainAccessible = data.seaCaptainAccessible;
 					scope.HUD2D.SetSeaCaptainMessage(false); // reset the sea captain window
-					scope.HUD2D.SetSeaCaptainEnabled(scope.hasAction && scope.seaCaptainAccessible);
+					scope.seaCaptainEnabled = scope.hasAction && scope.seaCaptainAccessible;
+					scope.HUD2D.SetSeaCaptainEnabled(scope.seaCaptainEnabled);
+					
+					scope.HUD2D.SetAlertsWindowEnabled(true);
 
 					scope.HUD2D.SetStatusButtonState("enabled");
 
@@ -264,17 +293,79 @@ PlayerController.prototype = {
 			scope.gas = data.gas;
 			scope.treasure = data.treasure;
 			scope.storage = data.storage;
-
-			scope.HUD2D.SetCash(scope.cash);
-			scope.HUD2D.SetFood(scope.food, scope.dayNumber <= 0);
-			scope.HUD2D.SetWater(scope.water, scope.dayNumber <= 0);
-			scope.HUD2D.SetGas(scope.gas, scope.dayNumber <= 0);
-			scope.HUD2D.SetTreasure(scope.treasure);
-			scope.HUD2D.SetStorage(scope.GetUsedStorage(), scope.storage);
-
-			scope.UpdateBuySellQuantity();
+			
+			scope.UpdateResources();
 		});
 
+		/**
+		 * Handle Trade Offer Notification
+		 */
+		socket.on("server send notifyTradeOffer", function(data)
+		{
+			let partnerID = data.partnerID;
+			
+			data.trade.status = "received";
+			scope.trades[partnerID] = data.trade;
+			
+			scope.tradeOffers.push(partnerID);
+			
+			if (scope.tradeOffers.length == 1) // no other offer(s) being displayed
+			{
+				scope.HUD2D.ShowTradeForPartner(partnerID);
+			
+				// trap the player on this screen until they make a decision
+				scope.HUD2D.SetAlertsWindowEnabled(false);
+				scope.HUD2D.SetBuySellEnabled(false);
+				scope.HUD2D.SetSeaCaptainEnabled(false);
+			}
+		});
+		
+		/**
+		 * Handle Trade Acceptance Notification
+		 */
+		socket.on("server send notifyTradeAccept", function(data)
+		{
+			let partnerID = data.partnerID;
+			
+			notifyTradeAcceptOrDecline(partnerID);
+			
+			// TODO: Notify!
+		});
+		
+		/**
+		 * Handle Trade Declination Notification
+		 */
+		socket.on("server send notifyTradeDecline", function(data)
+		{
+			let partnerID = data.partnerID;
+			
+			notifyTradeAcceptOrDecline(partnerID);
+
+			// TODO: Notify!
+		});
+		
+		function notifyTradeAcceptOrDecline(partnerID)
+		{
+			let trade = scope.trades[partnerID];
+			
+			// Update escrow values
+			scope.cashInEscrow -= trade.give.cash;
+			scope.foodInEscrow -= trade.give.food;
+			scope.waterInEscrow -= trade.give.water;
+			scope.gasInEscrow -= trade.give.gas;
+			scope.treasureInEscrow -= trade.give.treasure;
+			let maxUsedStorage = trade.receive.food + trade.receive.water + trade.receive.gas + trade.receive.treasure - trade.give.food - trade.give.water - trade.give.gas - trade.receive.treasure;
+			if (maxUsedStorage > 0) scope.storageSpaceInEscrow -= maxUsedStorage;
+			
+			//
+			scope.UpdateResources();
+			scope.HUD2D.SetTradeQuantitiesAndStatus(partnerID, undefined, true);
+			
+			// Update trade
+			scope.ResetTrade(partnerID);
+			scope.UpdateTradeQuantity(partnerID);
+		}
+		
 		/**
 		 * Handle Update Chat
 		 */
@@ -311,6 +402,23 @@ PlayerController.prototype = {
 	},
 
 	/**
+	 * Call this after changing resource values
+	 */
+	UpdateResources: function()
+	{
+		let scope = this;
+		
+		scope.HUD2D.SetCash(scope.cash, scope.cashInEscrow);
+		scope.HUD2D.SetFood(scope.food, scope.foodInEscrow, scope.dayNumber <= 0);
+		scope.HUD2D.SetWater(scope.water, scope.waterInEscrow, scope.dayNumber <= 0);
+		scope.HUD2D.SetGas(scope.gas, scope.gasInEscrow, scope.dayNumber <= 0);
+		scope.HUD2D.SetTreasure(scope.treasure, scope.treasureInEscrow);
+		scope.HUD2D.SetStorage(scope.GetUsedStorage(), scope.storageSpaceInEscrow, scope.storage);
+
+		scope.UpdateBuySellQuantity();
+	},
+	
+	/**
 	 * Get amount of currently used storage. (i.e. food + water + gas + treasure)
 	 * @returns Used storage
 	 */
@@ -327,7 +435,6 @@ PlayerController.prototype = {
 	GetChatMessages: function(otherUserID)
 	{
 		let messages = this.chatMessages[otherUserID] || [];
-		// TODO: sort messages by timestamp?
 		return messages;
 	},
 
@@ -354,7 +461,10 @@ PlayerController.prototype = {
 		});
 
 		// if destination chosen, no more talking to sea captain
-		if (this.Map3D.selectedMapPoint) this.HUD2D.SetSeaCaptainEnabled(false);
+		if (this.Map3D.selectedMapPoint) {
+			this.seaCaptainEnabled = false;
+			this.HUD2D.SetSeaCaptainEnabled(false);
+		}
 	},
 
 	/**
@@ -403,8 +513,8 @@ PlayerController.prototype = {
 				if (prices[resource] === false && qtys[resource] != 0) return false; // can't buy something that's not for sale!
 			}
 
-			let newCash = scope.cash - prices.food*qtys.food - prices.water*qtys.water - prices.gas*qtys.gas + prices.treasure*qtys.treasure;
-			let newUsedStorage = scope.GetUsedStorage() + qtys.food + qtys.water + qtys.gas - qtys.treasure;
+			let newCash = scope.cash - scope.cashInEscrow - prices.food*qtys.food - prices.water*qtys.water - prices.gas*qtys.gas + prices.treasure*qtys.treasure;
+			let newUsedStorage = scope.GetUsedStorage() + scope.storageSpaceInEscrow + qtys.food + qtys.water + qtys.gas - qtys.treasure;
 
 			return (newCash >= 0 && newUsedStorage <= scope.storage);
 		}
@@ -423,7 +533,158 @@ PlayerController.prototype = {
 		// Done updating values, update the HUD
 		this.HUD2D.SetBuySellQuantities(this.buySellQuantities);
 	},
+	
+	/**
+	 * Update the trade quantities under consideration for a particular trading partner.
+	 * @param partnerID Trade partner's user ID.
+	 * @param item One of "cash", "food", "water", "gas", or "treasure".
+	 * @param side One of "give" or "receive".
+	 * @param changeBy The integer amount which to add to the currently considered quantity.
+	 */
+	UpdateTradeQuantity: function (partnerID, item, side, changeBy)
+	{
+		let scope = this;
+		
+		if (this.trades[partnerID] === undefined)
+		{
+			this.ResetTrade(partnerID);
+		}
+		
+		function allowed()
+		{
+			let trade = scope.trades[partnerID];
 
+			let resources = ["cash", "food", "water", "gas", "treasure"];
+			for (let i in resources)
+			{
+				let resource = resources[i];
+				if (trade.give[resource] < 0 || trade.receive[resource] < 0) return false; // no negative quantities
+				if (trade.give[resource] > scope[resource] - scope[resource + "InEscrow"]) return false; // can't offer more than you have!
+			}
+
+			let newUsedStorage = scope.GetUsedStorage() + scope.storageSpaceInEscrow;
+			newUsedStorage -= trade.give.food + trade.give.water + trade.give.gas + trade.give.treasure;
+			newUsedStorage += trade.receive.food + trade.receive.water + trade.receive.gas + trade.receive.treasure;
+
+			return (newUsedStorage <= scope.storage);
+		}
+	
+		let status = this.trades[partnerID].status
+		if (status == "planning")
+		{
+			if (item !== undefined)
+			{
+				this.trades[partnerID][side][item] += changeBy;
+
+				if (!allowed()) // disallowed update -- revert it
+					this.trades[partnerID][side][item] -= changeBy;
+			}
+			
+			if (!allowed()) // it's no good, just reset
+				this.ResetTrade(partnerID);
+		}
+		
+		if (status == "received")
+		{ // check if the offer is accept-able
+			this.HUD2D.SetTradeAcceptEnabled(allowed());
+		}
+	
+		// Done updating values, update the HUD
+		this.HUD2D.SetTradeQuantitiesAndStatus(partnerID, this.trades[partnerID]);
+	},
+	
+	/**
+	 * Reset a trade with a particular partner.
+	 * @param partnerID The user ID of the trade partner.
+	 */
+	ResetTrade: function(partnerID)
+	{
+		this.trades[partnerID] = {
+			give: {
+				cash: 0, food: 0, water: 0, gas: 0, treasure: 0
+			},
+			receive: {
+				cash: 0, food: 0, water: 0, gas: 0, treasure: 0
+			},
+			status: "planning" // also: "sent", "received"
+		};
+	},
+
+	/**
+	 * Send the active trade offer.
+	 * @param partnerID The user ID of the trade partner to whom to send a trade offer.
+	 */
+	SendTradeOffer: function(partnerID)
+	{
+		this.UpdateTradeQuantity(partnerID);
+		let trade = this.trades[partnerID];
+		
+		// Update Escrow values
+		this.cashInEscrow += trade.give.cash;
+		this.foodInEscrow += trade.give.food;
+		this.waterInEscrow += trade.give.water;
+		this.gasInEscrow += trade.give.gas;
+		this.treasureInEscrow += trade.give.treasure;
+		let maxUsedStorage = trade.receive.food + trade.receive.water + trade.receive.gas + trade.receive.treasure - trade.give.food - trade.give.water - trade.give.gas - trade.receive.treasure;
+		if (maxUsedStorage > 0) this.storageSpaceInEscrow += maxUsedStorage;
+				
+		// Emit
+		this.socket.emit("player send offerTrade", { partnerID: partnerID, trade: trade });
+		
+		// Update trade status
+		trade.status = "sent";
+				
+		this.HUD2D.SetTradeQuantitiesAndStatus(partnerID, trade);
+		this.UpdateResources();
+	},
+	
+	/**
+	 * Accept a received trade offer.
+	 * @param partnerID The user ID of the trade partner whose offer to accept.
+	 */
+	AcceptTradeOffer: function(partnerID)
+	{
+		this._AcceptOrDeclineTradeOffer(partnerID);
+		
+		this.socket.emit("player send acceptTrade", { partnerID: partnerID });
+	},
+	
+	/**
+	 * Decline a received trade offer.
+	 * @param partnerID The user ID of the trade partner whose offer to decline.
+	 */
+	DeclineTradeOffer: function(partnerID)
+	{
+		this._AcceptOrDeclineTradeOffer(partnerID);
+		
+		this.socket.emit("player send declineTrade", { partnerID: partnerID });
+	},
+	
+	/**
+	 * Perform actions common to accepting or declining logic.
+	 * @param partnerID The user ID of the trade partner whose offer is being accepted or declined.
+	 */
+	_AcceptOrDeclineTradeOffer: function(partnerID)
+	{
+		//
+		this.ResetTrade(partnerID);
+		this.HUD2D.SetTradeQuantitiesAndStatus(partnerID, this.trades[partnerID], true);
+		
+		this.tradeOffers.shift();
+		if (this.tradeOffers.length > 0) // there is another queued trade offer
+		{
+			setTimeout(function() {
+				this.HUD2D.ShowTradeForPartner(this.tradeOffers[0]); // display the next offer from the queue
+			}, 500);
+		}
+		else
+		{ // unlock HUD
+			this.HUD2D.SetAlertsWindowEnabled(true);
+			this.HUD2D.SetBuySellEnabled(this.buySellEnabled);
+			this.HUD2D.SetSeaCaptainEnabled(this.seaCaptainEnabled);
+		}
+	},
+	
 	/**
 	 * Submit buy/sell deal.
 	 */
