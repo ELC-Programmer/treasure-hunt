@@ -103,7 +103,8 @@
 						width:100%;
 						margin-right:5px;
 						height:100%;
-						overflow:scroll !important;
+						overflow-x: hidden;
+						overflow-y:scroll !important;
 					}
 						.team-select{
 							margin-left:5px;
@@ -128,7 +129,8 @@
 						.messages{
 							height:80%;
 							width:100%;
-							overflow:scroll;
+							overflow-x: hidden;
+							overflow-y:scroll;
 							/*display:flex;*/
 							flex-wrap:wrap;
 						}
