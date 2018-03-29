@@ -88,27 +88,27 @@
 		<div class="sub-items" style="left:0;">
 			<div class="bottom-box-container">
 				<div id="team">
-					<p id="team-text" class="bottom-text">Ship A</p>
+					<p id="team-text" class="bottom-text resize">Ship A</p>
 				</div>
 			</div>
 			<div id="day">
-				<p id="day-text" class="bottom-text">Day <span id="day-number-text">7</span></p>
+				<p id="day-text" class="bottom-text resize">Day <span id="day-number-text">7</span></p>
 			</div>
 		</div>
 		<div id="status-container">
 			<div id="status-circle" class="bottom-text">
-				<p id="status-text">Not Ready</p>
+				<div><p id="status-text" class="bottom-text resize">Not Ready</p></div>
 			</div>
 		</div>
 		<div class="sub-items" style="right:0;">
 			<div id="weather">
-				<p id="weather-text" class="bottom-text">Sunny</p>
+				<p id="weather-text" class="bottom-text resize">Sunny</p>
 				<image class="weather-image" id="sunny-image" src="assets/icons/sunny.png" />
 				<image class="weather-image" id="rain-image" src="assets/icons/rain.png" />
 			</div>
 			<div class="bottom-box-container">
 				<div id="location">
-					<p id="location-text" class="bottom-text">Cardinal Island</p>
+					<p id="location-text" class="bottom-text resize">Cardinal Island</p>
 				</div>
 			</div>
 		</div>
@@ -120,7 +120,7 @@
 </div>
 
 <div id="alerts" onclick="showAlerts()">
-	<p id="alerts-text" class="bottom-text">Alerts</p>
+	<p id="alerts-text" class="bottom-text resize">Alerts</p>
 	<div id="alerts-dot" hidden="true"> </div>
 	<div id="alerts-icon"></div>
 </div>
@@ -514,4 +514,34 @@
 	        closeChat();
 	    }
 	});
+	var autoSizeText;
+	autoSizeText = function(){
+	  var el, elements, _i, _len, _results;
+	  elements = $('.resize');
+	  if (elements.length < 0) {
+	    return;
+	  }
+	  _results = [];
+	  for (_i = 0, _len = elements.length; _i < _len; _i++) {
+	    el = elements[_i];
+	    _results.push((function(el) {
+	      var resizeText, _results1;
+	      resizeText = function() {
+	        var elNewFontSize;
+	        elNewFontSize = (parseInt($(el).css('font-size').slice(0, -2)) - 1) + 'px';
+	        return $(el).css('font-size', elNewFontSize);
+	      };
+	      _results1 = [];
+	      while (el.scrollHeight > el.offsetHeight) {
+	        _results1.push(resizeText());
+	      }
+	      return _results1;
+	    })(el));
+	  }
+	  return _results;
+	};
+	// autoSizeText();
+	autoSizeText();
+    $(window).resize(()=>{$('.resize').css('font-size','8vh');autoSizeText();});
+
 </script>

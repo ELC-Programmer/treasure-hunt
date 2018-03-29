@@ -144,7 +144,7 @@ HUD.prototype = {
 		$("#day-number-text").text(dayNumber);
 
 		let percent = Math.max((dayNumber / 14) * 100, 0);
-		$("#loading-bar").css("width", percent + "%")
+		$("#loading-bar").animate({width:percent + "%"},1000);
 	},
 
 	/**
