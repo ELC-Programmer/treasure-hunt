@@ -32,6 +32,10 @@ HUD.prototype = {
 		     $('.full-size-window-content').slimScroll({height: '60vh'});
 			});
 
+			$(function(){
+		     //$('#chat-content-container').slimScroll({height: '41vh'});
+			});
+
 			function sendChatMessage()
 			{
 				let chatID = $(".messages:visible").attr("chatID");
