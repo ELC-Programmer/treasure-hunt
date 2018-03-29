@@ -83,6 +83,35 @@ HUD.prototype = {
 				closeBuySell();
 			});
 
+			// Trade Window:
+			$("#trade-in .trade-cash .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "give", -1); });
+			$("#trade-in .trade-food .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "food", "give", -1); });
+			$("#trade-in .trade-water .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "water", "give", -1); });
+			$("#trade-in .trade-gas .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "gas", "give", -1); });
+			$("#trade-in .trade-treasure .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "treasure", "give", -1); });
+			
+			$("#trade-in .trade-cash .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "give", 1); });
+			$("#trade-in .trade-food .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "food", "give", 1); });
+			$("#trade-in .trade-water .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "water", "give", 1); });
+			$("#trade-in .trade-gas .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "gas", "give", 1); });
+			$("#trade-in .trade-treasure .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "treasure", "give", 1); });
+			
+			$("#to-receive .trade-cash .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "receive", -1); });
+			$("#to-receive .trade-food .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "food", "receive", -1); });
+			$("#to-receive .trade-water .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "water", "receive", -1); });
+			$("#to-receive .trade-gas .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "gas", "receive", -1); });
+			$("#to-receive .trade-treasure .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "treasure", "receive", -1); });
+			
+			$("#to-receive .trade-cash .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "receive", 1); });
+			$("#to-receive .trade-food .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "food", "receive", 1); });
+			$("#to-receive .trade-water .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "water", "receive", 1); });
+			$("#to-receive .trade-gas .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "gas", "receive", 1); });
+			$("#to-receive .trade-treasure .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "treasure", "receive", 1); });
+			
+			$("#send-offer").click(function() { scope.controller.SendTradeOffer(scope.openTradePartnerID); });
+			$("#trade-accept-button").click(function() { scope.controller.AcceptTradeOffer(scope.openTradePartnerID); });
+			$("#trade-decline-button").click(function() { scope.controller.DeclineTradeOffer(scope.openTradePartnerID); });
+			
 			// Sea Captain Window:
 			$("#sea-captain-weather-button").click(function() {
 				scope.controller.ConsultSeaCaptain("weather");
@@ -92,7 +121,7 @@ HUD.prototype = {
 			});
 
 			// Done: callback
-			callback();
+			if (callback) callback();
 		}, "text");
 	},
 
@@ -152,20 +181,24 @@ HUD.prototype = {
 	/**
 	 * Set amount of cash, as displayed in the sidebar.
 	 * @param cash
+	 * @param cashInEscrow
 	 */
-	SetCash: function(cash)
+	SetCash: function(cash, cashInEscrow)
 	{
-		$("#cash-text").text(cash);
+		let suffix = (cashInEscrow ? " (-" + cashInEscrow + ")" : "");
+		$("#cash-text").text(cash + suffix);
 	},
 
 	/**
 	 * Set amount of food, as displayed in the sidebar.
 	 * @param food
+	 * @param foodInEscrow
 	 * @param noWarning If true, do not warn of 0 food.
 	 */
-	SetFood: function(food, noWarning)
+	SetFood: function(food, foodInEscrow, noWarning)
 	{
-		$("#food-text").text(food);
+		let suffix = (foodInEscrow ? " (-" + foodInEscrow + ")" : "");
+		$("#food-text").text(food + suffix);
 
 		$("#food-alert").toggle(!noWarning && food == 0);
 	},
@@ -173,11 +206,13 @@ HUD.prototype = {
 	/**
 	 * Set amount of water, as displayed in the sidebar.
 	 * @param water
+	 * @param waterInEscrow
 	 * @param noWarning If true, do not warn of 0 water.
 	 */
-	SetWater: function(water, noWarning)
+	SetWater: function(water, waterInEscrow, noWarning)
 	{
-		$("#water-text").text(water);
+		let suffix = (waterInEscrow ? " (-" + waterInEscrow + ")" : "");
+		$("#water-text").text(water + suffix);
 
 		$("#water-alert").toggle(!noWarning && water == 0);
 	},
@@ -185,10 +220,13 @@ HUD.prototype = {
 	/**
 	 * Set amount of gas, as displayed in the sidebar.
 	 * @param gas
+	 * @param gasInEscrow
+	 * @param noWarning If true, do not warn of 0 gas.
 	 */
-	SetGas: function(gas, noWarning)
+	SetGas: function(gas, gasInEscrow, noWarning)
 	{
-		$("#gas-text").text(gas);
+		let suffix = (gasInEscrow ? " (-" + gasInEscrow + ")" : "");
+		$("#gas-text").text(gas + suffix);
 
 		$("#gas-alert").toggle(!noWarning && gas == 0);
 	},
@@ -196,20 +234,24 @@ HUD.prototype = {
 	/**
 	 * Set amount of treasure, as displayed in the sidebar.
 	 * @param treasure
+	 * @param treasureInEscrow
 	 */
-	SetTreasure: function(treasure)
+	SetTreasure: function(treasure, treasureInEscrow)
 	{
-		$("#treasure-text").text(treasure);
+		let suffix = (treasureInEscrow ? " (-" + treasureInEscrow + ")" : "");
+		$("#treasure-text").text(treasure + suffix);
 	},
 
 	/**
 	 * Set amount of storage in use and in total, as displayed in the sidebar.
 	 * @param usedStorage
+	 * @param storageSpaceInEscrow
 	 * @param totalStorage
 	 */
-	SetStorage: function(usedStorage, totalStorage)
+	SetStorage: function(usedStorage, storageSpaceInEscrow, totalStorage)
 	{
-		$("#capacity-text").text(usedStorage + "/" + totalStorage);
+		let suffix = (storageSpaceInEscrow ? " (+" + storageSpaceInEscrow + ")" : "");
+		$("#capacity-text").text(usedStorage + "/" + totalStorage + suffix);
 	},
 
 	/**
@@ -284,6 +326,20 @@ HUD.prototype = {
 		}
 	},
 
+	/**
+	 * Enable or disable the alerts window (and associated button).
+	 * @param enabled A boolean indicating whether to enable the alerts window.
+	 */
+	SetAlertsWindowEnabled: function(enabled)
+	{
+		window.alertsEnabled = enabled;
+
+		if (!enabled)
+		{
+			window.closeAlerts();
+		}
+	},
+	
 	/**
 	 * Enable or disable the buy/sell window (and associated button).
 	 * @param enabled A boolean indicating whether to enable the buy/sell window.
@@ -365,7 +421,7 @@ HUD.prototype = {
 		p = $("<p style='font-size:3vh;'>").text(name);
 		div = $("<button>").addClass("team-select trade-team-item btn btn-primary btn-block").attr("userID", id).append(p).click(function() {
 			if ($(this).hasClass("team-select-enabled")) {
-				// TODO: redirect to specific trade page
+				scope.ShowTradeForPartner(id);
 			}
 		});
 		nextSibling = $("#trade-team-select-container div").filter(function() {
@@ -396,6 +452,102 @@ HUD.prototype = {
 			$(".messages[chatID=" + chatID + "]").show(); // show the selected message group
 
 			$("#message-content-container").show(); // show the chat messages screen
+		}
+	},
+	
+	/**
+	 * Show the trade window for a particular trade partner. Called after the user selects a trade partner.
+	 * @param userID The user ID of the selected trade partner.
+	 */
+	ShowTradeForPartner: function(userID)
+	{
+		if (this.controller.colocalPlayers.includes(userID)) // valid trade partner (colocal)
+		{
+			this.openTradePartnerID = userID;
+			
+			// update the trade offer view
+			this.controller.UpdateTradeQuantity(userID);
+			
+			// hide the trade partner select view
+			$("#trade-team-select-container").hide();
+			
+			// show the trade offer view
+			$("#trade-items-select").show();
+			openTradeWindow(); // in case it's closed
+		}
+	},
+	
+	/**
+	 * Enable or disable the trade accept button.
+	 * @param enabled
+	 */
+	SetTradeAcceptEnabled: function(enabled)
+	{
+		$("#trade-accept-button").prop("disabled", !enabled);
+	},
+	
+	/**
+	 * Set the quantities ands status of a trade.
+	 * @param partnerID The user ID of the partner involved in the trade.
+	 * @param trade The trade object, with indicies "give", "receive", ...
+	 * @param close If true, close the trade window.
+	 */
+	SetTradeQuantitiesAndStatus: function(partnerID, trade, close)
+	{	
+		if (partnerID == this.openTradePartnerID)
+		{
+			if (close)
+			{
+				window.closeTradeWindow();
+			}
+			else
+			{			
+				$("#trade-in .trade-cash .how-many-buying p").text(trade.give.cash);
+				$("#trade-in .trade-food .how-many-buying p").text(trade.give.food);
+				$("#trade-in .trade-water .how-many-buying p").text(trade.give.water);
+				$("#trade-in .trade-gas .how-many-buying p").text(trade.give.gas);
+				$("#trade-in .trade-treasure .how-many-buying p").text(trade.give.treasure);
+				
+				$("#to-receive .trade-cash .how-many-buying p").text(trade.receive.cash);
+				$("#to-receive .trade-food .how-many-buying p").text(trade.receive.food);
+				$("#to-receive .trade-water .how-many-buying p").text(trade.receive.water);
+				$("#to-receive .trade-gas .how-many-buying p").text(trade.receive.gas);
+				$("#to-receive .trade-treasure .how-many-buying p").text(trade.receive.treasure);
+				
+				if (trade.status == "planning")
+				{
+					$("#trade-item-select-title").text("Trade offer for " + controller.players[partnerID]);
+					
+					$("#backTradeButton").show();
+					$("#tradeCloseButton").show();
+					
+					$("#send-offer").show();
+					$("#trade-waiting-button").hide();
+					$("#trade-received-buttons").hide();
+				}
+				else if (trade.status == "sent")
+				{
+					$("#trade-item-select-title").text("Trade offer sent to " + controller.players[partnerID]);
+					
+					$("#backTradeButton").show();
+					$("#tradeCloseButton").show();
+					
+					$("#send-offer").hide();
+					$("#trade-waiting-button").show();
+					$("#trade-received-buttons").hide();
+				}
+				else if (trade.status == "received")
+				{
+					$("#trade-item-select-title").text("Trade offer from " + controller.players[partnerID]);
+					
+					$("#backTradeButton").hide(); // no escape! you must make a decision about the offer!
+					$("#tradeCloseButton").hide();
+					
+					$("#send-offer").hide();
+					$("#trade-waiting-button").hide();
+					$("#trade-received-buttons").show();
+				}
+			}
 		}
 	},
 
@@ -441,9 +593,9 @@ HUD.prototype = {
 	SetPlayerTradeEnabled: function(id, enabled)
 	{
 		$("#trade-team-select-container .team-select[userID=" + id + "]").toggleClass("team-select-enabled", enabled);
-		if (!enabled)
-		{
-			// TODO: kick out of trade offer window if it is currently open
+		if (!enabled && id == this.openTradePartnerID)
+		{ // kick out of the user's trade window if it is currently open
+			backTrade();
 		}
 	},
 
@@ -548,6 +700,14 @@ HUD.prototype = {
 		$("#day-alert-box-container")[0].scrollTop = $("#day-alert-box-container")[0].scrollHeight; // auto-scroll to bottom
 		window.showAlerts();
 		window.sounds.playOnce("notificationBell");
+	},
+	
+	/**
+	 * Close all windows (not including chat).
+	 */
+	CloseWindows: function()
+	{
+		window.closeOthers();
 	},
 
 	/**
