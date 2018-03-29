@@ -22,9 +22,9 @@
 			position:absolute;
 			pointer-events: none;
 		}
-			#status-indicators-group > div{ margin-top:1.5vh; }
+			#status-indicators-group > div{  }
 			.sigroups{ display:flex; flex-direction:row; margin-left:5px; }
-			.status-indicator-image{ height:5vh; }
+			.status-indicator-image{ margin-top: 7px; height:4vh; }
 			.status-indicators{
 				font-size:4vh;
 				color:white;
@@ -55,7 +55,7 @@
 				border:3px solid;
 				border-color: rgba(247,239,153,0.9);
 				background-color:rgba(247,142,105,0.7);
-				height:41vh;
+				height:48vh;
 				width:30vw;
 				margin-left:-5px;
 				text-align:center;
@@ -94,7 +94,7 @@
 				#chat-content-container{
 					width:100%;
 					padding:0;
-					height:34vh;
+					height:41vh;
 					overflow:clip;
 					color:black;
 				}
@@ -103,7 +103,8 @@
 						width:100%;
 						margin-right:5px;
 						height:100%;
-						overflow:scroll !important;
+						overflow-x: hidden;
+						overflow-y:scroll !important;
 					}
 						.team-select{
 							margin-left:5px;
@@ -128,7 +129,8 @@
 						.messages{
 							height:80%;
 							width:100%;
-							overflow:scroll;
+							overflow-x: hidden;
+							overflow-y:scroll;
 							/*display:flex;*/
 							flex-wrap:wrap;
 						}

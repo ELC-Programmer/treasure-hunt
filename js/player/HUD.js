@@ -29,6 +29,10 @@ HUD.prototype = {
 		     // $('.full-size-window-content').slimScroll({height: '60vh'});
 			});
 
+			$(function(){
+		     //$('#chat-content-container').slimScroll({height: '41vh'});
+			});
+
 			function sendChatMessage()
 			{
 				let chatID = $(".messages:visible").attr("chatID");
@@ -552,19 +556,22 @@ HUD.prototype = {
 	 * Enable or disable the death overlay, etc.
 	 * @param dead A boolean indicating whether the player is dead.
 	 */
-	SetDead: function(dead)
+	SetDead: function(dead, dayNumber)
 	{
+		//console.log("day: " + dayNumber);
 		// TODO: activate some kind of death overlay that deactivates the 3DMap and displays a skull & crossbones.
-		if (dead)
+		if (dead || dayNumber == 14)
 		{
 			this.SetBuySellEnabled(false);
 			this.SetTradeEnabled(false);
 			this.SetSeaCaptainEnabled(false);
 
-			this.SetStatusButtonState("dead");
-			$("#death-overlay").css('background-image',"url('assets/icons/skull-crossbones-icon.png')");
+			if(dead) {
+				this.SetStatusButtonState("dead");
+				$("#death-overlay").css('background-image',"url('assets/icons/skull-crossbones-icon.png')");
+			}
 
-			this.showGameOverScreen();
+			setTimeout(()=>{this.showGameOverScreen();},3000);
 		}
 	},
 
