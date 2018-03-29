@@ -24,12 +24,9 @@ HUD.prototype = {
 				scope.ShowChatMessages("broadcast");
 			});
 
-			$(function(){
-		    // $('.messages').slimScroll();
-			});
 
 			$(function(){
-		     $('.full-size-window-content').slimScroll({height: '60vh'});
+		     // $('.full-size-window-content').slimScroll({height: '60vh'});
 			});
 
 			function sendChatMessage()

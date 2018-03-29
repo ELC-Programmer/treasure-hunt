@@ -39,9 +39,11 @@
 		</div>
 	</div>
 	<div id="chat-container">
-		<div onclick="openChat()" id="closed-chat" style="text-align:right;">
-				<image src="assets/icons/speech-bubble.png" style="margin-left:5px; height:8vh; display:inline-block;"/>
-				<image src="assets/icons/right-arrow.png" style="height:8vh; display:inline-block; margin-right:10px; cursor:pointer;"/>
+		<div onclick="openChat()" id="closed-chat" class="container-fluid">
+				<div id="chat-speech-bubble" style="background-image:url('assets/icons/chat-arrow-combo.png')"></div>
+				<!-- <div class="col col-sm-4" style="background-image:url('assets/icons/right-arrow.png')"></div> -->
+				<!-- <image src="assets/icons/speech-bubble.png" id="chat-speech-bubble" style="margin-left:5px; height:8vh; display:inline-block;"/>
+				<image src="assets/icons/right-arrow.png" style="height:8vh; display:inline-block; margin-right:10px; cursor:pointer;"/> -->
 		</div>
 		<div id="open-chat-container">
 			<img id="chat-back" onclick="backChat()" src="./assets/icons/left-arrow.png" />
@@ -71,13 +73,13 @@
 
 <div id="right-side-button-group">
 	<div id="buy-sell" onclick="openBuySell()" class="right-button">
-		<img class="right-image" src="./assets/icons/cart.png">
+		<div class="right-image" style="background-image:url('./assets/icons/cart.png')"></div>
 	</div>
 	<div id="trade" onclick="openTradeWindow()" class="right-button">
-		<img class="right-image" src="./assets/icons/handshake.png">
+		<div class="right-image" style="background-image:url('./assets/icons/handshake.png')"></div>
 	</div>
 	<div id="sea-captain" onclick="openCaptainWindow()" class="right-button">
-		<img class="right-image" src="./assets/icons/sea-captain.png">
+		<div class="right-image" style="background-image:url('./assets/icons/sea-captain.png')"></div>
 	</div>
 </div>
 
@@ -119,7 +121,8 @@
 
 <div id="alerts" onclick="showAlerts()">
 	<p id="alerts-text" class="bottom-text">Alerts</p>
-	<div id="alerts-dot"> </div>
+	<div id="alerts-dot" hidden="true"> </div>
+	<div id="alerts-icon"></div>
 </div>
 
 <div class="full-size-window" id="alerts-screen">
@@ -507,7 +510,6 @@
 	}
 	$(document).keyup(function(e) {
 	     if (e.keyCode == 27) { // escape key maps to keycode `27`
-	        // <DO YOUR WORK HERE>
 	        closeOthers();
 	        closeChat();
 	    }
