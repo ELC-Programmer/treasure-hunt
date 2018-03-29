@@ -12,12 +12,20 @@
 
 	<style type="text/css">
 		body{
-			background:url('assets/img/infinity-pool.jpg'); /*url('assets/img/ttrojan.jpg');*/
-			background-repeat:no-repeat;
-			background-size:cover;
 			position:relative;
 			width:100vw;
 			overflow:hidden;
+		}
+		#background-image{
+			display:absolute;
+			top:0;
+			left:0;
+			height:100vh;
+			width:100vw;
+			background:url('assets/img/infinity-pool.jpg'); /*url('assets/img/ttrojan.jpg');*/
+			background-repeat:no-repeat;
+			background-size:cover;
+			z-index:-1;
 		}
 		.container{
 			width:50vw;
@@ -68,7 +76,7 @@
 			overflow:scroll;
 			z-index:5;
 		}
-		.navbar{ z-index:12; }
+		.navbar{ z-index:12; position:absolute; top:0; left:0; width:100vw;}
 		.navbar-text {
 		    position: absolute;
 		    width: 100%;
@@ -89,13 +97,14 @@
 </head>
 
 <body>
-	<div id="cover">
-	</div>
+	<div id="cover"></div>
+	<div id="background-image"></div>
+
 	<nav class="navbar navbar-inverse">
 	  <div class="container-fluid">
 	    <div class="navbar-header">
             <a style="cursor:default" class="navbar-brand">
-                <img alt="Brand" src="facilitator/assets/ELC_Logo2.png" height="24px" width="300px">
+                <img alt="Brand" id="brand" src="facilitator/assets/ELC_Logo2.png" height="24px">
             </a>
             <h2 class="navbar-text" float="center">
             	Treasure Hunt Simulation
@@ -117,11 +126,15 @@
 				<label class="outline" for="password">Password</label>
 				<input type="password" id="password" class="form-control form-control-lg lg-text" placeholder="Password"/>
 			</div>
-		    <div class="form-group col-md-6" style="padding-left:0;">
+		    <div class="form-group col-md-6" style="padding-right:0; padding-left:0">
+		    	<div class="col-md-12">
 		    	<button type="button" class="btn btn-danger btn-block" id="registerScreen" value="registerScreen" onclick="slideToRegister()"><span style="font-size:3vh">Register</span></button>
+		    	</div>
 		    </div>
-		    <div class="form-group col-md-6" style="padding-right:0;">
+		    <div class="form-group col-md-6" style="padding-right:0; padding-left:0">
+		    	<div class="col-md-12">
 				<button type="submit" class="btn btn-success btn-block btn-primary" id="submitLoginButton" value="Login" onclick="submitLogin()"><span style="font-size:3vh"><span id='loading-icon' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Login</span></button>
+		    	</div>
 		    </div>
 			<div id="errorMessage" style="color:red">
 
@@ -175,11 +188,15 @@
 		      </label>
 		    </div>
 		</fieldset>
-		<div class="form-group col-md-6" style="padding-left:0;">
-	    	<button type="button" class="btn btn-danger btn-block" id="backToLogin" value="Back" onclick="slideToLogin()"><span style="font-size:3vh">Back</span></button>
-	    </div>
-	    <div class="form-group col-md-6" style="padding-right:0;">
-			<button type="submit" class="btn btn-success btn-block btn-primary" id="submitButtonRegistration" value="Register" onclick="submitRegistration()"><span style="font-size:3vh"><span id='loading-icon-registration' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Register</span></button>
+		<div class="form-group col-md-6">
+		    <div class="col-md-12">
+	    		<button type="button" class="btn btn-danger btn-block" id="backToLogin" value="Back" onclick="slideToLogin()"><span style="font-size:3vh">Back</span></button>
+	    	</div>
+		</div>
+	    <div class="form-group col-md-6">
+	    	<div class="col-md-12">
+				<button type="submit" class="btn btn-success btn-block btn-primary" id="submitButtonRegistration" value="Register" onclick="submitRegistration()"><span style="font-size:3vh"><span id='loading-icon-registration' class='glyphicon glyphicon-refresh glyphicon-refresh-animate'></span>&nbsp;&nbsp;&nbsp;Register</span></button>
+			</div>
 	    </div>
 		<p id="errorMessageRegistration" style="color:red"></p>
 	</div>
@@ -195,6 +212,10 @@
 
 	$("#waitMessage").hide();
 	$("#loading-icon").hide();
+    $(window).resize(()=>{setNavbarSize()});
+    setNavbarSize();
+	$("#loading-icon-registration").hide();
+	$("#errorMessageRegistration").hide();
 	var slideTime = 2000;
 	// $("#registration").hide();
 
@@ -245,7 +266,7 @@
 		$("#registration").animate({left:"+=100%"}, slideTime);
 	}
 
-//registration code
+	//registration code
 	// Fill room select
 	socket.emit("client fetch rooms", {}, function(response) {
 
@@ -255,8 +276,6 @@
 			$("<option>").text(room.name).attr("value", room.id).appendTo($("#room"));
 		}
 	});
-	$("#loading-icon-registration").hide();
-	$("#errorMessageRegistration").hide();
 
 	function submitRegistration(){
 		$("#errorMessageRegistration").hide();
@@ -315,5 +334,25 @@
         {
             return String(this).replace(/^\s+|\s+$/g, '');
         };
+    }
+    function setNavbarSize(){
+    	var windowWidth = $(window).width();
+    	if(windowWidth <= 1000){
+    		$("#brand").attr("src","assets/img/shield1.png");
+    		$("button").css("padding-right","0");
+    	}
+    	else{
+    		$("#brand").attr("src","facilitator/assets/ELC_Logo2.png");
+    	}
+    	if(windowWidth <= 500){
+    		$('.navbar-text').css('font-size','5vw');
+    		$('.navbar-text').css('text-align','right');
+    		$('.navbar-text').css('padding-right','5px');
+    	}
+    	else{
+    		$('.navbar-text').css('text-align','center');
+    		$('.navbar-text').css('font-size','30px');
+    		$('.navbar-text').css('padding-right','0');
+    	}
     }
 </script>

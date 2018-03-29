@@ -23,7 +23,7 @@
 			pointer-events: none;
 		}
 			#status-indicators-group > div{ margin-top:1.5vh; }
-			.sigroups{ display:flex; flex-direction:row; margin-left:5px;}
+			.sigroups{ display:flex; flex-direction:row; margin-left:5px; }
 			.status-indicator-image{ height:5vh; }
 			.status-indicators{
 				font-size:4vh;
@@ -392,7 +392,7 @@
 	#buy-sell-window{  }
 		.buy-food{ text-align:left; }
 		#buy-sell-window-content{ width:100%; padding-left:5%; padding-right:5%; text-align:center; font-size:20pt; margin:auto; }
-			.buy-items-line{ width:100%; margin:auto; margin-bottom:2.5vh; border:1px solid black; padding:10px; border-radius:5px;}
+			.buy-items-line{ width:100%; margin:auto; margin-bottom:2.5vh; border:1px solid black; padding:10px; border-radius:5px; background-color:rgba(247,142,105,1); }
 			.buy-sell-disabled .buy-items-line { }
 				.buy-items-line > *{ }
 				.buy-title{ text-align:left;  }
@@ -421,7 +421,7 @@
 			}
 				#trade-team-select-container > button{ margin:10px; }
 				.trade-team-item{ height:10vh; width:30%; }
-				.trade-team-item.team-select-enabled:hover{ transform:scale(1.05); }
+				.trade-team-item.team-select-enabled:hover{ /*transform:scale(1.05);*/ }
 				.trade-team-item > p{ font-size:8vh; margin-top:1vh; }
 			#trade-items-select{
 				display:flex;
