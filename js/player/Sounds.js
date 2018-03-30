@@ -20,6 +20,7 @@ class Sounds{
 		this.loadFinished = false;
 		this.queue = Array();
 		this.soundsDict = { };
+		this.dead = false;
 		var that = this;
 		setTimeout(() => { that.loadSounds(); }, 6000); //asynchronously load other sounds
 
@@ -66,7 +67,7 @@ class Sounds{
 			console.log("Key "+soundKey+" does not exist."); //if load is finished is key still does not exist, error
 			return; 
 		}
-		if(toVolume != 0) this.soundsDict[soundKey].play();
+		if(toVolume != 0 && this.dead == false) this.soundsDict[soundKey].play();
 		this.soundsDict[soundKey].fade(fromVolume, toVolume, duration);
 	}
 	playOnce(key){
@@ -81,9 +82,10 @@ class Sounds{
 		while(this.queue.length > 0) this.queue.pop()();
 	}
 	stopAllSounds(){
+		this.dead = true;
+		if(this.soundsDict == undefined) return;
 		for(var i in this.soundsDict){
 			this.fadeInOut(i, .5, 0, 1000);
 		}
-		// this.playingSounds = [];
 	}
 }

@@ -332,7 +332,7 @@ PlayerController.prototype = {
 
 			notifyTradeAcceptOrDecline(partnerID);
 
-			// TODO: Notify!
+			scope.HUD2D.AlertBalloon(scope.players[partnerID] + " accepted your trade offer!", true);
 		});
 
 		/**
@@ -344,7 +344,7 @@ PlayerController.prototype = {
 
 			notifyTradeAcceptOrDecline(partnerID);
 
-			// TODO: Notify!
+			scope.HUD2D.AlertBalloon(scope.players[partnerID] + " declined your trade offer.", true);
 		});
 
 		function notifyTradeAcceptOrDecline(partnerID)
@@ -384,15 +384,19 @@ PlayerController.prototype = {
 				if (!scope.chatMessages[otherUserID]) scope.chatMessages[otherUserID] = [];
 				let messageObject = {
 					outgoing: outgoing,
-					senderName: (scope.players[message.senderID] !== undefined ? scope.players[message.senderID] : "Facilitator"),
+					senderName: (scope.players[message.senderID] !== undefined ? scope.players[message.senderID] : "First Mate"),
 					urgent: (message.urgent != 0),
 					text: message.text,
 					timestamp: message.timestamp
 				};
 				scope.chatMessages[otherUserID].push(messageObject);
-
 				scope.HUD2D.AddChatMessage(otherUserID, messageObject); // add the chat message to the chat pane, if it is open
-				if (!outgoing && message.newMessage) HUD2D.AlertChatMessage(messageObject); // alert the arrival of a new message
+				if (!outgoing && message.newMessages)
+				{ // alert the arrival of a new message
+					scope.HUD2D.AlertBalloon(messageObject.senderName + ": " + messageObject.text, false, function() {
+						 scope.HUD2D.ShowChatMessages(otherUserID);
+					});
+				}
 			}
 		});
 

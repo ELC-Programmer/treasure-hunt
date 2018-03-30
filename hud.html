@@ -276,12 +276,12 @@
 				</button>
 				
 				<div id="trade-received-buttons" class="container-fluid">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<button id="trade-accept-button" class="btn btn-block center-block btn-success">
 							<p>Accept</p>
 						</button>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<button id="trade-decline-button" class="btn btn-block center-block btn-danger">
 							<p>Decline</p>
 						</button>
@@ -346,18 +346,14 @@
 	var tradeEnabled = false;
 	var seaCaptainEnabled = false;
 	var openChatID = false;
+	window.notifications = new Notifications();
 	window.sounds = new Sounds();
-	//this is how you make a notification
-	/*
-	setTimeout(()=>{
-						window.notifications = new Notifications();
-						window.notifications.newMessage("hey ship a!!");
-						window.notifications.newMessage("hey ship a!!");
-						window.notifications.newMessage("hey ship a!!");
-						window.notifications.newMessage("hey ship a!!");
-					},4000);
-	*/
-	// window.sounds.fadeInOut("dockedAmbience", 0, sounds.ambientNoiseVolume, 6000);
+	//this is how you call a notification
+	// setTimeout(()=>{
+	// 					window.notifications = new Notifications();
+	// 					window.notifications.newMessage("hey ship a!!",false,null);
+	// 				},4000);
+	
 	// respond to user interaction through this script
 	function closeChat(){
 		$("#open-chat-container").hide();

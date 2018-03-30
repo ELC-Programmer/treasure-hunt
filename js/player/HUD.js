@@ -560,7 +560,6 @@ HUD.prototype = {
 	SetDead: function(dead, dayNumber)
 	{
 		//console.log("day: " + dayNumber);
-		// TODO: activate some kind of death overlay that deactivates the 3DMap and displays a skull & crossbones.
 		if (dead || dayNumber == 14)
 		{
 			this.SetBuySellEnabled(false);
@@ -624,13 +623,15 @@ HUD.prototype = {
 	},
 
 	/**
-	 * Alert the arrival of a new chat message.
-	 * @param otherUserID The ID of the other user in this chat conversation, or "broadcast".
-	 * @param message An object with members: "outgoing", "senderID", "urgent", "text", "timestamp".
+	 * Present an alert balloon.
+	 * @param message The string to display.
+	 * @param shouldPersist A boolean. If false, the balloon will disappear without user input after a few seconds.
+	 * @param onClick A function to be called when the user clicks the balloon.
 	 */
-	AlertChatMessage: function(otherUserID, message)
+	AlertBalloon: function(message, shouldPersist, onClick)
 	{
-		// TODO: present an alert balloon
+		console.log("here in alert balloon");
+		window.notifications.newMessage(message,shouldPersist, onClick);
 	},
 
 	/**
@@ -681,7 +682,7 @@ HUD.prototype = {
 	AddAlertsDay: function(title, alerts)
 	{
 		let div = $("<div>").addClass("day-alert-box");
-		$("<p>").text(title).appendTo(div);
+		$("<h3>").text(title).addClass("day-alert-title").appendTo(div);
 		$("<hr>").addClass("eighty-percent-hr").appendTo(div);
 		$("#day-alert-box-container").append(div);
 
@@ -744,7 +745,7 @@ HUD.prototype = {
 			window.sounds.stopAllSounds();
 			$("#death-overlay").show();
 			$("#death-overlay").animate({opacity:1}, 2000);
-			setTimeout(()=>{$('#hud-container, #game-container, canvas').remove();},3000);
+			setTimeout(()=>{$('#hud-container, #game-container, canvas').remove(); },3000);
 	 }
 
 }
