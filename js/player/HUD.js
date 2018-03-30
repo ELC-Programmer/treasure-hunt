@@ -499,6 +499,7 @@ HUD.prototype = {
 		{
 			if (close)
 			{
+				window.backTrade();
 				window.closeTradeWindow();
 			}
 			else
