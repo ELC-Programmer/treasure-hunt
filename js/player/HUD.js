@@ -26,11 +26,11 @@ HUD.prototype = {
 
 
 			$(function(){
-		     // $('.full-size-window-content').slimScroll({height: '60vh'});
+		     $('.full-size-window-content').slimScroll({height: '60vh'});
 			});
 
 			$(function(){
-		     //$('#chat-content-container').slimScroll({height: '41vh'});
+		     // $('#chat-content-container').slimScroll({height: '41vh'});
 			});
 
 			function sendChatMessage()
@@ -85,25 +85,25 @@ HUD.prototype = {
 			});
 
 			// Trade Window:
-			$("#trade-in .trade-cash .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "give", -1); });
+			$("#trade-in .trade-cash .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "give", -5); });
 			$("#trade-in .trade-food .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "food", "give", -1); });
 			$("#trade-in .trade-water .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "water", "give", -1); });
 			$("#trade-in .trade-gas .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "gas", "give", -1); });
 			$("#trade-in .trade-treasure .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "treasure", "give", -1); });
 
-			$("#trade-in .trade-cash .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "give", 1); });
+			$("#trade-in .trade-cash .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "give", 5); });
 			$("#trade-in .trade-food .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "food", "give", 1); });
 			$("#trade-in .trade-water .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "water", "give", 1); });
 			$("#trade-in .trade-gas .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "gas", "give", 1); });
 			$("#trade-in .trade-treasure .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "treasure", "give", 1); });
 
-			$("#to-receive .trade-cash .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "receive", -1); });
+			$("#to-receive .trade-cash .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "receive", -5); });
 			$("#to-receive .trade-food .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "food", "receive", -1); });
 			$("#to-receive .trade-water .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "water", "receive", -1); });
 			$("#to-receive .trade-gas .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "gas", "receive", -1); });
 			$("#to-receive .trade-treasure .trade-minus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "treasure", "receive", -1); });
 
-			$("#to-receive .trade-cash .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "receive", 1); });
+			$("#to-receive .trade-cash .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "cash", "receive", 5); });
 			$("#to-receive .trade-food .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "food", "receive", 1); });
 			$("#to-receive .trade-water .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "water", "receive", 1); });
 			$("#to-receive .trade-gas .trade-plus").click(function() { scope.controller.UpdateTradeQuantity(scope.openTradePartnerID, "gas", "receive", 1); });
