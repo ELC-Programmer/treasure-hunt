@@ -678,33 +678,32 @@ THMap.prototype = {
 		if (this.dayCycleTime < 0) this.dayCycleTime = this.dayCycleStopTime;
 
 		var cycleLength = 2*Math.PI*1000;
-		if (Date.now() - this.dayCycleClockStartTime < cycleLength)
+		if (!this.dayCycleClockStartTime) this.dayCycleClockStartTime = Date.now() - cycleLength;
+
+		this.dayCycleTime = this.dayCycleStopTime + Math.min(Date.now() - this.dayCycleClockStartTime, cycleLength);
+		
+		if ((this.dayCycleTime / cycleLength > 1.25) && this.newDayWeather) // it's midnight, update the weather (1.25 is a magic number...)
 		{
-			this.dayCycleTime = this.dayCycleStopTime + Date.now() - this.dayCycleClockStartTime;
+			console.log("Midnight!");
 			
-			if ((this.dayCycleTime / cycleLength > 1.25) && this.newDayWeather) // it's midnight, update the weather (1.25 is a magic number...)
+			this.skyBox.material = this.skyMaterials[this.newDayWeather];
+			this.weather = this.newDayWeather;
+			this.newDayWeather = false;
+			
+			// SOUNDS:				
+			let atIsland = (this.localShip.mapPoint.isIsland && !this.localShip.quartersToDestination);
+			let newSound = (this.weather == "rain" ? "stormyAmbience" : (atIsland ? "dockedAmbience" : "sunnyAmbience"));
+			
+			if (this.weatherSound != newSound)
 			{
-				console.log("Midnight!");
-				
-				this.skyBox.material = this.skyMaterials[this.newDayWeather];
-				this.weather = this.newDayWeather;
-				this.newDayWeather = false;
-				
-				// SOUNDS:				
-				let atIsland = (this.localShip.mapPoint.isIsland && !this.localShip.quartersToDestination);
-				let newSound = (this.weather == "rain" ? "stormyAmbience" : (atIsland ? "dockedAmbience" : "sunnyAmbience"));
-				
-				if (this.weatherSound != newSound)
-				{
-					if (this.weatherSound) // fade out old sound
-						window.sounds.fadeInOut(this.weatherSound, window.sounds.ambientNoiseVolume, 0, 6000);
-					window.sounds.fadeInOut(newSound, 0, window.sounds.ambientNoiseVolume, 6000);
-				}
-				
-				this.weatherSound = newSound;
+				if (this.weatherSound) // fade out old sound
+					window.sounds.fadeInOut(this.weatherSound, window.sounds.ambientNoiseVolume, 0, 6000);
+				window.sounds.fadeInOut(newSound, 0, window.sounds.ambientNoiseVolume, 6000);
 			}
+			
+			this.weatherSound = newSound;
 		}
-		else if (this.onNewDay) // callback
+		if (Date.now() - this.dayCycleClockStartTime > cycleLength && this.onNewDay)
 		{
 			this.onNewDay();
 			this.onNewDay = false;

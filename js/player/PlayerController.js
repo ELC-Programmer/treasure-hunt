@@ -273,6 +273,9 @@ PlayerController.prototype = {
 								scope.quartersToDestination,
 								scope.Map3D.mapPoints[scope.lastLocation]
 							);
+							
+							scope.HUD2D.SetTradeEnabled(true);
+							
 							scope.colocalPlayers.push(id);
 						}
 						scope.HUD2D.SetPlayerChatEnabled(id, colocal);
