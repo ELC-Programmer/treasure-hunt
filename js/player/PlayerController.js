@@ -669,6 +669,8 @@ PlayerController.prototype = {
 	 */
 	_AcceptOrDeclineTradeOffer: function(partnerID)
 	{
+		let scope = this;
+		
 		//
 		this.ResetTrade(partnerID);
 		this.HUD2D.SetTradeQuantitiesAndStatus(partnerID, this.trades[partnerID], true);
@@ -677,7 +679,7 @@ PlayerController.prototype = {
 		if (this.tradeOffers.length > 0) // there is another queued trade offer
 		{
 			setTimeout(function() {
-				this.HUD2D.ShowTradeForPartner(this.tradeOffers[0]); // display the next offer from the queue
+				scope.HUD2D.ShowTradeForPartner(scope.tradeOffers[0]); // display the next offer from the queue
 			}, 500);
 		}
 		else
