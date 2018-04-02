@@ -56,13 +56,15 @@
 					</button>
 				</div>
 				<div id="message-content-container">
-					<div class="messages" chatID="broadcast"></div>
+					<div class="messages" chatID="broadcast">
+						<!-- Messages go in here -->
+					</div>
 					<div id="input-box-button">
 						<input type="text" id="message-input-box">
 
 						</input	>
 						<div id="message-input-button" style="cursor:pointer;">
-							<img src="./assets/icons/send.png" />
+							<!-- <img src="./assets/icons/send.png" /> -->
 						</div>
 					</div>
 				</div>
@@ -320,11 +322,16 @@
 	</div>
 </div>
 
-<div id="largeTextDisplay">
+<div id="largeTextDisplay" hidden="true">
 	<img id="chat-exit" onclick="closeExpandedText()" src="./assets/icons/close-button.png" />
 	<p>
 	</p>
 
+</div>
+
+<div id="warn-div" class="center-inside" hidden="true">
+	<p>
+	</p>
 </div>
 
 <script src="js/lib/Howler/howler.core.js"></script>
@@ -348,12 +355,6 @@
 	var openChatID = false;
 	window.notifications = new Notifications();
 	window.sounds = new Sounds();
-	//this is how you call a notification
-	// setTimeout(()=>{
-	// 					window.notifications = new Notifications();
-	// 					window.notifications.newMessage("hey ship a!!",false,null);
-	// 				},4000);
-	
 	// respond to user interaction through this script
 	function closeChat(){
 		$("#open-chat-container").hide();
@@ -383,29 +384,10 @@
 			closeOthers();
 			alertsScreen.style.display = "flex";
 			othersAreClosed = false;
-			var alertContainer = document.getElementById("day-alert-box-container");
-			alertContainer.scrollTop = alertContainer.scrollHeight;
-			//sounds.fadeInOut("buoyBells", 0, 0, 0);
+			$("#day-alert-box-container").scrollTop = $("#day-alert-box-container").scrollHeight;
 			alertsFlash(false);
 		}
 	}
-	/*
-	function readyPressed(){
-		var readyButton = document.getElementById("status-circle");
-		var readyText = document.getElementById("status-text");
-		if(window.getComputedStyle(readyButton).backgroundColor == "rgba(214, 51, 51, 0.85)") {
-			readyText.innerHTML = "Ready";
-			readyButton.style.backgroundColor = "rgba(72, 209, 54, 0.85)";
-			Map3D.PassDay();
-			// sounds.fadeInOut("buoyBells", 0, 1, 5000); //timing is off, need for way to have a callback on passday
-			// showAlerts();
-			alertsFlash(true);
-		} else {
-			readyText.innerHTML = "Not Ready";
-			readyButton.style.backgroundColor = "rgba(214, 51, 51, 0.85)";
-		}
-	}
-	*/
 	function alertsFlash(flash){
 		alerts = document.getElementById("alerts-dot");
 		if(flash){
@@ -443,7 +425,8 @@
 		}
 	}
 	function closeExpandedText(){
-		document.getElementById("largeTextDisplay").style.display = "none";
+		$("#largeTextDisplay").hide();
+		$("#largeTextDisplay > p").text();
 	}
 	function closeAlerts(){
 		alertsScreen.style.display = "none";
@@ -475,13 +458,6 @@
 		$("#backTradeButton").hide();
 	}
 	backTrade();
-	/*
-	function showCaptainsMessage(){
-		document.getElementById("captains-buttons-container").style.display = "none";
-		document.getElementById("captains-message").style.display = "flex";
-		sounds.fadeInOut(sounds.piratesArrgh, 0, 1, 0);
-	}
-	*/
 	function setWidth(){
 			if(!chatIsClosed){
 				alertsScreen.style.width = windowWidthWhenChatIsOpen[0];
@@ -503,6 +479,12 @@
 				tradeWindow.style.width = windowWidthWhenChatIsClosed[0];
 				tradeWindow.style.left = windowWidthWhenChatIsClosed[1];
 			}
+	}
+	function warn(text){
+		$("#warn-div p").text(text);
+		setTimeout(()=>{ $("#warn-div").fadeOut(1000); },4000);
+		window.sounds.playOnce("warningSound");
+		$("#warn-div").fadeIn(1000);
 	}
 	$(document).keyup(function(e) {
 	     if (e.keyCode == 27) { // escape key maps to keycode `27`

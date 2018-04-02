@@ -37,7 +37,10 @@ HUD.prototype = {
 			{
 				let chatID = $(".messages:visible").attr("chatID");
 				let text = $("#message-input-box").val();
-
+				if(text.length > 1000){
+					window.warn("Please enter less than 1000 characters.");
+					return;
+				}
 				if(text!=""){
 					let currTime = Date.now();
 					if(currTime-scope.lastMessageTime >= 1000){
@@ -451,6 +454,8 @@ HUD.prototype = {
 
 			$(".messages").hide(); // hide all message groups
 			$(".messages[chatID=" + chatID + "]").show(); // show the selected message group
+			//doesn't work TODO
+			// $("#message-content-container > .messages").scrollTop = $("#message-content-container > .messages").scrollHeight; //scroll to bottom of messages
 
 			$("#message-content-container").show(); // show the chat messages screen
 		}
@@ -610,7 +615,7 @@ HUD.prototype = {
 	 */
 	AddChatMessage: function(otherUserID, message)
 	{
-		let p = $("<p style='margin-right:15px'>").text(message.text);
+		let p = $("<p>").text(message.text);
 		if (otherUserID == "broadcast" && !message.outgoing) { // incoming broadcast message
 			$("<span>").addClass("message-sender-title").text(message.senderName+': ').prependTo(p);
 		}
@@ -619,6 +624,11 @@ HUD.prototype = {
 
 		let messagesObject = $(".messages[chatID=" + otherUserID + "]");
 		messagesObject.append(divOuter); // add new message
+		$(divOuter).click(()=>{  //show full message, if it had been truncated
+			$("#largeTextDisplay > p").text(message.text);
+			$("#largeTextDisplay").show();
+		});
+		//this doesn't work TODO
 		messagesObject[0].scrollTop = messagesObject[0].scrollHeight; // auto-scroll to bottom
 	},
 
@@ -630,7 +640,6 @@ HUD.prototype = {
 	 */
 	AlertBalloon: function(message, shouldPersist, onClick)
 	{
-		console.log("here in alert balloon");
 		window.notifications.newMessage(message,shouldPersist, onClick);
 	},
 
@@ -705,7 +714,7 @@ HUD.prototype = {
 		$(".day-alert-box:last").append(div);
 		$("#day-alert-box-container")[0].scrollTop = $("#day-alert-box-container")[0].scrollHeight; // auto-scroll to bottom
 		window.showAlerts();
-		window.sounds.playOnce("notificationBell");
+		window.sounds.playOnce("buoyBells");
 	},
 
 	/**
@@ -745,7 +754,7 @@ HUD.prototype = {
 			window.sounds.stopAllSounds();
 			$("#death-overlay").show();
 			$("#death-overlay").animate({opacity:1}, 2000);
-			setTimeout(()=>{$('#hud-container, #game-container, canvas').remove(); },3000);
+			setTimeout(()=>{ $('#hud-container, #game-container, canvas').remove(); },3000);
 	 }
 
 }
