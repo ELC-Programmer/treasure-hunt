@@ -421,9 +421,8 @@ HUD.prototype = {
 		}
 
 		// Add button for player to trade option list (alphabetically sorted)
-		// <button class="btn btn-info col-sm-4"><p style="font-size:3vh;">Ship A</p></button>
-		p = $("<p style='font-size:3vh;'>").text(name);
-		div = $("<button>").addClass("team-select trade-team-item btn btn-primary btn-block").attr("userID", id).append(p).click(function() {
+		p = $("<p>").text(name);
+		div = $("<button>").addClass("team-select trade-team-item btn btn-primary").attr("userID", id).append(p).click(function() {
 			if ($(this).hasClass("team-select-enabled")) {
 				scope.ShowTradeForPartner(id);
 			}

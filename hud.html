@@ -193,7 +193,7 @@
 	</div>
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content" id="trade-window-content" >
-		<div id="trade-team-select-container" class="container-fluid">
+		<div id="trade-team-select-container">
 			<!-- todo does not properly tile -->
 		</div>
 		<div id="trade-items-select" >
@@ -429,19 +429,19 @@
 		$("#largeTextDisplay > p").text();
 	}
 	function closeAlerts(){
-		alertsScreen.style.display = "none";
+		$(alertsScreen).hide();
 		othersAreClosed = true;
 	}
 	function closeBuySell(){
-		buySellWindow.style.display = "none";
+		$(buySellWindow).hide();
 		othersAreClosed = true;
 	}
 	function closeCaptainWindow(){
-		captainWindow.style.display = "none";
+		$(captainWindow).hide();
 		othersAreClosed = true;
 	}
 	function closeTradeWindow(){
-		tradeWindow.style.display = "none";
+		$(tradeWindow).hide();
 		othersAreClosed = true;
 	}
 	function closeOthers(){ //closes all potentially open windows
@@ -449,11 +449,11 @@
 		closeBuySell();
 		closeCaptainWindow();
 		closeTradeWindow();
+		closeExpandedText();
 		othersAreClosed = true;
 	}
 	function backTrade(){
 		document.getElementById("trade-items-select").style.display = "none";
-		document.getElementById("trade-team-select-container").style.display = "flex";
 		$("#trade-team-select-container").show();
 		$("#backTradeButton").hide();
 	}

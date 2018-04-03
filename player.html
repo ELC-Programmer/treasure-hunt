@@ -52,11 +52,11 @@
 		<script>
 		// Init 3D Map:
 			window.onload = function () {
+				window.controller = new PlayerController();
 				$("#loading-page-bar").animate({ width:'100%' }, 3900, "swing", 
 					function(){
 						$("#loading-page-div").animate({ opacity: 0 }, 2000, ()=>{ $("#loading-page-div").remove();  })  
 					})
-				window.controller = new PlayerController();
 			}
 			// Load Fonts before continuing! (neccesary??? effective???)
 			WebFont.load({
