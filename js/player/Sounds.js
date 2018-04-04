@@ -13,6 +13,7 @@ sounds list:
 To play or stop a sound, call fadeInOut:
 	sounds.fadeInOut(sounds.SOUND_TO_PLAY, START_VOLUME, END_VOLUME, DURATION_OF_FADE);
 Non-ambient sounds will automatically stop playing once done.
+WAV files work better than MP3 files when looping; MP3 files have a brief silent bit at beginning
 */
 class Sounds{
 	constructor(){
@@ -27,13 +28,13 @@ class Sounds{
 	}
 	loadSounds(){
 		this.soundsDict = {  	"dockedAmbience" : new Howl({
-									src: ['assets/Sounds/docked-ambient-noise.mp3'],
+									src: ['assets/Sounds/docked-ambient-noise.wav'],
 									loop: true,
 									volume: 0,
 									autoplay: false
 								}),
 								"sunnyAmbience" : new Howl({
-								  src: ['assets/Sounds/sunny-ambient-noise.mp3'],
+								  src: ['assets/Sounds/sunny-ambient-noise.wav'],
 								  loop: true,
 								  volume: 0
 								}),
@@ -41,7 +42,7 @@ class Sounds{
 								"buoyBells" : new Howl({src: ['assets/Sounds/buoy-bells.mp3'], volume:.8}),
 								"lightningSound" : new Howl({src: ['assets/Sounds/lightning.mp3'], volume:.8}),
 								"stormyAmbience" : new Howl({
-								  src: ['assets/Sounds/storm-ambient-noise.mp3'],
+								  src: ['assets/Sounds/storm-ambient-noise.wav'],
 								  loop: true,
 								  volume: 0,
 								  autoplay:false
