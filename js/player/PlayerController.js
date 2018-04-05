@@ -315,6 +315,7 @@ PlayerController.prototype = {
 			if (scope.tradeOffers.length == 1) // no other offer(s) being displayed
 			{
 				scope.HUD2D.ShowTradeForPartner(partnerID);
+				window.sounds.fadeInOut("notificationBell", 0, 1, 0); //play a notification sound
 
 				// trap the player on this screen until they make a decision
 				scope.HUD2D.SetAlertsWindowEnabled(false);

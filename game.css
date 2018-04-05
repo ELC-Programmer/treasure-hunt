@@ -112,7 +112,7 @@
 							margin:auto;
 							cursor:pointer;
 						}
-						.team-select-enabled { background-color:grey; }
+						.team-select-disabled { background-color:grey !important; cursor:not-allowed !important; }
 						.team-select > p {
 							margin:0;
 							align-self:center;
@@ -430,7 +430,6 @@
 			}
 				#trade-team-select-container > button{ margin:10px; }
 				.trade-team-item{ height:10vh; width:30%; }
-				.trade-team-item.team-select-enabled:hover{ /*transform:scale(1.05);*/ }
 				.trade-team-item > p{ font-size:18pt; margin-top:1vh; }
 			#trade-items-select{
 				display:flex;

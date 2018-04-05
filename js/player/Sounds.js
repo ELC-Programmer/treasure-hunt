@@ -39,7 +39,7 @@ class Sounds{
 								  volume: 0
 								}),
 								"piratesArrgh" : new Howl({src: ['assets/Sounds/pirate-arrgh.mp3']}),
-								"buoyBells" : new Howl({src: ['assets/Sounds/buoy-bells.mp3'], volume:.8}),
+								"buoyBells" : new Howl({src: ['assets/Sounds/buoy-bells.mp3'], volume:.4}),
 								"lightningSound" : new Howl({src: ['assets/Sounds/lightning.mp3'], volume:.8}),
 								"stormyAmbience" : new Howl({
 								  src: ['assets/Sounds/storm-ambient-noise.wav'],

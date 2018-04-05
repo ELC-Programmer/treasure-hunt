@@ -586,7 +586,7 @@ HUD.prototype = {
 	 */
 	SetPlayerChatEnabled: function(id, enabled)
 	{
-		$("#chat-select .team-select[userID=" + id + "]").toggleClass("team-select-enabled", enabled);
+		$("#chat-select .team-select[userID=" + id + "]").toggleClass("team-select-disabled", !enabled);
 		if (!enabled && $(".messages[chatID=" + id + "]:visible").length > 0)
 		{ // kick out of unicast chat if it is currently open
 			backChat();
@@ -600,7 +600,8 @@ HUD.prototype = {
 	 */
 	SetPlayerTradeEnabled: function(id, enabled)
 	{
-		$("#trade-team-select-container .team-select[userID=" + id + "]").toggleClass("team-select-enabled", enabled);
+		$("#trade-team-select-container .team-select[userID=" + id + "]").toggleClass("team-select-enabled", enabled); //removal disables trade functionality??
+		$("#trade-team-select-container .team-select[userID=" + id + "]").toggleClass("team-select-disabled", !enabled);
 		if (!enabled && id == this.openTradePartnerID)
 		{ // kick out of the user's trade window if it is currently open
 			backTrade();
