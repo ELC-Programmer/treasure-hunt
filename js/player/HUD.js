@@ -503,7 +503,10 @@ HUD.prototype = {
 		{
 			if (close)
 			{
+				$("#tradeCloseButton").show();
+				this.openTradePartnerID = false;
 				window.backTrade();
+				
 				window.closeTradeWindow();
 			}
 			else
