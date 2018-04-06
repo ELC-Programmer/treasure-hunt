@@ -580,7 +580,7 @@ PlayerController.prototype = {
 		let status = this.trades[partnerID].status
 		if (status == "planning")
 		{
-			if (item != undefined) //?? "!=="
+			if (item !== undefined)
 			{
 				this.trades[partnerID][side][item] += changeBy;
 

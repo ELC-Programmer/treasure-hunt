@@ -98,8 +98,19 @@ Ship.prototype = {
 				);
 			}
 			
-			var nextCell = this.path.length > 1 ? this.path[1].cellPos : this.path[0].cellPos;
-			var nextPoint = this.GridToWorld(nextCell);
+			var nextCell;
+			var nextPoint;
+			if (this.path !== undefined)
+			{			
+				nextCell = this.path.length > 1 ? this.path[1].cellPos : this.path[0].cellPos;
+				nextPoint = this.GridToWorld(nextCell);
+			}
+			else
+			{ // error calculating path: just teleport to destination.
+				this.turning = false;
+				this.path = { length: 0 };
+				nextPoint = this.GridToWorld(this.destination);
+			}
 			
 			if (this.turning)
 			{ // turn in place before starting to move.
@@ -178,9 +189,8 @@ Ship.prototype = {
 				this.position = newPosition;
 				this.forward = bezierCurve.getTangentAt(curveIndex);
 
-				if (displacement.length() <= movement && this.path.length == 1)
+				if (this.path.length == 0 || (displacement.length() <= movement && this.path.length == 1))
 				{
-					console.log(nextPoint.x + ", " + nextPoint.y); // DEBUG
 					this.position = nextPoint;
 					
 					this.traveling = false;
