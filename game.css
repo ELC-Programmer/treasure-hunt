@@ -117,6 +117,9 @@
 							margin:0;
 							align-self:center;
 							font-size:18pt;
+							overflow:hidden;
+							white-space:nowrap;
+							text-overflow:ellipsis;
 						}
 						#broadcast-button{ }
 					#message-content-container{
@@ -347,6 +350,7 @@
 		display:none;
 		border-radius:5px;
 	}
+		.fullSizeCloseButton{ position:absolute; right:0; }
 		.full-size-window-top-bar{
 			width:100%;
 			text-align:center;
@@ -419,6 +423,7 @@
 				}
 				.buy-submit-button p{ font-size:3vh; }
 	#trade-window{ margin-top:20px;}
+		#backTradeButton{ position:absolute; left:0; }
 		#trade-item-select-title{  }
 		#trade-window-content{ width:100%; }
 			#trade-window-content .row{ margin-left:0 !important; margin-right:0 !important; }
@@ -427,7 +432,7 @@
 				justify-content:center;
 				margin:auto;
 				text-align:center;
-			}
+			}	
 				#trade-team-select-container > button{ margin:10px; }
 				.trade-team-item{ height:10vh; width:30%; }
 				.trade-team-item > p{ font-size:18pt; margin-top:1vh; }

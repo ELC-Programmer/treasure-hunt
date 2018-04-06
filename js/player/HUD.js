@@ -423,7 +423,7 @@ HUD.prototype = {
 		// Add button for player to trade option list (alphabetically sorted)
 		p = $("<p>").text(name);
 		div = $("<button>").addClass("team-select trade-team-item btn btn-primary").attr("userID", id).append(p).click(function() {
-			if ($(this).hasClass("team-select-enabled")) {
+			if (!$(this).hasClass("team-select-disabled")) {
 				scope.ShowTradeForPartner(id);
 			}
 		});
@@ -453,10 +453,9 @@ HUD.prototype = {
 
 			$(".messages").hide(); // hide all message groups
 			$(".messages[chatID=" + chatID + "]").show(); // show the selected message group
-			//doesn't work TODO
-			// $("#message-content-container > .messages").scrollTop = $("#message-content-container > .messages").scrollHeight; //scroll to bottom of messages
 
 			$("#message-content-container").show(); // show the chat messages screen
+			$(".messages[chatID=" + chatID + "]")[0].scrollTop = $(".messages[chatID=" + chatID + "]")[0].scrollHeight; //scroll to bottom of messages
 		}
 	},
 
@@ -600,7 +599,6 @@ HUD.prototype = {
 	 */
 	SetPlayerTradeEnabled: function(id, enabled)
 	{
-		$("#trade-team-select-container .team-select[userID=" + id + "]").toggleClass("team-select-enabled", enabled); //removal disables trade functionality??
 		$("#trade-team-select-container .team-select[userID=" + id + "]").toggleClass("team-select-disabled", !enabled);
 		if (!enabled && id == this.openTradePartnerID)
 		{ // kick out of the user's trade window if it is currently open
@@ -693,7 +691,7 @@ HUD.prototype = {
 		let div = $("<div>").addClass("day-alert-box");
 		$("<h3>").text(title).addClass("day-alert-title").appendTo(div);
 		$("<hr>").addClass("eighty-percent-hr").appendTo(div);
-		$("#day-alert-box-container").append(div);
+		$("#day-alert-box-container").prepend(div);
 
 		// Add Alerts
 		for (let i in alerts)
@@ -711,8 +709,7 @@ HUD.prototype = {
 		let div = $("<div>").addClass("alert-box");
 		$("<p>").text(text).appendTo(div);
 
-		$(".day-alert-box:last").append(div);
-		$("#day-alert-box-container")[0].scrollTop = $("#day-alert-box-container")[0].scrollHeight; // auto-scroll to bottom
+		$(".day-alert-box:first").append(div);
 		window.showAlerts();
 		window.sounds.playOnce("buoyBells");
 	},

@@ -130,7 +130,7 @@
 <div class="full-size-window" id="alerts-screen">
 	<div class="full-size-window-top-bar">
 		<h1>Alerts</h1>
-		<img onclick="closeAlerts()" src="./assets/icons/close-button.png" />
+		<img onclick="closeAlerts()" class="fullSizeCloseButton" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content" id="day-alert-box-container">
@@ -139,7 +139,7 @@
 <div class="full-size-window" id="buy-sell-window">
 	<div class="full-size-window-top-bar">
 		<h1>Purchase Resources and Sell Treasure</h1>
-		<img onclick="closeBuySell()" src="./assets/icons/close-button.png" />
+		<img class="fullSizeCloseButton" onclick="closeBuySell()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content container" id="buy-sell-window-content">
@@ -189,7 +189,7 @@
 	<div class="full-size-window-top-bar">
 		<img id="backTradeButton" onclick="backTrade()" style="margin-left:10px; margin-right:0px;" src="./assets/icons/left-arrow.png" />
 		<h1>Trade</h1>
-		<img id="tradeCloseButton" onclick="closeTradeWindow()" src="./assets/icons/close-button.png" />
+		<img id="tradeCloseButton" class="fullSizeCloseButton" onclick="closeTradeWindow()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content" id="trade-window-content" >
@@ -296,7 +296,7 @@
 <div class="full-size-window" id="captain-window" style="min-height:70vh; margin-top:20px;">
 	<div class="full-size-window-top-bar">
 		<h1>Crusty Old Sea Captain</h1>
-		<img onclick="closeCaptainWindow()" src="./assets/icons/close-button.png" />
+		<img onclick="closeCaptainWindow()" class="fullSizeCloseButton" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
 	<div class="full-size-window-content" id="captain-window-content" >
@@ -384,7 +384,7 @@
 			closeOthers();
 			alertsScreen.style.display = "flex";
 			othersAreClosed = false;
-			$("#day-alert-box-container").scrollTop = $("#day-alert-box-container").scrollHeight;
+			// $("#day-alert-box-container")[0].scrollTop = $("#day-alert-box-container")[0].scrollHeight; //TODO
 			alertsFlash(false);
 		}
 	}

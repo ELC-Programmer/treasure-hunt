@@ -16,7 +16,7 @@ class Notifications{
 		var msg = message.slice(0,33);
 		if(message.length > 33) msg += '...';
 		if(this.numNotifications > 8){
-			queueNotification(msg);
+			// queueNotification(msg);
 			return;
 		}
 		var id = 'msgBalloon'+this.numNotifications;
@@ -24,22 +24,23 @@ class Notifications{
 		window.sounds.fadeInOut("notificationBell", 0, 1, 0);
 		$(newDiv).appendTo('#'+this.containerId)
 					.animate({top: 0, right:'1vw'}, 2000)
-					.click(() => {	openChat(); 
-									$('#'+id).animate(	{	'height': 0, 'opacity': 0 }, 
+					.click(() => {	$('#'+id).animate(	{	'height': 0, 'opacity': 0 }, 
 												        750, 
 												        function() { $('#'+id).remove(); }
 											          );
 									this.numNotifications -= 1;
 									if(onClick) onClick();
 								});
-		setTimeout(()=>{
-			$('#'+id).animate(	{	'height': 0, 'opacity': 0 }, 
-						        750, 
-						        function() { $('#'+id).remove(); }
-					          );
-			this.numNotifications -= 1;
-		},5000);
-		this.numNotifications += 1;
+		if(!shouldPersist){
+			setTimeout(()=>{
+				$('#'+id).animate(	{	'height': 0, 'opacity': 0 }, 
+							        750, 
+							        function() { $('#'+id).remove(); }
+						          );
+				this.numNotifications -= 1;
+			},5000);
+			this.numNotifications += 1;
+		}
 	}
 	makeContainer(){
 		var containerStyle = 	"position:absolute;\
