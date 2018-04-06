@@ -188,7 +188,7 @@
 <div class="full-size-window" id="trade-window">
 	<div class="full-size-window-top-bar">
 		<img id="backTradeButton" onclick="backTrade()" style="margin-left:10px; margin-right:0px;" src="./assets/icons/left-arrow.png" />
-		<h1>Trade</h1>
+		<h1>Trade <span id="trade-title"></span></h1>
 		<img id="tradeCloseButton" class="fullSizeCloseButton" onclick="closeTradeWindow()" src="./assets/icons/close-button.png" />
 	</div>
 	<hr class="eighty-percent-hr" />
@@ -197,9 +197,9 @@
 
 		</div>
 		<div id="trade-items-select" >
-			<div id="trade-item-select-title">
+			<!-- <div id="trade-item-select-title">
 				<h1 style="margin:0">???</h1>
-			</div>
+			</div> -->
 			<div id="trade-receive-container container">
 				<div id="trade-in" class="col-sm-6">
 					<h2 id="trade-in-title" class="row">You Give</h2>
@@ -270,7 +270,7 @@
 			</div>
 			<div id="trade-button-container">
 				<button id="send-offer" class="btn btn-block center-block btn-primary">
-					<p>Send offer</p>
+					<p id="trade-item-select-title">Send offer</p>
 				</button>
 				
 				<button id="trade-waiting-button" class="btn btn-block center-block btn-danger" disabled>

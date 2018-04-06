@@ -616,6 +616,8 @@ PlayerController.prototype = {
 			},
 			status: "planning" // also: "sent", "received"
 		};
+		$("#trade-title").text(""); //reset trade title text
+		
 	},
 
 	/**

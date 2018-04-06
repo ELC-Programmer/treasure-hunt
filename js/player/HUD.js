@@ -524,7 +524,7 @@ HUD.prototype = {
 
 				if (trade.status == "planning")
 				{
-					$("#trade-item-select-title").text("Trade offer for " + controller.players[partnerID]);
+					$("#trade-item-select-title").text("Send offer to " + controller.players[partnerID]);
 
 					$("#backTradeButton").show();
 					$("#tradeCloseButton").show();
@@ -546,7 +546,7 @@ HUD.prototype = {
 				}
 				else if (trade.status == "received")
 				{
-					$("#trade-item-select-title").text("Trade offer from " + controller.players[partnerID]);
+					$("#trade-title").text("with " + controller.players[partnerID]);
 
 					$("#backTradeButton").hide(); // no escape! you must make a decision about the offer!
 					$("#tradeCloseButton").hide();

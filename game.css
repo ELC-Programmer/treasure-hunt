@@ -372,7 +372,7 @@
 				margin-top:10px;
 				margin-right:10px;
 			}
-			.eighty-percent-hr{ width:75%; background-color:black;  }
+			.eighty-percent-hr{ width:75%; background-color:black; margin-top:0; margin-bottom:5px; }
 		.full-size-window-content{ width:90%; flex-grow:200; overflow-y:scroll; margin:auto;}
 	#alerts-screen{ margin-top: 20px;	}
 		#day-alert-box-container{ width:100%; }
@@ -426,6 +426,7 @@
 		#backTradeButton{ position:absolute; left:0; }
 		#trade-item-select-title{  }
 		#trade-window-content{ width:100%; }
+			#trade-in-title, #to-receive-title{ margin-top:5px; margin-bottom:5px; font-size:20pt;}
 			#trade-window-content .row{ margin-left:0 !important; margin-right:0 !important; }
 			#trade-team-select-container{
 				padding-bottom:20px;
