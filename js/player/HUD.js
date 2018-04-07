@@ -455,6 +455,7 @@ HUD.prototype = {
 			$(".messages[chatID=" + chatID + "]").show(); // show the selected message group
 
 			$("#message-content-container").show(); // show the chat messages screen
+			window.openChat();
 			$(".messages[chatID=" + chatID + "]")[0].scrollTop = $(".messages[chatID=" + chatID + "]")[0].scrollHeight; //scroll to bottom of messages
 		}
 	},

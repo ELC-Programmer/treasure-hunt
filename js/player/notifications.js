@@ -24,12 +24,12 @@ class Notifications{
 		window.sounds.fadeInOut("notificationBell", 0, 1, 0);
 		$(newDiv).appendTo('#'+this.containerId)
 					.animate({top: 0, right:'1vw'}, 2000)
-					.click(() => {	$('#'+id).animate(	{	'height': 0, 'opacity': 0 }, 
+					.click(() => {	if(onClick) onClick();
+									$('#'+id).animate(	{	'height': 0, 'opacity': 0 }, 
 												        750, 
 												        function() { $('#'+id).remove(); }
 											          );
 									this.numNotifications -= 1;
-									if(onClick) onClick();
 								});
 		if(!shouldPersist){
 			setTimeout(()=>{
