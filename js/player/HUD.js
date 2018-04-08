@@ -622,7 +622,7 @@ HUD.prototype = {
 			$("<span>").addClass("message-sender-title").text(message.senderName+': ').prependTo(p);
 		}
 		let divInner = $("<div>").addClass("message").toggleClass("urgent-message", message.urgent).append(p);
-		let divOuter = $("<div>").addClass(message.outgoing ? "messages-local" : "messages-remote").append(divInner);
+		let divOuter = $("<div>").addClass(!message.outgoing ? "messages-local" : "messages-remote").append(divInner);
 
 		let messagesObject = $(".messages[chatID=" + otherUserID + "]");
 		messagesObject.append(divOuter); // add new message

@@ -155,6 +155,7 @@
 								border-bottom-left-radius:10px;
 								border-right:none;
 							}
+							.messages-remote p{ padding-right:10px; }
 							.message{
 								height:100%;
 								border:1px solid black;
