@@ -14,7 +14,7 @@ var PlayerController = function()
 		let socket = scope.socket = io.connect(document.location.hostname + ":3000?token=" + token);
 		socket.on("error", function()
 		{
-			scope.FatalError("Authentication failure!");
+			//scope.FatalError("Authentication failure!");
 			window.location.assign("login.html");
 		});
 		socket.on("server send authentication", function(user)
@@ -26,20 +26,20 @@ var PlayerController = function()
 		// Continuously poll to check that the connection hasn't been lost:
 		scope.pingSuccessful = true;
 		scope.pingIntervalID = window.setInterval(function() {
+			console.log("PING");
 			if (!scope.pingSuccessful) {
 				window.clearInterval(scope.pingIntervalID);
-				scope.FatalError("Connection Lost.");
+				scope.FatalError("Connection to Server Lost. Please Refresh.");
 			}
 			else
 			{
-				pingSuccessful = false;
-				socket.emit("ping");
+				scope.pingSuccessful = false;
+				socket.emit("client send ping", {}, function() {
+					console.log("PONG");
+					scope.pingSuccessful = true;
+				});
 			}
 		}, 10000); // every 10 sec
-		socket.on("pong", function() {
-			console.log("PONG");
-			scope.pingSuccessful = true;
-		});
 		
 		// Init 3D map and start game
 		scope.Map3D = new THMap(scope);
