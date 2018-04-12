@@ -371,4 +371,7 @@
     		$('.navbar-text').css('padding-right','0');
     	}
     }
+	socket.on('connect_error', function() {
+		window.location = "serverdown.html";
+	});
 </script>

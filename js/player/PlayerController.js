@@ -12,10 +12,13 @@ var PlayerController = function()
 			window.location.assign("login.html");
 
 		let socket = scope.socket = io.connect(document.location.hostname + ":3000?token=" + token);
+		socket.on('connect_error', function() {
+			window.location = "serverdown.html";
+		});
 		socket.on("error", function()
 		{
+			console.log();
 			scope.FatalError("Authentication failure!");
-			window.location.assign("login.html");
 		});
 		socket.on("server send authentication", function(user)
 		{
@@ -26,13 +29,14 @@ var PlayerController = function()
 		// Continuously poll to check that the connection hasn't been lost:
 		scope.pingSuccessful = true;
 		scope.pingIntervalID = window.setInterval(function() {
+			console.log(scope.pingSuccessful)
 			if (!scope.pingSuccessful) {
 				window.clearInterval(scope.pingIntervalID);
 				scope.FatalError("Connection Lost.");
 			}
 			else
 			{
-				pingSuccessful = false;
+				scope.pingSuccessful = false;
 				socket.emit("ping");
 			}
 		}, 10000); // every 10 sec
@@ -500,9 +504,8 @@ PlayerController.prototype = {
 	 */
 	FatalError: function(message)
 	{
-		// TODO: prompt the user to refresh the page ("Connection Lost")
 		$.alertable.alert(message).always(function() {
-	      window.location.reload();
+	      window.location.href = "login.html";
 	    });
 	},
 
