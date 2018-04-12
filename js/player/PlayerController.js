@@ -501,7 +501,9 @@ PlayerController.prototype = {
 	FatalError: function(message)
 	{
 		// TODO: prompt the user to refresh the page ("Connection Lost")
-		alert(message);
+		$.alertable.alert(message).always(function() {
+	      window.location.reload();
+	    });
 	},
 
 	/**
