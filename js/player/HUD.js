@@ -506,7 +506,7 @@ HUD.prototype = {
 				$("#tradeCloseButton").show();
 				this.openTradePartnerID = false;
 				window.backTrade();
-				
+
 				window.closeTradeWindow();
 			}
 			else
@@ -567,7 +567,7 @@ HUD.prototype = {
 	SetDead: function(dead, dayNumber)
 	{
 		//console.log("day: " + dayNumber);
-		if (dead || dayNumber == 14)
+		if (dead || dayNumber >= 14)
 		{
 			this.SetBuySellEnabled(false);
 			this.SetTradeEnabled(false);
@@ -576,6 +576,12 @@ HUD.prototype = {
 			if(dead) {
 				this.SetStatusButtonState("dead");
 				$("#death-overlay").css('background-image',"url('assets/icons/skull-crossbones-icon.png')");
+			}
+
+			if(!dead) {
+				if(this.controller.cash > 1200) {
+					$("#death-overlay").css('background-image',"url('assets/icons/coin-icon.png')");
+				}
 			}
 
 			setTimeout(()=>{this.showGameOverScreen();},3000);
