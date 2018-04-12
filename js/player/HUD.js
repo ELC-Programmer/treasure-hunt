@@ -712,11 +712,14 @@ HUD.prototype = {
 	},
 
 	ChainAlerts(arr,index){
-		console.log('here');
-		if(index > arr.length) return;
+		if(index >= arr.length) return;
 		scope = this;
-		if(index == arr.length-1) window.sounds.playOnce($(arr[index]).attr("audio")); 
-		else window.sounds.playOnce($(arr[index]).attr("audio"),()=>{index += 1; console.log(index); scope.ChainAlerts(arr,index); self.on('end',undefined)});
+		$(arr[index]).addClass("purple-background");
+		window.sounds.playOnce($(arr[index]).attr("audio"),()=>{
+																	$(arr[index]).removeClass("purple-background");
+																	index += 1; 
+																	scope.ChainAlerts(arr,index); 
+																});
 	},
 
 	/**
@@ -727,14 +730,14 @@ HUD.prototype = {
 	{
 		let scope = this;
 
-		let div = $("<div>").addClass("alert-box").attr("audio","assets/sounds/narration/"+alert.audio);
+		let div = $("<div>").addClass("alert-box").attr("audio",alert.audio);
 		$("<p>").text(alert.text).appendTo(div);
-		$(div).click(()=>{ window.sounds.playOnce($(div).attr("audio")); });
+		// $(div).click(()=>{ window.sounds.playOnce($(div).attr("audio")); });
 
 		$(".day-alert-box:first").append(div);
 		window.showAlerts();
 		window.sounds.playOnce("buoyBells");
-		return div;
+		if(alert.audio) return div;
 	},
 
 	/**
@@ -758,7 +761,8 @@ HUD.prototype = {
 		}
 		else // display message
 		{
-			$("#captains-message p").text(message);
+			setTimeout(()=>{window.sounds.playOnce(message.audio)},500);
+			$("#captains-message p").text(message.text);
 			$("#captains-buttons-container").hide();
 			$("#captains-message").show();
 

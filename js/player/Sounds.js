@@ -26,17 +26,11 @@ class Sounds{
 		setTimeout(() => { that.loadSounds(); }, 1000); //asynchronously load other sounds
 
 	}
-	loadSounds(soundFile){
+	loadSounds(soundFile,callback){
 		if(soundFile){
-			var success = false;
-			$.ajax({
-			    url:soundFile,
-			    success: function (data){
-			      this.soundsDict[soundFile] = new Howl({src:[data]});
-			      success = true;
-			    } 
-			  });
-			return success;
+			let scope = this;
+			scope.soundsDict[soundFile] = new Howl({src:["assets/Sounds/narration/"+soundFile], onload: callback });
+			return;
 		}
 		this.soundsDict = {  	"dockedAmbience" : new Howl({
 									src: ['assets/Sounds/docked-ambient-noise.wav'],
@@ -59,7 +53,7 @@ class Sounds{
 								  autoplay:false
 								}),
 								"notificationBell" : new Howl({
-								  src: ['assets/Sounds/notification-bell.mp3'],
+								  src: ['assets/Sounds/notification-bell.wav'],
 								  loop: false,
 								  autoplay:false,
 								  volume:.8
@@ -70,6 +64,7 @@ class Sounds{
 		this.executeQueue();
 	}
 	fadeInOut(soundKey, fromVolume, toVolume, duration, onend){
+		let scope = this;
 		if(this.soundsDict[soundKey] == null && !this.loadFinished){ //if this function is called before selected sound is loaded, wait for load to complete
 			if(soundKey != "stormyAmbience" && soundKey != "dockedAmbience" && soundKey != "sunnyAmbience" && soundKey != "buoyBells") 
 				return; //we only care about the looped sounds being played late; others would sound out of time
@@ -77,18 +72,24 @@ class Sounds{
 			this.queue.push( function(){ that.fadeInOut(soundKey, fromVolume, toVolume, duration) } );
 			return;
 		}
-		if(this.soundsDict[soundKey] == null) {
-			if(!this.loadSounds(soundKey)){
-				console.log("Key "+soundKey+" does not exist."); //if load is finished is key still does not exist, error
-				return; 
+		if(this.soundsDict[soundKey] == null)
+		{
+			this.loadSounds(soundKey, afterLoaded);
+		}
+		else
+		{
+			afterLoaded();
+		}
+
+		function afterLoaded()
+		{
+			if(onend){
+				scope.soundsDict[soundKey].on('end',onend);
 			}
+			else scope.soundsDict[soundKey].on('end',null);
+			if(toVolume != 0 && scope.dead == false) scope.soundsDict[soundKey].play();
+			scope.soundsDict[soundKey].fade(fromVolume, toVolume, duration);
 		}
-		if(onend){
-			this.soundsDict[soundKey].on('end',onend);
-		}
-		else this.soundsDict[soundKey].on('end',null);
-		if(toVolume != 0 && this.dead == false) this.soundsDict[soundKey].play();
-		this.soundsDict[soundKey].fade(fromVolume, toVolume, duration);
 	}
 	playOnce(key,callback){
 		return this.fadeInOut(key, 0,1,0.1, callback);
