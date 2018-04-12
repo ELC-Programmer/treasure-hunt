@@ -38,12 +38,13 @@ var PlayerController = function()
 			else
 			{
 				scope.pingSuccessful = false;
-				socket.emit("client send ping", {}, function() {
-					console.log("PONG");
-					scope.pingSuccessful = true;
-				});
+				socket.emit("client send ping");
 			}
 		}, 10000); // every 10 sec
+		socket.on("server send pong", function() {
+			console.log("PONG");
+			scope.pingSuccessful = true;
+		})
 		
 		// Init 3D map and start game
 		scope.Map3D = new THMap(scope);
