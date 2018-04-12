@@ -146,7 +146,7 @@ HUD.prototype = {
 	{
 		$("#day-number-text").text(dayNumber);
 
-		let percent = Math.max((dayNumber / 14) * 100, 0);
+		let percent = Math.max((dayNumber / 13) * 100, 0);
 		$("#loading-bar").animate({width:percent + "%"},1000);
 	},
 
@@ -567,7 +567,7 @@ HUD.prototype = {
 	SetDead: function(dead, dayNumber)
 	{
 		//console.log("day: " + dayNumber);
-		if (dead || dayNumber >= 14)
+		if (dead || dayNumber >= 13)
 		{
 			this.SetBuySellEnabled(false);
 			this.SetTradeEnabled(false);

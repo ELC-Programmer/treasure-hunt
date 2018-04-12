@@ -625,7 +625,7 @@
         //helper function for Timeline: takes in day (-3 to 14)
         //moves progress by increments of 5.26
         function timeline(day) {
-            if(day > 15) day = 15;
+            if(day > 14) day = 14;
             if(day < 0) day = 0;
             if(day <= 0) $('#timeline-day').css('display', 'none');
             var counter = 1;
@@ -650,7 +650,7 @@
                 }
                 counter++;
             }
-            if(day == 15) $('#advance-btn').prop("disabled",true);
+            if(day == 14) $('#advance-btn').prop("disabled",true);
         }  
         //functionality for reset button
         function resetAlert() {
