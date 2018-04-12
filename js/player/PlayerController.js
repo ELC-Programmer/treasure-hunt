@@ -23,6 +23,24 @@ var PlayerController = function()
 			scope.HUD2D.SetPlayerName(user.display_name);
 		});
 
+		// Continuously poll to check that the connection hasn't been lost:
+		scope.pingSuccessful = true;
+		scope.pingIntervalID = window.setInterval(function() {
+			if (!scope.pingSuccessful) {
+				window.clearInterval(scope.pingIntervalID);
+				scope.FatalError("Connection Lost.");
+			}
+			else
+			{
+				pingSuccessful = false;
+				socket.emit("ping");
+			}
+		}, 10000); // every 10 sec
+		socket.on("pong", function() {
+			console.log("PONG");
+			scope.pingSuccessful = true;
+		});
+		
 		// Init 3D map and start game
 		scope.Map3D = new THMap(scope);
 		scope.Map3D.Start(window, document.getElementById("game-container"), function() {
@@ -482,7 +500,7 @@ PlayerController.prototype = {
 	 */
 	FatalError: function(message)
 	{
-		// TODO
+		// TODO: prompt the user to refresh the page ("Connection Lost")
 		alert(message);
 	},
 
