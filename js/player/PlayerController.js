@@ -195,6 +195,7 @@ PlayerController.prototype = {
 
 			// Trading:
 			scope.trades = {};
+			scope.HUD2D.SetTradeQuantitiesAndStatus(scope.HUD2D.openTradePartnerID, undefined, true); // "go back" in the trade window
 			scope.cashInEscrow = 0;
 			scope.foodInEscrow = 0;
 			scope.waterInEscrow = 0;
