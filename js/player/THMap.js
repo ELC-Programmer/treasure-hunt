@@ -684,8 +684,6 @@ THMap.prototype = {
 		
 		if ((this.dayCycleTime / cycleLength > 1.25) && this.newDayWeather) // it's midnight, update the weather (1.25 is a magic number...)
 		{
-			console.log("Midnight!");
-			
 			this.skyBox.material = this.skyMaterials[this.newDayWeather];
 			this.weather = this.newDayWeather;
 			this.newDayWeather = false;
