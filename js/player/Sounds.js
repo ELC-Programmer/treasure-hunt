@@ -50,7 +50,8 @@ class Sounds{
 								"notificationBell" : new Howl({
 								  src: ['assets/Sounds/notification-bell.mp3'],
 								  loop: false,
-								  autoplay:false
+								  autoplay:false,
+								  volume:.8
 								}),
 								"warningSound" : new Howl({src:['assets/Sounds/warning.mp3']})
 							};

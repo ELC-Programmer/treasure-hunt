@@ -518,8 +518,8 @@
 	  }
 	  return _results;
 	};
-	// autoSizeText();
 	autoSizeText();
     $(window).resize(()=>{$('.resize').css('font-size','8vh');autoSizeText();});
+    $('.resize').on("DOMSubtreeModified",function(){ autoSizeText(); });
 
 </script>
