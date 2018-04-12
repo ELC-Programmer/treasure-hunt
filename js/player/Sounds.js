@@ -23,10 +23,21 @@ class Sounds{
 		this.soundsDict = { };
 		this.dead = false;
 		var that = this;
-		setTimeout(() => { that.loadSounds(); }, 6000); //asynchronously load other sounds
+		setTimeout(() => { that.loadSounds(); }, 1000); //asynchronously load other sounds
 
 	}
-	loadSounds(){
+	loadSounds(soundFile){
+		if(soundFile){
+			var success = false;
+			$.ajax({
+			    url:soundFile,
+			    success: function (data){
+			      this.soundsDict[soundFile] = new Howl({src:[data]});
+			      success = true;
+			    } 
+			  });
+			return success;
+		}
 		this.soundsDict = {  	"dockedAmbience" : new Howl({
 									src: ['assets/Sounds/docked-ambient-noise.wav'],
 									loop: true,
@@ -58,7 +69,7 @@ class Sounds{
 		this.loadFinished = true;
 		this.executeQueue();
 	}
-	fadeInOut(soundKey, fromVolume, toVolume, duration){
+	fadeInOut(soundKey, fromVolume, toVolume, duration, onend){
 		if(this.soundsDict[soundKey] == null && !this.loadFinished){ //if this function is called before selected sound is loaded, wait for load to complete
 			if(soundKey != "stormyAmbience" && soundKey != "dockedAmbience" && soundKey != "sunnyAmbience" && soundKey != "buoyBells") 
 				return; //we only care about the looped sounds being played late; others would sound out of time
@@ -67,18 +78,20 @@ class Sounds{
 			return;
 		}
 		if(this.soundsDict[soundKey] == null) {
-			console.log("Key "+soundKey+" does not exist."); //if load is finished is key still does not exist, error
-			return; 
+			if(!this.loadSounds(soundKey)){
+				console.log("Key "+soundKey+" does not exist."); //if load is finished is key still does not exist, error
+				return; 
+			}
 		}
+		if(onend){
+			this.soundsDict[soundKey].on('end',onend);
+		}
+		else this.soundsDict[soundKey].on('end',null);
 		if(toVolume != 0 && this.dead == false) this.soundsDict[soundKey].play();
 		this.soundsDict[soundKey].fade(fromVolume, toVolume, duration);
 	}
-	playOnce(key){
-		if(this.soundsDict[key] == null){
-			console.log("Still loading file.");
-			return;
-		}
-		this.soundsDict[key].play();
+	playOnce(key,callback){
+		return this.fadeInOut(key, 0,1,0.1, callback);
 	}
 	executeQueue(){
 		if(!this.loadFinished) return; 

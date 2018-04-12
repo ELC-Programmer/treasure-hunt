@@ -630,7 +630,6 @@ HUD.prototype = {
 			$("#largeTextDisplay > p").text(message.text);
 			$("#largeTextDisplay").show();
 		});
-		//this doesn't work TODO
 		messagesObject[0].scrollTop = messagesObject[0].scrollHeight; // auto-scroll to bottom
 	},
 
@@ -696,26 +695,40 @@ HUD.prototype = {
 		$("<h3>").text(title).addClass("day-alert-title").appendTo(div);
 		$("<hr>").addClass("eighty-percent-hr").appendTo(div);
 		$("#day-alert-box-container").prepend(div);
-
+		var children = Array();
+		var interval = 0;
 		// Add Alerts
 		for (let i in alerts)
 		{
-			this.AddAlert(alerts[i]);
-		}
+			children.push(this.AddAlert(alerts[i]));
+		}		
+		this.ChainAlerts(children,0);
+	},
+
+	ChainAlerts(arr,index){
+		console.log('here');
+		if(index > arr.length) return;
+		scope = this;
+		if(index == arr.length-1) window.sounds.playOnce($(arr[index]).attr("audio")); 
+		else window.sounds.playOnce($(arr[index]).attr("audio"),()=>{index += 1; console.log(index); scope.ChainAlerts(arr,index); self.on('end',undefined)});
 	},
 
 	/**
 	 * Add an alert to the most recent day. Pop-up the alerts window.
 	 * @param text The text of the alert.
 	 */
-	AddAlert: function(text)
+	AddAlert: function(alert)
 	{
-		let div = $("<div>").addClass("alert-box");
-		$("<p>").text(text).appendTo(div);
+		let scope = this;
+
+		let div = $("<div>").addClass("alert-box").attr("audio","assets/sounds/narration/"+alert.audio);
+		$("<p>").text(alert.text).appendTo(div);
+		$(div).click(()=>{ window.sounds.playOnce($(div).attr("audio")); });
 
 		$(".day-alert-box:first").append(div);
 		window.showAlerts();
 		window.sounds.playOnce("buoyBells");
+		return div;
 	},
 
 	/**
