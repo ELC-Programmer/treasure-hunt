@@ -17,6 +17,10 @@ var PlayerController = function()
 			//scope.FatalError("Authentication failure!");
 			window.location.assign("login.html");
 		});
+		socket.on("connect_error", function()
+		{
+			window.location.assign("login.html");
+		});
 		socket.on("server send authentication", function(user)
 		{
 			scope.playerID = user.id;
