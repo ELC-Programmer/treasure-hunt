@@ -186,9 +186,6 @@ PlayerController.prototype = {
 			// Weather (data.weather)
 			scope.HUD2D.SetWeather(data.weather);
 
-			// Death (data.isDead)
-			scope.HUD2D.SetDead(data.isDead, scope.dayNumber);
-
 			// Buying and Selling (data.prices)
 			scope.prices = data.prices;
 			scope.HUD2D.SetFoodPrice(scope.prices.food);
@@ -215,6 +212,9 @@ PlayerController.prototype = {
 				onNewDay();
 			}
 			scope.HUD2D.SetDayNumber(scope.dayNumber);
+
+			// Death (data.isDead)
+			scope.HUD2D.SetDead(data.isDead, scope.dayNumber);
 
 			// Trading:
 			scope.trades = {};

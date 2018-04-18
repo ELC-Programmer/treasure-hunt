@@ -36,7 +36,7 @@ HUD.prototype = {
 			function sendChatMessage()
 			{
 				let chatID = $(".messages:visible").attr("chatID");
-				let text = $("#message-input-box").val();
+				let text = $("#message-input-box").val().trim();
 				if(text.length > 1000){
 					window.warn("Please enter less than 1000 characters.");
 					return;
@@ -566,7 +566,6 @@ HUD.prototype = {
 	 */
 	SetDead: function(dead, dayNumber)
 	{
-		//console.log("day: " + dayNumber);
 		if (dead || dayNumber >= 13)
 		{
 			this.SetBuySellEnabled(false);

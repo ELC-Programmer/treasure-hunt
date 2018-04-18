@@ -660,11 +660,14 @@
                 '<div class="alert alert-danger alert-dismissible fade in" role="alert" style="text-align:center;">' +
                      '<H4>Player Reset Confirmation</H4>' +
                      '<p>Are you sure you want reset all players in your group?</p>' +
-                    '<button type="button" class="btn btn-danger" data-dismiss="alert" aria-label="Close"onClick="handleReset()" style="margin-right:1vw;">Reset</button>' +
-                    '<button type="button" class="btn btn-primary" data-dismiss="alert" aria-label="Close" class="col-md-6" style="margin-left:1vw;">Cancel</button>' +
+                    '<button type="button" class="btn btn-danger" data-dismiss="alert" aria-label="Close" onClick="handleReset()" style="margin-right:1vw;">Reset</button>' +
+                    '<button type="button" class="btn btn-primary" data-dismiss="alert" aria-label="Close" onClick="handleunReset()" class="col-md-6" style="margin-left:1vw;">Cancel</button>' +
                 '</div>'
             );
         }    
+        function handleunReset(){
+            $("#resetButton").prop('disabled',false);            
+        }
         function handleReset(){
             window.socket.emit("facilitator send resetGame", {}, function(data){
                 //init();
@@ -679,5 +682,8 @@
                 return String(this).replace(/^\s+|\s+$/g, '');
             };
         }
+        $("#chat-panel").on("DOMSubtreeModified",function(){ $('#chat-panel').stop().animate({
+                                                                  scrollTop: $('#chat-panel')[0].scrollHeight
+                                                                }, 800); });
     </script>
 </body>
