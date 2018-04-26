@@ -374,7 +374,7 @@
                 alert("Invalid token. Please log in again.");
                 window.location.assign("../login.html");
             }
-            window.socket = io.connect("localhost:3000?token="+token);
+            window.socket = io.connect(window.location.hostname+":3000?token="+token);
             window.socket.on("error", function(){
                 alert("Invalid token. Please log in again.");
                 window.location.assign("../login.html");                
