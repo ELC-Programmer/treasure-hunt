@@ -11,7 +11,7 @@ class Notifications{
 		this.numNotifications = 0;
 
 	}
-	newMessage(message, shouldPersist, onClick){
+	newMessage(message, shouldPersist, onClick, urgent){
 
 		var msg = message.slice(0,33);
 		if(message.length > 33) msg += '...';
@@ -20,7 +20,7 @@ class Notifications{
 			return;
 		}
 		var id = 'msgBalloon'+this.numNotifications;
-		var newDiv = this.makeNotificationDiv(id, msg)
+		var newDiv = this.makeNotificationDiv(id, msg, urgent);
 		window.sounds.fadeInOut("notificationBell", 0, 1, 0);
 		$(newDiv).appendTo('#'+this.containerId)
 					.animate({top: 0, right:'1vw'}, 2000)
@@ -51,12 +51,14 @@ class Notifications{
 		var containerDiv = "<div id='"+this.containerId+"' style='"+containerStyle+"'></div>"
 		return containerDiv;
 	}
-	makeNotificationDiv(id, msg){
-		var notificationStyle = "background-color:rgba(47,48,97,0.98); \
+	
+	makeNotificationDiv(id, msg, urgent)
+	{
+		var notificationStyle = "background-color: " + (urgent ? "rgba(200, 0, 0, 0.98)" : "rgba(47,48,97,0.98)") + "; \
 				text-align:center; \
 				font-size:18pt;\
 				font-family:'Berkshire Swash', cursive;\
-				color:white;\
+				color: white;\
 				border-radius:5px;\
 				right:-10%;\
 				top:1vh;\

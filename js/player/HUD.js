@@ -643,10 +643,11 @@ HUD.prototype = {
 	 * @param message The string to display.
 	 * @param shouldPersist A boolean. If false, the balloon will disappear without user input after a few seconds.
 	 * @param onClick A function to be called when the user clicks the balloon.
+	 * @param urgent If true, the message will be red and have a sound effect. If omitted, false is assumed.
 	 */
-	AlertBalloon: function(message, shouldPersist, onClick)
+	AlertBalloon: function(message, shouldPersist, onClick, urgent)
 	{
-		window.notifications.newMessage(message,shouldPersist, onClick);
+		window.notifications.newMessage(message,shouldPersist, onClick, urgent);
 	},
 
 	/**
@@ -693,8 +694,9 @@ HUD.prototype = {
 	 * Add a day divider to the alerts window.
 	 * @param title The string title to use for this day (e.g. "Day 5").
 	 * @param alerts An array of string alerts.
+	 * @param callback An optional callback to be triggered once all the alerts are read.
 	 */
-	AddAlertsDay: function(title, alerts)
+	AddAlertsDay: function(title, alerts, callback)
 	{
 		let div = $("<div>").addClass("day-alert-box");
 		$("<h3>").text(title).addClass("day-alert-title").appendTo(div);
@@ -707,18 +709,22 @@ HUD.prototype = {
 		{
 			children.push(this.AddAlert(alerts[i]));
 		}		
-		this.ChainAlerts(children,0);
+		this.ChainAlerts(children, 0, callback);
 	},
 
-	ChainAlerts(arr,index){
-		if(index >= arr.length) return;
+	ChainAlerts: function(arr, index, callback)
+	{
+		if (index >= arr.length) {
+			if (callback !== undefined) callback();
+			return;
+		}
 		scope = this;
 		$(arr[index]).addClass("purple-background");
 		window.sounds.playOnce($(arr[index]).attr("audio"),()=>{
-																	$(arr[index]).removeClass("purple-background");
-																	index += 1; 
-																	scope.ChainAlerts(arr,index); 
-																});
+				$(arr[index]).removeClass("purple-background");
+				index += 1;
+				scope.ChainAlerts(arr,index,callback); 
+			});
 	},
 
 	/**

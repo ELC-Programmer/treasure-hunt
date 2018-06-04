@@ -96,6 +96,7 @@ var PlayerController = function()
 	this.storageSpaceInEscrow = 0;
 
 	this.chatMessages = { "broadcast": [] }; // other user ID (or 'broadcast') => array of message objects (sent and recieved)
+	this.urgentMessageBacklog = [];
 };
 
 PlayerController.prototype = {
@@ -260,7 +261,19 @@ PlayerController.prototype = {
 
 					// Alerts (data.alerts)
 					// if(scope.dayNumber == 0)
-						setTimeout(()=>{scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);}, 2000);
+						setTimeout(()=>{
+							scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts, function() {
+								// present urgent messages from backlog:
+								for (let i in scope.urgentMessageBacklog)
+								{
+									let message = scope.urgentMessageBacklog[i];
+									scope.HUD2D.AlertBalloon(message.messageObject.senderName + ": " + message.messageObject.text, true, function() {
+										 scope.HUD2D.ShowChatMessages(message.otherUserID);
+									}, true);
+								}
+								scope.urgentMessageBacklog = []; // clear the backlog
+							});
+						}, 2000);
 					// else
 						// scope.HUD2D.AddAlertsDay("Day " + scope.dayNumber, data.alerts);
 
@@ -405,12 +418,13 @@ PlayerController.prototype = {
 				let outgoing = (message.senderID == scope.playerID);
 				let otherUserID = (outgoing ? message.recipientID : message.senderID);
 				if (message.broadcast) otherUserID = "broadcast";
+				let urgent = (message.urgent != 0);
 
 				if (!scope.chatMessages[otherUserID]) scope.chatMessages[otherUserID] = [];
 				let messageObject = {
 					outgoing: outgoing,
 					senderName: (scope.players[message.senderID] !== undefined ? scope.players[message.senderID] : "First Mate"),
-					urgent: (message.urgent != 0),
+					urgent: urgent,
 					text: message.text,
 					timestamp: message.timestamp
 				};
@@ -418,9 +432,16 @@ PlayerController.prototype = {
 				scope.HUD2D.AddChatMessage(otherUserID, messageObject); // add the chat message to the chat pane, if it is open
 				if (!outgoing && message.newMessages)
 				{ // alert the arrival of a new message
-					scope.HUD2D.AlertBalloon(messageObject.senderName + ": " + messageObject.text, false, function() {
-						 scope.HUD2D.ShowChatMessages(otherUserID);
-					});
+					if (urgent)
+					{ // add to backlog
+						scope.urgentMessageBacklog.push({otherUserID: otherUserID, messageObject: messageObject});
+					}
+					else
+					{ // balloon now					
+						scope.HUD2D.AlertBalloon(messageObject.senderName + ": " + messageObject.text, false, function() {
+							 scope.HUD2D.ShowChatMessages(otherUserID);
+						});
+					}
 				}
 			}
 		});
