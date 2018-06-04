@@ -566,7 +566,7 @@ HUD.prototype = {
 	 */
 	SetDead: function(dead, dayNumber)
 	{
-		if (dead || dayNumber >= 13)
+		if (dead || dayNumber >= 14)
 		{
 			this.SetBuySellEnabled(false);
 			this.SetTradeEnabled(false);
