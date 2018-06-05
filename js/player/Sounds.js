@@ -58,7 +58,12 @@ class Sounds{
 								  autoplay:false,
 								  volume:.8
 								}),
-								"warningSound" : new Howl({src:['assets/Sounds/warning.mp3']})
+								"warningSound" : new Howl({src:['assets/Sounds/warning.mp3']}),
+								"sos": new Howl({
+									src:['assets/Sounds/sos.mp3'],
+									loop: false,
+									autoplay: false
+								})
 							};
 		this.loadFinished = true;
 		this.executeQueue();

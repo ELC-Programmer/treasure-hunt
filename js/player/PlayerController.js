@@ -271,6 +271,10 @@ PlayerController.prototype = {
 										 scope.HUD2D.ShowChatMessages(message.otherUserID);
 									}, true);
 								}
+								if (scope.urgentMessageBacklog.length > 0)
+								{ // play SOS sound effect
+									window.sounds.playOnce("sos");
+								}
 								scope.urgentMessageBacklog = []; // clear the backlog
 							});
 						}, 2000);
