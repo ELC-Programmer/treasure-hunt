@@ -215,7 +215,10 @@ PlayerController.prototype = {
 			scope.HUD2D.SetDayNumber(scope.dayNumber);
 
 			// Death (data.isDead)
-			scope.HUD2D.SetDead(data.isDead, scope.dayNumber);
+			if (data.isDead || scope.dayNumber >= 15)
+			{
+				scope.HUD2D.SetGameOver(data.isDead);
+			}
 
 			// Trading:
 			scope.trades = {};
@@ -231,7 +234,7 @@ PlayerController.prototype = {
 			// things to be done when the new day arrives
 			function onNewDay()
 			{
-				if (!data.isDead)
+				if (!data.isDead && scope.dayNumber < 15)
 				{
 					// Actions (data.hasAction, data.possibleDestinations, data.seaCaptainAccessible)
 					scope.hasAction = data.hasAction;

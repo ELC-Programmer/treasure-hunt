@@ -561,30 +561,28 @@ HUD.prototype = {
 	},
 
 	/**
-	 * Enable or disable the death overlay, etc.
-	 * @param dead A boolean indicating whether the player is dead.
+	 * Enable the game over overlay.
+	 * @param isDead A boolean indicating whether the player is dead.
 	 */
-	SetDead: function(dead, dayNumber)
+	SetGameOver: function(isDead)
 	{
-		if (dead || dayNumber >= 14)
-		{
-			this.SetBuySellEnabled(false);
-			this.SetTradeEnabled(false);
-			this.SetSeaCaptainEnabled(false);
+		this.SetBuySellEnabled(false);
+		this.SetTradeEnabled(false);
+		this.SetSeaCaptainEnabled(false);
 
-			if(dead) {
-				this.SetStatusButtonState("dead");
-				$("#death-overlay").css('background-image',"url('assets/icons/skull-crossbones-icon.png')");
-			}
-
-			if(!dead) {
-				if(this.controller.cash > 1200) {
-					$("#death-overlay").css('background-image',"url('assets/icons/coin-icon.png')");
-				}
-			}
-
-			setTimeout(()=>{this.showGameOverScreen();},3000);
+		if(isDead) {
+			this.SetStatusButtonState("dead");
+			//$("#death-overlay").css('background-image',"url('assets/icons/skull-crossbones-icon.png')");
+			$("#game-over-message").text("You Are Dead");
 		}
+
+		if(!isDead) {
+			if(this.controller.cash > 1200) {
+				//$("#death-overlay").css('background-image',"url('assets/icons/coin-icon.png')");
+			}
+		}
+
+		setTimeout(()=>{this.showGameOverScreen();},3000);
 	},
 
 	/**
@@ -783,7 +781,7 @@ HUD.prototype = {
 			window.sounds.stopAllSounds();
 			$("#death-overlay").show();
 			$("#death-overlay").animate({opacity:1}, 2000);
-			setTimeout(()=>{ $('#hud-container, #game-container, canvas').remove(); },3000);
+			//setTimeout(()=>{ $('#hud-container, #game-container, canvas').remove(); },3000);
 	 }
 
 }

@@ -619,25 +619,24 @@
                 window.myBar.render();
 
                 $('#hide-btn').text("Show Only Chart"); 
-
             }
         }
         //helper function for Timeline: takes in day (-3 to 14)
         //moves progress by increments of 5.26
         function timeline(day) {
-            if(day > 14) day = 14;
+            if(day > 15) day = 15;
             if(day < 0) day = 0;
             if(day <= 0) $('#timeline-day').css('display', 'none');
             var counter = 1;
             for(i = -3; i <= day; i++) {
-                var temp = 5.26 * counter;
+                var temp = 5 * counter;
                 //move planning period bar from day -3 to 0
                 if(i == 0) {
                     $('#timeline-planning').attr('aria-valuenow', temp);
                     $('#timeline-planning').css('width', temp+'%');
                     // $('#timeline-planning').html('<p style="display: table-cell; vertical-align: middle;">Planning Period</p>);
                     //reset counter after day 0
-                    if(i == 0) {
+                    if(i == 0) { // no day 0
                         counter = 1;
                     }
                 } 
@@ -650,7 +649,7 @@
                 }
                 counter++;
             }
-            if(day == 14) $('#advance-btn').prop("disabled",true);
+            if(day == 15) $('#advance-btn').prop("disabled",true);
         }  
         //functionality for reset button
         function resetAlert() {
