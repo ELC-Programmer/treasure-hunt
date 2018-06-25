@@ -582,7 +582,10 @@ HUD.prototype = {
 			}
 		}
 
-		setTimeout(()=>{this.showGameOverScreen();},3000);
+		setTimeout(()=>{
+			this.showGameOverScreen();
+			window.sounds.dead = true;
+		},3000);
 	},
 
 	/**
